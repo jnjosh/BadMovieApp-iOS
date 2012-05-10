@@ -11,7 +11,7 @@
 #import "JJBadMovie.h"
 #import "JJBadMovieViewController.h"
 #import "AFJSONRequestOperation.h"
-#import "JSONKit.h"
+#import "UIImageView+AFNetworking.h"
 
 @interface JJBadMovieEpisodesViewController ()
 
@@ -87,9 +87,11 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (! cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
     }
     JJBadMovie *movie = [self.episodes objectAtIndex:indexPath.row];
     [cell.textLabel setText:movie.name];
+    [cell.imageView setImageWithURL:[NSURL URLWithString:movie.photo] placeholderImage:[UIImage imageNamed:@"placeholder.png"]];
     return cell;
 }
 
