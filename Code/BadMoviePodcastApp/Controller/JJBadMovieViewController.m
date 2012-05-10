@@ -8,6 +8,7 @@
 
 #import <MediaPlayer/MediaPlayer.h>
 #import "JJBadMovieViewController.h"
+#import "JJBadMovieWebViewController.h"
 #import "JJBadMovie.h"
 #import "UIImageView+AFNetworking.h"
 
@@ -18,6 +19,8 @@
 @property (nonatomic, strong) UIView *headerView;
 
 - (void)playEpisode;
+- (void)playTrailer;
+- (void)showMovieInfo;
 
 @end
 
@@ -81,6 +84,18 @@
     [episodeButton setTitle:@"Play Episode" forState:UIControlStateNormal];
     [episodeButton addTarget:self action:@selector(playEpisode) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:episodeButton];
+
+    UIButton *youtubeTrailer = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [youtubeTrailer setFrame:(CGRect){ 10, episodeButton.frame.origin.y + episodeButton.frame.size.height + 10, 145, 44}];
+    [youtubeTrailer setTitle:@"Watch Trailer" forState:UIControlStateNormal];
+    [youtubeTrailer addTarget:self action:@selector(playTrailer) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:youtubeTrailer];
+
+    UIButton *imdbPage = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [imdbPage setFrame:(CGRect){ youtubeTrailer.frame.size.width + 20, episodeButton.frame.origin.y + episodeButton.frame.size.height + 10, 145, 44}];
+    [imdbPage setTitle:@"IMDb" forState:UIControlStateNormal];
+    [imdbPage addTarget:self action:@selector(showMovieInfo) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:imdbPage];
 }
 
 - (void)viewDidUnload {
@@ -103,5 +118,13 @@
     [self.navigationController presentMoviePlayerViewControllerAnimated:episodePlayer];
 }
 
+- (void)playTrailer {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:self.movie.video]];
+}
+
+- (void)showMovieInfo {
+    JJBadMovieWebViewController *movieInfoView = [[JJBadMovieWebViewController alloc] initWithIMDBUrl:self.movie.imdb];
+    [self.navigationController pushViewController:movieInfoView animated:YES];
+}
 
 @end

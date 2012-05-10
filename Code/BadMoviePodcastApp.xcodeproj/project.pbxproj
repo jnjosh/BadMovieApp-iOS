@@ -32,6 +32,9 @@
 		A42E1B4D155B647600043EA7 /* JJBadMovieViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B4C155B647600043EA7 /* JJBadMovieViewController.m */; };
 		A42E1B52155B680000043EA7 /* placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A42E1B51155B680000043EA7 /* placeholder@2x.png */; };
 		A42E1B54155B6AFA00043EA7 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A42E1B53155B6AFA00043EA7 /* MediaPlayer.framework */; };
+		A42E1B57155B71D300043EA7 /* JJBadMovieWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B56155B71D300043EA7 /* JJBadMovieWebViewController.m */; };
+		A48A99F6155B7C3500C66AAD /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = A48A99F4155B7C3500C66AAD /* Default.png */; };
+		A48A99F7155B7C3500C66AAD /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A48A99F5155B7C3500C66AAD /* Default@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -80,6 +83,10 @@
 		A42E1B4C155B647600043EA7 /* JJBadMovieViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieViewController.m; sourceTree = "<group>"; };
 		A42E1B51155B680000043EA7 /* placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "placeholder@2x.png"; sourceTree = "<group>"; };
 		A42E1B53155B6AFA00043EA7 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		A42E1B55155B71D300043EA7 /* JJBadMovieWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieWebViewController.h; sourceTree = "<group>"; };
+		A42E1B56155B71D300043EA7 /* JJBadMovieWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieWebViewController.m; sourceTree = "<group>"; };
+		A48A99F4155B7C3500C66AAD /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		A48A99F5155B7C3500C66AAD /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,6 +178,8 @@
 				A42E1B42155B603400043EA7 /* JJBadMovieEpisodesViewController.m */,
 				A42E1B4B155B647600043EA7 /* JJBadMovieViewController.h */,
 				A42E1B4C155B647600043EA7 /* JJBadMovieViewController.m */,
+				A42E1B55155B71D300043EA7 /* JJBadMovieWebViewController.h */,
+				A42E1B56155B71D300043EA7 /* JJBadMovieWebViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -233,6 +242,8 @@
 		A42E1B4E155B67D000043EA7 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A48A99F4155B7C3500C66AAD /* Default.png */,
+				A48A99F5155B7C3500C66AAD /* Default@2x.png */,
 				A42E1B51155B680000043EA7 /* placeholder@2x.png */,
 			);
 			path = Resources;
@@ -292,6 +303,8 @@
 			files = (
 				A42E1B05155B5C7000043EA7 /* InfoPlist.strings in Resources */,
 				A42E1B52155B680000043EA7 /* placeholder@2x.png in Resources */,
+				A48A99F6155B7C3500C66AAD /* Default.png in Resources */,
+				A48A99F7155B7C3500C66AAD /* Default@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,6 +332,7 @@
 				A42E1B46155B607C00043EA7 /* JJBadMovieEnvironment.m in Sources */,
 				A42E1B4A155B621500043EA7 /* JSONKit.m in Sources */,
 				A42E1B4D155B647600043EA7 /* JJBadMovieViewController.m in Sources */,
+				A42E1B57155B71D300043EA7 /* JJBadMovieWebViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
