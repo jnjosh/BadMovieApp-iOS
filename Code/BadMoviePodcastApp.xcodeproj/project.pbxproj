@@ -13,6 +13,9 @@
 		A42E1B05155B5C7000043EA7 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A42E1B03155B5C7000043EA7 /* InfoPlist.strings */; };
 		A42E1B07155B5C7000043EA7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B06155B5C7000043EA7 /* main.m */; };
 		A42E1B0B155B5C7000043EA7 /* JJAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B0A155B5C7000043EA7 /* JJAppDelegate.m */; };
+		A42E1B19155B5E6900043EA7 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A42E1B18155B5E6900043EA7 /* QuartzCore.framework */; };
+		A42E1B1B155B5E7200043EA7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A42E1B1A155B5E7200043EA7 /* SystemConfiguration.framework */; };
+		A42E1B1F155B5ED200043EA7 /* JJBadMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B1E155B5ED200043EA7 /* JJBadMovie.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +29,10 @@
 		A42E1B08155B5C7000043EA7 /* BadMoviePodcastApp-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BadMoviePodcastApp-Prefix.pch"; sourceTree = "<group>"; };
 		A42E1B09155B5C7000043EA7 /* JJAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJAppDelegate.h; sourceTree = "<group>"; };
 		A42E1B0A155B5C7000043EA7 /* JJAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJAppDelegate.m; sourceTree = "<group>"; };
+		A42E1B18155B5E6900043EA7 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		A42E1B1A155B5E7200043EA7 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		A42E1B1D155B5ED200043EA7 /* JJBadMovie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovie.h; sourceTree = "<group>"; };
+		A42E1B1E155B5ED200043EA7 /* JJBadMovie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovie.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +40,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A42E1B1B155B5E7200043EA7 /* SystemConfiguration.framework in Frameworks */,
+				A42E1B19155B5E6900043EA7 /* QuartzCore.framework in Frameworks */,
 				A42E1AFB155B5C7000043EA7 /* UIKit.framework in Frameworks */,
 				A42E1AFD155B5C7000043EA7 /* Foundation.framework in Frameworks */,
 				A42E1AFF155B5C7000043EA7 /* CoreGraphics.framework in Frameworks */,
@@ -62,6 +71,8 @@
 		A42E1AF9155B5C7000043EA7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A42E1B1A155B5E7200043EA7 /* SystemConfiguration.framework */,
+				A42E1B18155B5E6900043EA7 /* QuartzCore.framework */,
 				A42E1AFA155B5C7000043EA7 /* UIKit.framework */,
 				A42E1AFC155B5C7000043EA7 /* Foundation.framework */,
 				A42E1AFE155B5C7000043EA7 /* CoreGraphics.framework */,
@@ -72,6 +83,7 @@
 		A42E1B00155B5C7000043EA7 /* BadMoviePodcastApp */ = {
 			isa = PBXGroup;
 			children = (
+				A42E1B1C155B5E8700043EA7 /* Model */,
 				A42E1B17155B5D7A00043EA7 /* Controller */,
 				A42E1B16155B5D6700043EA7 /* Application */,
 			);
@@ -104,6 +116,15 @@
 			children = (
 			);
 			path = Controller;
+			sourceTree = "<group>";
+		};
+		A42E1B1C155B5E8700043EA7 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				A42E1B1D155B5ED200043EA7 /* JJBadMovie.h */,
+				A42E1B1E155B5ED200043EA7 /* JJBadMovie.m */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -171,6 +192,7 @@
 			files = (
 				A42E1B07155B5C7000043EA7 /* main.m in Sources */,
 				A42E1B0B155B5C7000043EA7 /* JJAppDelegate.m in Sources */,
+				A42E1B1F155B5ED200043EA7 /* JJBadMovie.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
