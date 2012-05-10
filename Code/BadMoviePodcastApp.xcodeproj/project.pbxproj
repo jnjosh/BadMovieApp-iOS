@@ -38,7 +38,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A42E1AF6155B5C7000043EA7 /* BadMoviePodcastApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BadMoviePodcastApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A42E1AF6155B5C7000043EA7 /* badmovieapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = badmovieapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A42E1AFA155B5C7000043EA7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A42E1AFC155B5C7000043EA7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A42E1AFE155B5C7000043EA7 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -119,7 +119,7 @@
 		A42E1AF7155B5C7000043EA7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A42E1AF6155B5C7000043EA7 /* BadMoviePodcastApp.app */,
+				A42E1AF6155B5C7000043EA7 /* badmovieapp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -266,7 +266,7 @@
 			);
 			name = BadMoviePodcastApp;
 			productName = BadMoviePodcastApp;
-			productReference = A42E1AF6155B5C7000043EA7 /* BadMoviePodcastApp.app */;
+			productReference = A42E1AF6155B5C7000043EA7 /* badmovieapp.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -398,10 +398,14 @@
 		A42E1B0F155B5C7000043EA7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Distribution: soda LLC";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: soda LLC";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BadMoviePodcastApp/BadMoviePodcastApp-Prefix.pch";
 				INFOPLIST_FILE = "BadMoviePodcastApp/BadMoviePodcastApp-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = badmovieapp;
+				PROVISIONING_PROFILE = "389E8D0C-330D-45A7-BE92-03623F1CC18D";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "389E8D0C-330D-45A7-BE92-03623F1CC18D";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -409,10 +413,12 @@
 		A42E1B10155B5C7000043EA7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Distribution: soda LLC";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BadMoviePodcastApp/BadMoviePodcastApp-Prefix.pch";
 				INFOPLIST_FILE = "BadMoviePodcastApp/BadMoviePodcastApp-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = badmovieapp;
+				PROVISIONING_PROFILE = "389E8D0C-330D-45A7-BE92-03623F1CC18D";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
