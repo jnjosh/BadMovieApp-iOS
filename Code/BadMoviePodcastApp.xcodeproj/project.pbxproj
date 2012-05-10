@@ -404,8 +404,8 @@
 				GCC_PREFIX_HEADER = "BadMoviePodcastApp/BadMoviePodcastApp-Prefix.pch";
 				INFOPLIST_FILE = "BadMoviePodcastApp/BadMoviePodcastApp-Info.plist";
 				PRODUCT_NAME = badmovieapp;
-				PROVISIONING_PROFILE = "389E8D0C-330D-45A7-BE92-03623F1CC18D";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "389E8D0C-330D-45A7-BE92-03623F1CC18D";
+				PROVISIONING_PROFILE = "305F622E-FABA-474D-8366-2CC3FD7104C5";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "305F622E-FABA-474D-8366-2CC3FD7104C5";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -414,11 +414,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution: soda LLC";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: soda LLC";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BadMoviePodcastApp/BadMoviePodcastApp-Prefix.pch";
 				INFOPLIST_FILE = "BadMoviePodcastApp/BadMoviePodcastApp-Info.plist";
 				PRODUCT_NAME = badmovieapp;
-				PROVISIONING_PROFILE = "389E8D0C-330D-45A7-BE92-03623F1CC18D";
+				PROVISIONING_PROFILE = "305F622E-FABA-474D-8366-2CC3FD7104C5";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "305F622E-FABA-474D-8366-2CC3FD7104C5";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
