@@ -38,7 +38,7 @@
 {
     [super viewDidLoad];
     
-    self.title = @"Bad Movies";
+    self.title = @"Episodes";
     
     NSURL *episodeURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/episodes", kJJBadMovieAPIURLRoot]];
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:episodeURL];
@@ -90,7 +90,7 @@
         [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
     }
     JJBadMovie *movie = [self.episodes objectAtIndex:indexPath.row];
-    [cell.textLabel setText:movie.name];
+    [cell.textLabel setText:[NSString stringWithFormat:@"#%i - %@", [movie.number integerValue], movie.name]];
     [cell.imageView setImageWithURL:[NSURL URLWithString:movie.photo] placeholderImage:[UIImage imageNamed:@"placeholder.png"]];
     return cell;
 }

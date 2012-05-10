@@ -31,6 +31,7 @@
 		A42E1B4A155B621500043EA7 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B49155B621500043EA7 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A42E1B4D155B647600043EA7 /* JJBadMovieViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B4C155B647600043EA7 /* JJBadMovieViewController.m */; };
 		A42E1B52155B680000043EA7 /* placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A42E1B51155B680000043EA7 /* placeholder@2x.png */; };
+		A42E1B54155B6AFA00043EA7 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A42E1B53155B6AFA00043EA7 /* MediaPlayer.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +79,7 @@
 		A42E1B4B155B647600043EA7 /* JJBadMovieViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieViewController.h; sourceTree = "<group>"; };
 		A42E1B4C155B647600043EA7 /* JJBadMovieViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieViewController.m; sourceTree = "<group>"; };
 		A42E1B51155B680000043EA7 /* placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "placeholder@2x.png"; sourceTree = "<group>"; };
+		A42E1B53155B6AFA00043EA7 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A42E1B54155B6AFA00043EA7 /* MediaPlayer.framework in Frameworks */,
 				A42E1B1B155B5E7200043EA7 /* SystemConfiguration.framework in Frameworks */,
 				A42E1B19155B5E6900043EA7 /* QuartzCore.framework in Frameworks */,
 				A42E1AFB155B5C7000043EA7 /* UIKit.framework in Frameworks */,
@@ -117,6 +120,7 @@
 		A42E1AF9155B5C7000043EA7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A42E1B53155B6AFA00043EA7 /* MediaPlayer.framework */,
 				A42E1B1A155B5E7200043EA7 /* SystemConfiguration.framework */,
 				A42E1B18155B5E6900043EA7 /* QuartzCore.framework */,
 				A42E1AFA155B5C7000043EA7 /* UIKit.framework */,
