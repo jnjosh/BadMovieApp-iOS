@@ -9,6 +9,7 @@
 #import "JJBadMovieEpisodesViewController.h"
 #import "JJBadMovieEnvironment.h"
 #import "JJBadMovie.h"
+#import "JJBadMovieViewController.h"
 #import "AFJSONRequestOperation.h"
 #import "JSONKit.h"
 
@@ -36,6 +37,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.title = @"Bad Movies";
     
     NSURL *episodeURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/episodes", kJJBadMovieAPIURLRoot]];
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:episodeURL];
@@ -94,13 +97,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+    JJBadMovie *movie = [self.episodes objectAtIndex:indexPath.row];
+    JJBadMovieViewController *detailViewController = [[JJBadMovieViewController alloc] initWithBadMovie:movie];
+    [self.navigationController pushViewController:detailViewController animated:YES];
 }
 
 @end

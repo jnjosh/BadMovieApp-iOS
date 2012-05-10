@@ -29,6 +29,7 @@
 		A42E1B43155B603400043EA7 /* JJBadMovieEpisodesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B42155B603400043EA7 /* JJBadMovieEpisodesViewController.m */; };
 		A42E1B46155B607C00043EA7 /* JJBadMovieEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B45155B607C00043EA7 /* JJBadMovieEnvironment.m */; };
 		A42E1B4A155B621500043EA7 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B49155B621500043EA7 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		A42E1B4D155B647600043EA7 /* JJBadMovieViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B4C155B647600043EA7 /* JJBadMovieViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -73,6 +74,8 @@
 		A42E1B45155B607C00043EA7 /* JJBadMovieEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieEnvironment.m; sourceTree = "<group>"; };
 		A42E1B48155B621500043EA7 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSONKit.h; path = JSONKit/JSONKit.h; sourceTree = "<group>"; };
 		A42E1B49155B621500043EA7 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSONKit.m; path = JSONKit/JSONKit.m; sourceTree = "<group>"; };
+		A42E1B4B155B647600043EA7 /* JJBadMovieViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieViewController.h; sourceTree = "<group>"; };
+		A42E1B4C155B647600043EA7 /* JJBadMovieViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +162,8 @@
 			children = (
 				A42E1B41155B603400043EA7 /* JJBadMovieEpisodesViewController.h */,
 				A42E1B42155B603400043EA7 /* JJBadMovieEpisodesViewController.m */,
+				A42E1B4B155B647600043EA7 /* JJBadMovieViewController.h */,
+				A42E1B4C155B647600043EA7 /* JJBadMovieViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -297,6 +302,7 @@
 				A42E1B43155B603400043EA7 /* JJBadMovieEpisodesViewController.m in Sources */,
 				A42E1B46155B607C00043EA7 /* JJBadMovieEnvironment.m in Sources */,
 				A42E1B4A155B621500043EA7 /* JSONKit.m in Sources */,
+				A42E1B4D155B647600043EA7 /* JJBadMovieViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
