@@ -6,7 +6,9 @@
 //  Copyright (c) 2012 jnjosh.com. All rights reserved.
 //
 
-#import <MediaPlayer/MediaPlayer.h>
+#import <AVFoundation/AVFoundation.h>
+#import <AudioToolbox/AudioToolbox.h>
+
 #import "JJBadMovieViewController.h"
 #import "JJBadMovieWebViewController.h"
 #import "JJBadMovie.h"
@@ -15,8 +17,15 @@
 @interface JJBadMovieViewController ()
 
 @property (nonatomic, strong) JJBadMovie *movie;
-
 @property (nonatomic, strong) UIView *headerView;
+@property (nonatomic, strong) UIButton *episodeButton;
+
+@property (nonatomic, strong) AVPlayer *streamingAudioPlayer;
+@property (nonatomic, assign, getter = isPlaying) BOOL playing;
+
+- (void)play;
+- (void)pause;
+- (void)toggle;
 
 - (void)playEpisode;
 - (void)playTrailer;
@@ -28,8 +37,10 @@
 
 #pragma mark - synth
 
-@synthesize movie = _movie;
+@synthesize movie = _movie, streamingAudioPlayer = _streamingAudioPlayer;
 @synthesize headerView = _headerView;
+@synthesize playing = _playing;
+@synthesize episodeButton = _episodeButton;
 
 #pragma mark - lifecycle
 
@@ -79,29 +90,74 @@
     [episodeDescription setText:self.movie.descriptionText];
     [self.view addSubview:episodeDescription];
     
-    UIButton *episodeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [episodeButton setFrame:(CGRect){ 10, episodeDescription.frame.origin.y + episodeDescription.frame.size.height + 10, 300, 44}];
-    [episodeButton setTitle:@"Play Episode" forState:UIControlStateNormal];
-    [episodeButton addTarget:self action:@selector(playEpisode) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:episodeButton];
+    self.episodeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [self.episodeButton setFrame:(CGRect){ 10, episodeDescription.frame.origin.y + episodeDescription.frame.size.height + 10, 300, 44}];
+    [self.episodeButton setTitle:@"Play Episode" forState:UIControlStateNormal];
+    [self.episodeButton addTarget:self action:@selector(playEpisode) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.episodeButton];
 
     UIButton *youtubeTrailer = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [youtubeTrailer setFrame:(CGRect){ 10, episodeButton.frame.origin.y + episodeButton.frame.size.height + 10, 145, 44}];
+    [youtubeTrailer setFrame:(CGRect){ 10, self.episodeButton.frame.origin.y + self.episodeButton.frame.size.height + 10, 145, 44}];
     [youtubeTrailer setTitle:@"Watch Trailer" forState:UIControlStateNormal];
     [youtubeTrailer addTarget:self action:@selector(playTrailer) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:youtubeTrailer];
 
     UIButton *imdbPage = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [imdbPage setFrame:(CGRect){ youtubeTrailer.frame.size.width + 20, episodeButton.frame.origin.y + episodeButton.frame.size.height + 10, 145, 44}];
+    [imdbPage setFrame:(CGRect){ youtubeTrailer.frame.size.width + 20, self.episodeButton.frame.origin.y + self.episodeButton.frame.size.height + 10, 145, 44}];
     [imdbPage setTitle:@"IMDb" forState:UIControlStateNormal];
     [imdbPage addTarget:self action:@selector(showMovieInfo) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:imdbPage];
+    
+    self.streamingAudioPlayer = [AVPlayer playerWithURL:[NSURL URLWithString:self.movie.url]];
+    NSError *playbackError = nil;
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&playbackError];
+    if (playbackError) {
+        NSLog(@"%@", [playbackError localizedDescription]);
+    }
+    
+    NSError *activationError = nil;
+    [[AVAudioSession sharedInstance] setActive:YES error:&activationError];
+    if (activationError) {
+        NSLog(@"%@", [activationError localizedDescription]);
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+    [self becomeFirstResponder];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
+    [self resignFirstResponder];
+    [super viewWillDisappear:animated];
 }
 
 - (void)viewDidUnload {
     [super viewDidUnload];
     
+    self.streamingAudioPlayer = nil;
     self.headerView = nil;
+    self.episodeButton = nil;
+}
+
+- (void)remoteControlReceivedWithEvent:(UIEvent *)event {
+    if (event.type == UIEventTypeRemoteControl) {
+        if (event.subtype == UIEventSubtypeRemoteControlPlay) {
+            [self play];
+        }
+        else if (event.subtype == UIEventSubtypeRemoteControlPause) {
+            [self pause];
+        } 
+        else if (event.subtype == UIEventSubtypeRemoteControlTogglePlayPause) {
+            [self toggle];
+        }
+    }  
+}
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -111,11 +167,28 @@
 
 #pragma mark - episode methods
 
+- (void)play {
+    [self.streamingAudioPlayer play];
+    [self.episodeButton setTitle:@"Pause Episode" forState:UIControlStateNormal];
+    [self setPlaying:YES];
+}
+
+- (void)pause {
+    [self.streamingAudioPlayer pause];
+    [self.episodeButton setTitle:@"Play Episode" forState:UIControlStateNormal];
+    [self setPlaying:NO];
+}
+
+- (void)toggle {
+    if ([self isPlaying]) {
+        [self pause];
+    } else {
+        [self play];
+    }
+}
+
 - (void)playEpisode {
-    MPMoviePlayerViewController *episodePlayer = [[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL URLWithString:self.movie.url]];
-    [episodePlayer.moviePlayer setAllowsAirPlay:YES];
-    [episodePlayer.moviePlayer setShouldAutoplay:YES];
-    [self.navigationController presentMoviePlayerViewControllerAnimated:episodePlayer];
+    [self toggle];
 }
 
 - (void)playTrailer {

@@ -35,6 +35,10 @@
 		A42E1B57155B71D300043EA7 /* JJBadMovieWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B56155B71D300043EA7 /* JJBadMovieWebViewController.m */; };
 		A48A99F6155B7C3500C66AAD /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = A48A99F4155B7C3500C66AAD /* Default.png */; };
 		A48A99F7155B7C3500C66AAD /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A48A99F5155B7C3500C66AAD /* Default@2x.png */; };
+		A4E1C06B155CA42800CDCD93 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4E1C06A155CA42800CDCD93 /* AudioToolbox.framework */; };
+		A4F48D79155C7EB8007B35F6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4F48D78155C7EB8007B35F6 /* AVFoundation.framework */; };
+		A4F48D8C155C91B5007B35F6 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A4F48D8A155C91B5007B35F6 /* Icon.png */; };
+		A4F48D8D155C91B5007B35F6 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4F48D8B155C91B5007B35F6 /* Icon@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +91,10 @@
 		A42E1B56155B71D300043EA7 /* JJBadMovieWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieWebViewController.m; sourceTree = "<group>"; };
 		A48A99F4155B7C3500C66AAD /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		A48A99F5155B7C3500C66AAD /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		A4E1C06A155CA42800CDCD93 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		A4F48D78155C7EB8007B35F6 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		A4F48D8A155C91B5007B35F6 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		A4F48D8B155C91B5007B35F6 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +102,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4E1C06B155CA42800CDCD93 /* AudioToolbox.framework in Frameworks */,
+				A4F48D79155C7EB8007B35F6 /* AVFoundation.framework in Frameworks */,
 				A42E1B54155B6AFA00043EA7 /* MediaPlayer.framework in Frameworks */,
 				A42E1B1B155B5E7200043EA7 /* SystemConfiguration.framework in Frameworks */,
 				A42E1B19155B5E6900043EA7 /* QuartzCore.framework in Frameworks */,
@@ -127,6 +137,8 @@
 		A42E1AF9155B5C7000043EA7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A4E1C06A155CA42800CDCD93 /* AudioToolbox.framework */,
+				A4F48D78155C7EB8007B35F6 /* AVFoundation.framework */,
 				A42E1B53155B6AFA00043EA7 /* MediaPlayer.framework */,
 				A42E1B1A155B5E7200043EA7 /* SystemConfiguration.framework */,
 				A42E1B18155B5E6900043EA7 /* QuartzCore.framework */,
@@ -242,6 +254,8 @@
 		A42E1B4E155B67D000043EA7 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A4F48D8A155C91B5007B35F6 /* Icon.png */,
+				A4F48D8B155C91B5007B35F6 /* Icon@2x.png */,
 				A48A99F4155B7C3500C66AAD /* Default.png */,
 				A48A99F5155B7C3500C66AAD /* Default@2x.png */,
 				A42E1B51155B680000043EA7 /* placeholder@2x.png */,
@@ -305,6 +319,8 @@
 				A42E1B52155B680000043EA7 /* placeholder@2x.png in Resources */,
 				A48A99F6155B7C3500C66AAD /* Default.png in Resources */,
 				A48A99F7155B7C3500C66AAD /* Default@2x.png in Resources */,
+				A4F48D8C155C91B5007B35F6 /* Icon.png in Resources */,
+				A4F48D8D155C91B5007B35F6 /* Icon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,14 +414,15 @@
 		A42E1B0F155B5C7000043EA7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Distribution: soda LLC";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: soda LLC";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Josh Johnson (4UH3R9P93N)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Josh Johnson (4UH3R9P93N)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BadMoviePodcastApp/BadMoviePodcastApp-Prefix.pch";
 				INFOPLIST_FILE = "BadMoviePodcastApp/BadMoviePodcastApp-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = badmovieapp;
-				PROVISIONING_PROFILE = "305F622E-FABA-474D-8366-2CC3FD7104C5";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "305F622E-FABA-474D-8366-2CC3FD7104C5";
+				PROVISIONING_PROFILE = "AEAEE20E-BC95-4BA8-9609-E2454361CB9B";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AEAEE20E-BC95-4BA8-9609-E2454361CB9B";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -418,6 +435,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BadMoviePodcastApp/BadMoviePodcastApp-Prefix.pch";
 				INFOPLIST_FILE = "BadMoviePodcastApp/BadMoviePodcastApp-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = badmovieapp;
 				PROVISIONING_PROFILE = "305F622E-FABA-474D-8366-2CC3FD7104C5";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "305F622E-FABA-474D-8366-2CC3FD7104C5";
