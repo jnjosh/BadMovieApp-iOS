@@ -109,6 +109,7 @@
     [self.view addSubview:imdbPage];
     
     self.streamingAudioPlayer = [AVPlayer playerWithURL:[NSURL URLWithString:self.movie.url]];
+    
     NSError *playbackError = nil;
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&playbackError];
     if (playbackError) {
