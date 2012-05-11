@@ -27,16 +27,12 @@
 
 #pragma mark - lifecycle
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    if (self = [super initWithStyle:style]) {
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [self.tableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.tableview.background.png"]]];
+    [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     
     self.title = @"Episodes";
     
@@ -96,6 +92,10 @@
 }
 
 #pragma mark - Table view delegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 60.0;
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
