@@ -23,7 +23,7 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = episodeNavigationController;
-    self.window.backgroundColor = [UIColor blackColor];
+    self.window.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.window.png"]];
     [self.window makeKeyAndVisible];
     return YES;
 }
