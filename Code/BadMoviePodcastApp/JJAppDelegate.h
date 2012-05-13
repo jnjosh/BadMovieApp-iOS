@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class JJBadMovieWindowController;
+
 @interface JJAppDelegate : UIResponder <UIApplicationDelegate>
 
-@property (strong, nonatomic) UIWindow *window;
+@property (nonatomic, strong) JJBadMovieWindowController *windowController;
 
 @end

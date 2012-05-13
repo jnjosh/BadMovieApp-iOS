@@ -12,6 +12,8 @@
 		A40959F2155ED766006DAA33 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A40959F1155ED766006DAA33 /* CoreImage.framework */; };
 		A40959FE155F3190006DAA33 /* ui.window@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A40959FD155F3190006DAA33 /* ui.window@2x.png */; };
 		A4095A00155F31D3006DAA33 /* ui.vignette@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A40959FF155F31D3006DAA33 /* ui.vignette@2x.png */; };
+		A4095A17155F358D006DAA33 /* JJBadMovieWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4095A16155F358D006DAA33 /* JJBadMovieWindowController.m */; };
+		A4095A1A155F35E7006DAA33 /* JJBadMoviePlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4095A19155F35E6006DAA33 /* JJBadMoviePlayerViewController.m */; };
 		A42E1AFB155B5C7000043EA7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A42E1AFA155B5C7000043EA7 /* UIKit.framework */; };
 		A42E1AFD155B5C7000043EA7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A42E1AFC155B5C7000043EA7 /* Foundation.framework */; };
 		A42E1AFF155B5C7000043EA7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A42E1AFE155B5C7000043EA7 /* CoreGraphics.framework */; };
@@ -51,6 +53,10 @@
 		A40959F1155ED766006DAA33 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		A40959FD155F3190006DAA33 /* ui.window@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.window@2x.png"; sourceTree = "<group>"; };
 		A40959FF155F31D3006DAA33 /* ui.vignette@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.vignette@2x.png"; sourceTree = "<group>"; };
+		A4095A15155F358D006DAA33 /* JJBadMovieWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieWindowController.h; sourceTree = "<group>"; };
+		A4095A16155F358D006DAA33 /* JJBadMovieWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieWindowController.m; sourceTree = "<group>"; };
+		A4095A18155F35E6006DAA33 /* JJBadMoviePlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMoviePlayerViewController.h; sourceTree = "<group>"; };
+		A4095A19155F35E6006DAA33 /* JJBadMoviePlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMoviePlayerViewController.m; sourceTree = "<group>"; };
 		A42E1AF6155B5C7000043EA7 /* badmovieapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = badmovieapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A42E1AFA155B5C7000043EA7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A42E1AFC155B5C7000043EA7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -202,6 +208,10 @@
 				A42E1B4C155B647600043EA7 /* JJBadMovieViewController.m */,
 				A42E1B55155B71D300043EA7 /* JJBadMovieWebViewController.h */,
 				A42E1B56155B71D300043EA7 /* JJBadMovieWebViewController.m */,
+				A4095A15155F358D006DAA33 /* JJBadMovieWindowController.h */,
+				A4095A16155F358D006DAA33 /* JJBadMovieWindowController.m */,
+				A4095A18155F35E6006DAA33 /* JJBadMoviePlayerViewController.h */,
+				A4095A19155F35E6006DAA33 /* JJBadMoviePlayerViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -365,6 +375,8 @@
 				A42E1B4A155B621500043EA7 /* JSONKit.m in Sources */,
 				A42E1B4D155B647600043EA7 /* JJBadMovieViewController.m in Sources */,
 				A42E1B57155B71D300043EA7 /* JJBadMovieWebViewController.m in Sources */,
+				A4095A17155F358D006DAA33 /* JJBadMovieWindowController.m in Sources */,
+				A4095A1A155F35E7006DAA33 /* JJBadMoviePlayerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

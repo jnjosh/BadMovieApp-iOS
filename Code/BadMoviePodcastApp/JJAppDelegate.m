@@ -7,24 +7,16 @@
 //
 
 #import "JJAppDelegate.h"
-#import "JJBadMovieEpisodesViewController.h"
+#import "JJBadMovieWindowController.h"
 
 @implementation JJAppDelegate
 
-@synthesize window = _window;
+@synthesize windowController = _windowController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    UIImage *image = [UIImage imageNamed:@"ui.navigationbar.background.png"];
-    [[UINavigationBar appearance] setBackgroundImage:image forBarMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTintColor:[UIColor blackColor]];
-
-    UINavigationController *episodeNavigationController = [[UINavigationController alloc] initWithRootViewController:[[JJBadMovieEpisodesViewController alloc] initWithStyle:UITableViewStylePlain]];
-    
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = episodeNavigationController;
-    self.window.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.window.png"]];
-    [self.window makeKeyAndVisible];
+    self.windowController = [[JJBadMovieWindowController alloc] init];
+    [self.windowController.window makeKeyAndVisible];
     return YES;
 }
 
