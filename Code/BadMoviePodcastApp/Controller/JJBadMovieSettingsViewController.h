@@ -1,5 +1,5 @@
 //
-//  JJBadMoviePlayerViewController.h
+//  JJBadMovieSettingsViewController.h
 //  BadMoviePodcastApp
 //
 //  Created by Joshua Johnson on 5/12/12.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface JJBadMoviePlayerViewController : UIViewController
-
-@property (nonatomic, strong) id currentEpisode;
+@interface JJBadMovieSettingsViewController : UITableViewController
 
 @end

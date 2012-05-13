@@ -7,6 +7,7 @@
 //
 
 #import "JJBadMovieEpisodesViewController.h"
+#import "JJBadMovieSettingsViewController.h"
 #import "JJBadMovieEnvironment.h"
 #import "JJBadMovie.h"
 #import "JJBadMovieViewController.h"
@@ -16,6 +17,7 @@
 @interface JJBadMovieEpisodesViewController ()
 
 @property (nonatomic, strong) NSArray *episodes;
+- (void)showSettings;
 
 @end
 
@@ -33,9 +35,13 @@
     
     [self.tableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.tableview.background.png"]]];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    [self.tableView setShowsVerticalScrollIndicator:NO];
 
     UIImageView *titleImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.navigationbar.title.png"]];
     [self.navigationItem setTitleView:titleImage];
+    
+    UIBarButtonItem *settingsGear = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ui.button.settings.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(showSettings)];
+    [self.navigationItem setLeftBarButtonItem:settingsGear];
     
     NSURL *episodeURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/episodes", kJJBadMovieAPIURLRoot]];
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:episodeURL];
@@ -64,6 +70,16 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+#pragma mark - methods
+
+- (void)showSettings {
+
+    JJBadMovieSettingsViewController *settingsView = [[JJBadMovieSettingsViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    UINavigationController *settingsNavigation = [[UINavigationController alloc] initWithRootViewController:settingsView];
+
+    [self presentModalViewController:settingsNavigation animated:YES];
 }
 
 #pragma mark - Table view data source

@@ -132,6 +132,7 @@
                                      artwork, MPMediaItemPropertyArtwork,
                                      kJJBadMovieGenre, MPMediaItemPropertyGenre,
                                      self.movie.name, MPMediaItemPropertyTitle,
+                                     self.movie.name, MPMediaItemPropertyPodcastTitle,
                                      nil];
     [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:mediaDictionary];
 }

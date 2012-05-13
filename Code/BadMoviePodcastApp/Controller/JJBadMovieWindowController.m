@@ -30,6 +30,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 
 #pragma mark - synth
 
+
 @synthesize downView = _downView, vignetteView = _vignetteView;
 @synthesize navigationController = _navigationController, playerController = _playerController, window = _window;
 
@@ -54,8 +55,10 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 #pragma mark - navigation controller delegate
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    UIBarButtonItem *settingsItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(presentAudioPlayer)];
-    [viewController.navigationItem setRightBarButtonItem:settingsItem animated:NO];
+//    if (self.playerController.currentEpisode) {
+        UIBarButtonItem *settingsItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(presentAudioPlayer)];
+        [viewController.navigationItem setRightBarButtonItem:settingsItem animated:NO];
+//    }
 }
 
 #pragma mark - presentation methods
@@ -120,7 +123,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 
 + (void)configureAppearance {
     [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"ui.navigationbar.background.png"] forBarMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTintColor:[UIColor blackColor]];
+    [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTintColor:[UIColor colorWithRed:89/255.0 green:0.0 blue:0.0 alpha:1.0]];
 }
 
 @end
