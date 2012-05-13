@@ -202,14 +202,14 @@
 		A42E1B17155B5D7A00043EA7 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				A4095A15155F358D006DAA33 /* JJBadMovieWindowController.h */,
+				A4095A16155F358D006DAA33 /* JJBadMovieWindowController.m */,
 				A42E1B41155B603400043EA7 /* JJBadMovieEpisodesViewController.h */,
 				A42E1B42155B603400043EA7 /* JJBadMovieEpisodesViewController.m */,
 				A42E1B4B155B647600043EA7 /* JJBadMovieViewController.h */,
 				A42E1B4C155B647600043EA7 /* JJBadMovieViewController.m */,
 				A42E1B55155B71D300043EA7 /* JJBadMovieWebViewController.h */,
 				A42E1B56155B71D300043EA7 /* JJBadMovieWebViewController.m */,
-				A4095A15155F358D006DAA33 /* JJBadMovieWindowController.h */,
-				A4095A16155F358D006DAA33 /* JJBadMovieWindowController.m */,
 				A4095A18155F35E6006DAA33 /* JJBadMoviePlayerViewController.h */,
 				A4095A19155F35E6006DAA33 /* JJBadMoviePlayerViewController.m */,
 			);

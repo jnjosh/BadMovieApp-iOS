@@ -10,12 +10,14 @@
 
 @class JJBadMoviePlayerViewController;
 
-@interface JJBadMovieWindowController : NSObject
+@interface JJBadMovieWindowController : NSObject <UINavigationControllerDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
 @property (nonatomic, strong) UINavigationController *navigationController;
 @property (nonatomic, strong) JJBadMoviePlayerViewController *playerController;
 
 + (void)configureAppearance;
+- (void)presentAudioPlayer;
+- (void)hideAudioPlayer;
 
 @end

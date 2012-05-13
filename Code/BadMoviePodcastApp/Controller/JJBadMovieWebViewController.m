@@ -81,8 +81,7 @@
     self.activityIndicator.center = self.view.center;
     [self.activityIndicator startAnimating];
     
-    if ([self isYoutube]) {
-    } else {
+    if (! [self isYoutube]) {
         NSURLRequest *imdbURL = [NSURLRequest requestWithURL:[NSURL URLWithString:self.webURL]];
         [self.webview loadRequest:imdbURL];
     }
