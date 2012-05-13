@@ -9,3 +9,7 @@
 #import "JJBadMovieEnvironment.h"
 
 NSString * const kJJBadMovieAPIURLRoot = @"http://api.badmovieapp.com";
+
+NSString * const kJJBadMovieArtistName = @"Jim and Josh";
+NSString * const kJJBadMovieAlbumTitle = @"Bad Movie Podcast";
+NSString * const kJJBadMovieGenre = @"Podcast";

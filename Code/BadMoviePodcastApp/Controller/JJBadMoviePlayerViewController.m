@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 jnjosh.com. All rights reserved.
 //
 
+#import <MediaPlayer/MediaPlayer.h>
+#import <AVFoundation/AVFoundation.h>
 #import "JJBadMoviePlayerViewController.h"
 
 @interface JJBadMoviePlayerViewController ()
@@ -38,6 +40,10 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (BOOL)canBecomeFirstResponder {
+    return YES;
 }
 
 @end

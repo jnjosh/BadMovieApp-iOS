@@ -8,10 +8,12 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import <AudioToolbox/AudioToolbox.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 #import "JJBadMovieViewController.h"
 #import "JJBadMovieWebViewController.h"
 #import "JJBadMovie.h"
+#import "JJBadMovieEnvironment.h"
 #import "UIImageView+AFNetworking.h"
 
 @interface JJBadMovieViewController ()
@@ -121,6 +123,17 @@
     if (activationError) {
         NSLog(@"%@", [activationError localizedDescription]);
     }
+    
+    MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithImage:episodeImageView.image];
+    NSDictionary *mediaDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                                     kJJBadMovieAlbumTitle, MPMediaItemPropertyAlbumTitle,
+                                     self.movie.number, MPMediaItemPropertyAlbumTrackNumber,
+                                     kJJBadMovieArtistName, MPMediaItemPropertyArtist,
+                                     artwork, MPMediaItemPropertyArtwork,
+                                     kJJBadMovieGenre, MPMediaItemPropertyGenre,
+                                     self.movie.name, MPMediaItemPropertyTitle,
+                                     nil];
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:mediaDictionary];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

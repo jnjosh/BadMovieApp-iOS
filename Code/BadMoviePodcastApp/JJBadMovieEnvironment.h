@@ -9,3 +9,7 @@
 #import <Foundation/Foundation.h>
 
 extern NSString * const kJJBadMovieAPIURLRoot;
+
+extern NSString * const kJJBadMovieArtistName;
+extern NSString * const kJJBadMovieAlbumTitle;
+extern NSString * const kJJBadMovieGenre;
