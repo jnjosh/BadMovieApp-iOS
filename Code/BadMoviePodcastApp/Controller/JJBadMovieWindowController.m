@@ -75,7 +75,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
     
     self.vignetteView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.vignette.png"]];
     [self.vignetteView setContentMode:UIViewContentModeScaleAspectFill];
-    [self.vignetteView setFrame:(CGRect){{0, 19},imageView.frame.size}];
+    [self.vignetteView setFrame:(CGRect){{0, 20},imageView.frame.size}];
     [self.vignetteView setAlpha:0.0];
     [self.downView addSubview:self.vignetteView];
     

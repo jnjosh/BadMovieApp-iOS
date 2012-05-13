@@ -101,9 +101,18 @@
     if (! cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+        
+        [cell.textLabel setTextColor:[UIColor darkGrayColor]];
+        [cell.textLabel setShadowColor:[UIColor whiteColor]];
+        [cell.textLabel setShadowOffset:(CGSize){0, 1}];
+        [cell.detailTextLabel setNumberOfLines:2];
+        [cell.detailTextLabel setFont:[UIFont systemFontOfSize:12]];
+        
+        [cell.imageView setFrame:(CGRect){cell.imageView.frame.origin, { 60, 60 }}];
     }
     JJBadMovie *movie = [self.episodes objectAtIndex:indexPath.row];
-    [cell.textLabel setText:[NSString stringWithFormat:@"#%i - %@", [movie.number integerValue], movie.name]];
+    [cell.textLabel setText:movie.name];
+    [cell.detailTextLabel setText:movie.descriptionText];
     [cell.imageView setImageWithURL:[NSURL URLWithString:movie.photo] placeholderImage:[UIImage imageNamed:@"placeholder.png"]];
     return cell;
 }
@@ -111,7 +120,7 @@
 #pragma mark - Table view delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 60.0;
+    return 75.0;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
