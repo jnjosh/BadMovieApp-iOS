@@ -44,6 +44,7 @@
 		A46D526B155F5BFD00BC1CE5 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A46D5269155F5BFC00BC1CE5 /* Default@2x.png */; };
 		A46D5271155F5E0E00BC1CE5 /* JJBadMovieSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A46D5270155F5E0D00BC1CE5 /* JJBadMovieSettingsViewController.m */; };
 		A46D5273155F7B4400BC1CE5 /* ui.navigationbar.title@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A46D5272155F7B4300BC1CE5 /* ui.navigationbar.title@2x.png */; };
+		A46D527A155F800A00BC1CE5 /* JJBadMovieEpisodeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A46D5279155F800A00BC1CE5 /* JJBadMovieEpisodeCell.m */; };
 		A4E1C06B155CA42800CDCD93 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4E1C06A155CA42800CDCD93 /* AudioToolbox.framework */; };
 		A4E1C073155CAF3F00CDCD93 /* ui.tableview.background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4E1C072155CAF3F00CDCD93 /* ui.tableview.background@2x.png */; };
 		A4F48D79155C7EB8007B35F6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4F48D78155C7EB8007B35F6 /* AVFoundation.framework */; };
@@ -113,6 +114,8 @@
 		A46D526F155F5E0D00BC1CE5 /* JJBadMovieSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieSettingsViewController.h; sourceTree = "<group>"; };
 		A46D5270155F5E0D00BC1CE5 /* JJBadMovieSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieSettingsViewController.m; sourceTree = "<group>"; };
 		A46D5272155F7B4300BC1CE5 /* ui.navigationbar.title@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.navigationbar.title@2x.png"; sourceTree = "<group>"; };
+		A46D5278155F800A00BC1CE5 /* JJBadMovieEpisodeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieEpisodeCell.h; sourceTree = "<group>"; };
+		A46D5279155F800A00BC1CE5 /* JJBadMovieEpisodeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieEpisodeCell.m; sourceTree = "<group>"; };
 		A4E1C06A155CA42800CDCD93 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		A4E1C072155CAF3F00CDCD93 /* ui.tableview.background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.tableview.background@2x.png"; sourceTree = "<group>"; };
 		A4F48D78155C7EB8007B35F6 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -180,6 +183,7 @@
 				A42E1B16155B5D6700043EA7 /* Application */,
 				A42E1B1C155B5E8700043EA7 /* Model */,
 				A42E1B17155B5D7A00043EA7 /* Controller */,
+				A46D5277155F7FDA00BC1CE5 /* View */,
 			);
 			path = BadMoviePodcastApp;
 			sourceTree = "<group>";
@@ -300,6 +304,15 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		A46D5277155F7FDA00BC1CE5 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				A46D5278155F800A00BC1CE5 /* JJBadMovieEpisodeCell.h */,
+				A46D5279155F800A00BC1CE5 /* JJBadMovieEpisodeCell.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -395,6 +408,7 @@
 				A4095A17155F358D006DAA33 /* JJBadMovieWindowController.m in Sources */,
 				A4095A1A155F35E7006DAA33 /* JJBadMoviePlayerViewController.m in Sources */,
 				A46D5271155F5E0E00BC1CE5 /* JJBadMovieSettingsViewController.m in Sources */,
+				A46D527A155F800A00BC1CE5 /* JJBadMovieEpisodeCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

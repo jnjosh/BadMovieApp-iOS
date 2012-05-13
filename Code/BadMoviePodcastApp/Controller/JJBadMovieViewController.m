@@ -124,12 +124,12 @@
         NSLog(@"%@", [activationError localizedDescription]);
     }
     
-    MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithImage:episodeImageView.image];
+//    MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithImage:episodeImageView.image];
     NSDictionary *mediaDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
                                      kJJBadMovieAlbumTitle, MPMediaItemPropertyAlbumTitle,
                                      self.movie.number, MPMediaItemPropertyAlbumTrackNumber,
                                      kJJBadMovieArtistName, MPMediaItemPropertyArtist,
-                                     artwork, MPMediaItemPropertyArtwork,
+//                                     artwork, MPMediaItemPropertyArtwork,
                                      kJJBadMovieGenre, MPMediaItemPropertyGenre,
                                      self.movie.name, MPMediaItemPropertyTitle,
                                      self.movie.name, MPMediaItemPropertyPodcastTitle,

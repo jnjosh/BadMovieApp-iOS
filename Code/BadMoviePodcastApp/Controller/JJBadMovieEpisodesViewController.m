@@ -11,6 +11,7 @@
 #import "JJBadMovieEnvironment.h"
 #import "JJBadMovie.h"
 #import "JJBadMovieViewController.h"
+#import "JJBadMovieEpisodeCell.h"
 #import "AFJSONRequestOperation.h"
 #import "UIImageView+AFNetworking.h"
 
@@ -97,23 +98,26 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"BadMovieCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    JJBadMovieEpisodeCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (! cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell = [[JJBadMovieEpisodeCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
         
-        [cell.textLabel setTextColor:[UIColor darkGrayColor]];
-        [cell.textLabel setShadowColor:[UIColor whiteColor]];
-        [cell.textLabel setShadowOffset:(CGSize){0, 1}];
-        [cell.detailTextLabel setNumberOfLines:2];
-        [cell.detailTextLabel setFont:[UIFont systemFontOfSize:12]];
+//        [cell.textLabel setTextColor:[UIColor darkGrayColor]];
+//        [cell.textLabel setShadowColor:[UIColor whiteColor]];
+//        [cell.textLabel setShadowOffset:(CGSize){0, 1}];
+//
+//        [cell.detailTextLabel setNumberOfLines:2];
+//        [cell.detailTextLabel setFont:[UIFont systemFontOfSize:12]];
         
-        [cell.imageView setFrame:(CGRect){cell.imageView.frame.origin, { 60, 60 }}];
     }
     JJBadMovie *movie = [self.episodes objectAtIndex:indexPath.row];
-    [cell.textLabel setText:movie.name];
-    [cell.detailTextLabel setText:movie.descriptionText];
-    [cell.imageView setImageWithURL:[NSURL URLWithString:movie.photo] placeholderImage:[UIImage imageNamed:@"placeholder.png"]];
+    [cell setEpisode:movie];
+    
+//    [cell.textLabel setText:movie.name];
+//    [cell.detailTextLabel setText:movie.descriptionText];
+//    [cell.imageView setImageWithURL:[NSURL URLWithString:movie.photo] placeholderImage:[UIImage imageNamed:@"placeholder.png"]];
     return cell;
 }
 
