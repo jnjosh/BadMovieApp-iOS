@@ -115,6 +115,7 @@
 
 - (void)playEpisode {
     [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationBeginPlayingEpisode object:self.movie];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self];
 }
 
 - (void)playTrailer {

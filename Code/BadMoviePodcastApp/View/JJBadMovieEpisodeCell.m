@@ -53,8 +53,22 @@ static UIColor *jj_selectedTextColor = nil;
         shadowSize = (CGSize){0, 1};
     }
     
+    CGRect titleRect = rect;
+    titleRect.origin.x += 10;
+    titleRect.origin.y += 10;
+    titleRect.size.width -= 40;
+    titleRect.size.height = 20;
     CGContextSetShadowWithColor(context, shadowSize, 0.0, shadowColorRef);
-    [[self.episode name] drawInRect:rect withFont:[UIFont boldSystemFontOfSize:16]];
+    [[self.episode name] drawInRect:titleRect withFont:[UIFont boldSystemFontOfSize:17.0f] lineBreakMode:UILineBreakModeTailTruncation];
+
+    CGRect descRect = rect;
+    descRect.origin.x += 10;
+    descRect.origin.y += 32;
+    descRect.size.width -= 40;
+    descRect.size.height = 38;
+    [[UIColor lightGrayColor] set];
+    [[self.episode descriptionText] drawInRect:descRect withFont:[UIFont systemFontOfSize:11.0f] lineBreakMode:UILineBreakModeWordWrap];
+    
 }
 
 #pragma mark - properties

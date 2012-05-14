@@ -11,6 +11,7 @@
 NSString * const kJJBadMovieAPIURLRoot = @"http://api.badmovieapp.com";
 
 NSString * const kJJBadMovieNotificationBeginPlayingEpisode = @"com.jnjosh.notifications.beginPlayingEpisode";
+NSString * const kJJBadMovieNotificationShowPlayerControl = @"com.jnjosh.notification.showPlayerControl";
 
 NSString * const kJJBadMovieArtistName = @"Jim and Josh";
 NSString * const kJJBadMovieAlbumTitle = @"Bad Movie Podcast";

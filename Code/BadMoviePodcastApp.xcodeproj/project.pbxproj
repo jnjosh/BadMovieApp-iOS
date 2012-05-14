@@ -41,7 +41,6 @@
 		A46D525A155F4DE200BC1CE5 /* ui.button.settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A46D5259155F4DE200BC1CE5 /* ui.button.settings@2x.png */; };
 		A46D5265155F560100BC1CE5 /* ui.navigationbar.background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A46D5264155F560100BC1CE5 /* ui.navigationbar.background@2x.png */; };
 		A46D526A155F5BFD00BC1CE5 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = A46D5268155F5BFC00BC1CE5 /* Default.png */; };
-		A46D526B155F5BFD00BC1CE5 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A46D5269155F5BFC00BC1CE5 /* Default@2x.png */; };
 		A46D5271155F5E0E00BC1CE5 /* JJBadMovieSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A46D5270155F5E0D00BC1CE5 /* JJBadMovieSettingsViewController.m */; };
 		A46D5273155F7B4400BC1CE5 /* ui.navigationbar.title@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A46D5272155F7B4300BC1CE5 /* ui.navigationbar.title@2x.png */; };
 		A46D527A155F800A00BC1CE5 /* JJBadMovieEpisodeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A46D5279155F800A00BC1CE5 /* JJBadMovieEpisodeCell.m */; };
@@ -49,6 +48,7 @@
 		A4CD774D1560AE2400F11AF8 /* ui.buttons.play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4CD774B1560AE2400F11AF8 /* ui.buttons.play@2x.png */; };
 		A4CD77501560B26300F11AF8 /* ui.buttons.skip.back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4CD774E1560B26300F11AF8 /* ui.buttons.skip.back@2x.png */; };
 		A4CD77511560B26300F11AF8 /* ui.buttons.skip.forward@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4CD774F1560B26300F11AF8 /* ui.buttons.skip.forward@2x.png */; };
+		A4CD77551560C1AB00F11AF8 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4CD77541560C1AB00F11AF8 /* Default@2x.png */; };
 		A4E1C06B155CA42800CDCD93 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4E1C06A155CA42800CDCD93 /* AudioToolbox.framework */; };
 		A4E1C073155CAF3F00CDCD93 /* ui.tableview.background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4E1C072155CAF3F00CDCD93 /* ui.tableview.background@2x.png */; };
 		A4F48D79155C7EB8007B35F6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4F48D78155C7EB8007B35F6 /* AVFoundation.framework */; };
@@ -114,7 +114,6 @@
 		A46D5259155F4DE200BC1CE5 /* ui.button.settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.button.settings@2x.png"; sourceTree = "<group>"; };
 		A46D5264155F560100BC1CE5 /* ui.navigationbar.background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.navigationbar.background@2x.png"; sourceTree = "<group>"; };
 		A46D5268155F5BFC00BC1CE5 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		A46D5269155F5BFC00BC1CE5 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		A46D526F155F5E0D00BC1CE5 /* JJBadMovieSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieSettingsViewController.h; sourceTree = "<group>"; };
 		A46D5270155F5E0D00BC1CE5 /* JJBadMovieSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieSettingsViewController.m; sourceTree = "<group>"; };
 		A46D5272155F7B4300BC1CE5 /* ui.navigationbar.title@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.navigationbar.title@2x.png"; sourceTree = "<group>"; };
@@ -124,6 +123,7 @@
 		A4CD774B1560AE2400F11AF8 /* ui.buttons.play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.play@2x.png"; sourceTree = "<group>"; };
 		A4CD774E1560B26300F11AF8 /* ui.buttons.skip.back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.skip.back@2x.png"; sourceTree = "<group>"; };
 		A4CD774F1560B26300F11AF8 /* ui.buttons.skip.forward@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.skip.forward@2x.png"; sourceTree = "<group>"; };
+		A4CD77541560C1AB00F11AF8 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		A4E1C06A155CA42800CDCD93 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		A4E1C072155CAF3F00CDCD93 /* ui.tableview.background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.tableview.background@2x.png"; sourceTree = "<group>"; };
 		A4F48D78155C7EB8007B35F6 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -297,6 +297,7 @@
 		A42E1B4E155B67D000043EA7 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A4CD77541560C1AB00F11AF8 /* Default@2x.png */,
 				A4CD774A1560AE2400F11AF8 /* ui.buttons.pause@2x.png */,
 				A4CD774B1560AE2400F11AF8 /* ui.buttons.play@2x.png */,
 				A4CD774E1560B26300F11AF8 /* ui.buttons.skip.back@2x.png */,
@@ -310,7 +311,6 @@
 				A4F48D8A155C91B5007B35F6 /* Icon.png */,
 				A4F48D8B155C91B5007B35F6 /* Icon@2x.png */,
 				A46D5268155F5BFC00BC1CE5 /* Default.png */,
-				A46D5269155F5BFC00BC1CE5 /* Default@2x.png */,
 				A42E1B51155B680000043EA7 /* placeholder@2x.png */,
 			);
 			path = Resources;
@@ -387,12 +387,12 @@
 				A46D525A155F4DE200BC1CE5 /* ui.button.settings@2x.png in Resources */,
 				A46D5265155F560100BC1CE5 /* ui.navigationbar.background@2x.png in Resources */,
 				A46D526A155F5BFD00BC1CE5 /* Default.png in Resources */,
-				A46D526B155F5BFD00BC1CE5 /* Default@2x.png in Resources */,
 				A46D5273155F7B4400BC1CE5 /* ui.navigationbar.title@2x.png in Resources */,
 				A4CD774C1560AE2400F11AF8 /* ui.buttons.pause@2x.png in Resources */,
 				A4CD774D1560AE2400F11AF8 /* ui.buttons.play@2x.png in Resources */,
 				A4CD77501560B26300F11AF8 /* ui.buttons.skip.back@2x.png in Resources */,
 				A4CD77511560B26300F11AF8 /* ui.buttons.skip.forward@2x.png in Resources */,
+				A4CD77551560C1AB00F11AF8 /* Default@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,6 +7,7 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
+#import "JJBadMovieEnvironment.h"
 #import "JJBadMovieWindowController.h"
 #import "JJBadMoviePlayerViewController.h"
 #import "JJBadMovieEpisodesViewController.h"
@@ -23,13 +24,15 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 
 - (CGImageRef)imageFromLayer:(CALayer *)layer size:(CGSize)size;
 
+- (void)showPlayerControl:(NSNotification *)note;
+- (void)presentPlayerControlBarButtonItemForViewController:(UIViewController *)viewController;
+
 @end
 
 
 @implementation JJBadMovieWindowController
 
 #pragma mark - synth
-
 
 @synthesize downView = _downView, vignetteView = _vignetteView;
 @synthesize navigationController = _navigationController, playerController = _playerController, window = _window;
@@ -50,17 +53,35 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         _playerController = [[JJBadMoviePlayerViewController alloc] initWithNibName:nil bundle:nil];
         [_playerController.view setBackgroundColor:[UIColor clearColor]];
         [_window addSubview:_playerController.view];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showPlayerControl:) name:kJJBadMovieNotificationShowPlayerControl object:nil];
     }
     return self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - navigation controller delegate
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-//    if (self.playerController.currentEpisode) {
+    [self presentPlayerControlBarButtonItemForViewController:viewController];
+}
+
+#pragma mark - player control
+
+- (void)showPlayerControl:(NSNotification *)note {
+    if ([note object]) {
+        [self presentPlayerControlBarButtonItemForViewController:[note object]];
+    }
+}
+
+- (void)presentPlayerControlBarButtonItemForViewController:(UIViewController *)viewController {
+    if (self.playerController.currentEpisode) {
         UIBarButtonItem *settingsItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(presentAudioPlayer)];
         [viewController.navigationItem setRightBarButtonItem:settingsItem animated:NO];
-//    }
+    }
 }
 
 #pragma mark - presentation methods
