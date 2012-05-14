@@ -21,20 +21,39 @@ static UIColor *jj_selectedTextColor = nil;
 #pragma mark - class
 
 + (void)initialize {
-    if (! jj_textColor) {
+    if (! jj_textColor && self == [JJBadMovieEpisodeCell class]) {
         jj_textColor = [UIColor darkGrayColor];
         jj_selectedTextColor = [UIColor whiteColor];
     }
 }
 
+#pragma mark - lifecycle
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
+        [self setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+        [self setSelectionStyle:UITableViewCellSelectionStyleNone];
+    }
+    return self;
+}
+
 #pragma mark - draw
 
 - (void)drawRect:(CGRect)rect {
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGColorRef shadowColorRef;
+    CGSize shadowSize;
+    
+    [jj_textColor set];
     if ([self isSelected] || [self isHighlighted]) {
-        [jj_selectedTextColor set];
+        shadowColorRef = jj_textColor.CGColor;
+        shadowSize = (CGSize){0, 0};
     } else {
-        [jj_textColor set];
+        shadowColorRef = jj_selectedTextColor.CGColor;
+        shadowSize = (CGSize){0, 1};
     }
+    
+    CGContextSetShadowWithColor(context, shadowSize, 0.0, shadowColorRef);
     [[self.episode name] drawInRect:rect withFont:[UIFont boldSystemFontOfSize:16]];
 }
 

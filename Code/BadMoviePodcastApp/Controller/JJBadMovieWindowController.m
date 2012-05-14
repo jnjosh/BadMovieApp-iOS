@@ -43,11 +43,13 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         [_navigationController setDelegate:self];
         [_navigationController.view setBackgroundColor:[UIColor clearColor]];
 
-        _playerController = [[JJBadMoviePlayerViewController alloc] initWithNibName:nil bundle:nil];
-        
         _window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         _window.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.window.png"]];
         _window.rootViewController = _navigationController;
+        
+        _playerController = [[JJBadMoviePlayerViewController alloc] initWithNibName:nil bundle:nil];
+        [_playerController.view setBackgroundColor:[UIColor clearColor]];
+        [_window addSubview:_playerController.view];
     }
     return self;
 }
@@ -91,12 +93,12 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         rotationAndPerspectiveTransform.m34 = 1.0 / -600.0;
         rotationAndPerspectiveTransform = CATransform3DRotate(rotationAndPerspectiveTransform, degreesToRadian(40.0), 1.0f, 0.0f, 0.0f);
         
-        CATransform3D moveTranslation = CATransform3DMakeTranslation(0, 120.0f, 0);
+        CATransform3D moveTranslation = CATransform3DMakeTranslation(0, 120.0f, -40.0f);
         CATransform3D imageMatrix = CATransform3DConcat(moveTranslation, rotationAndPerspectiveTransform);
         
         [UIView animateWithDuration:0.25 animations:^{
             self.downView.layer.transform = imageMatrix;
-            [self.vignetteView setAlpha:0.7];
+            [self.vignetteView setAlpha:0.8];
         }];
     }];   
 }

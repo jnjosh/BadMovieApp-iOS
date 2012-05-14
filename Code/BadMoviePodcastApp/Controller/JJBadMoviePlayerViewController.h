@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class JJBadMovie;
+
 @interface JJBadMoviePlayerViewController : UIViewController
 
-@property (nonatomic, strong) id currentEpisode;
+@property (nonatomic, strong) JJBadMovie *currentEpisode;
 
 @end

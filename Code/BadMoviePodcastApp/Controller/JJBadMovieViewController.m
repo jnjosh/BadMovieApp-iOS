@@ -6,10 +6,6 @@
 //  Copyright (c) 2012 jnjosh.com. All rights reserved.
 //
 
-#import <AVFoundation/AVFoundation.h>
-#import <AudioToolbox/AudioToolbox.h>
-#import <MediaPlayer/MediaPlayer.h>
-
 #import "JJBadMovieViewController.h"
 #import "JJBadMovieWebViewController.h"
 #import "JJBadMovie.h"
@@ -22,13 +18,6 @@
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) UIButton *episodeButton;
 
-@property (nonatomic, strong) AVPlayer *streamingAudioPlayer;
-@property (nonatomic, assign, getter = isPlaying) BOOL playing;
-
-- (void)play;
-- (void)pause;
-- (void)toggle;
-
 - (void)playEpisode;
 - (void)playTrailer;
 - (void)showMovieInfo;
@@ -39,9 +28,8 @@
 
 #pragma mark - synth
 
-@synthesize movie = _movie, streamingAudioPlayer = _streamingAudioPlayer;
+@synthesize movie = _movie;
 @synthesize headerView = _headerView;
-@synthesize playing = _playing;
 @synthesize episodeButton = _episodeButton;
 
 #pragma mark - lifecycle
@@ -109,70 +97,13 @@
     [imdbPage setTitle:@"IMDb" forState:UIControlStateNormal];
     [imdbPage addTarget:self action:@selector(showMovieInfo) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:imdbPage];
-    
-    self.streamingAudioPlayer = [AVPlayer playerWithURL:[NSURL URLWithString:self.movie.url]];
-    
-    NSError *playbackError = nil;
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&playbackError];
-    if (playbackError) {
-        NSLog(@"%@", [playbackError localizedDescription]);
-    }
-    
-    NSError *activationError = nil;
-    [[AVAudioSession sharedInstance] setActive:YES error:&activationError];
-    if (activationError) {
-        NSLog(@"%@", [activationError localizedDescription]);
-    }
-    
-//    MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithImage:episodeImageView.image];
-    NSDictionary *mediaDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                     kJJBadMovieAlbumTitle, MPMediaItemPropertyAlbumTitle,
-                                     self.movie.number, MPMediaItemPropertyAlbumTrackNumber,
-                                     kJJBadMovieArtistName, MPMediaItemPropertyArtist,
-//                                     artwork, MPMediaItemPropertyArtwork,
-                                     kJJBadMovieGenre, MPMediaItemPropertyGenre,
-                                     self.movie.name, MPMediaItemPropertyTitle,
-                                     self.movie.name, MPMediaItemPropertyPodcastTitle,
-                                     nil];
-    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:mediaDictionary];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
-    [self becomeFirstResponder];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
-    [self resignFirstResponder];
-    [super viewWillDisappear:animated];
 }
 
 - (void)viewDidUnload {
     [super viewDidUnload];
     
-    self.streamingAudioPlayer = nil;
     self.headerView = nil;
     self.episodeButton = nil;
-}
-
-- (void)remoteControlReceivedWithEvent:(UIEvent *)event {
-    if (event.type == UIEventTypeRemoteControl) {
-        if (event.subtype == UIEventSubtypeRemoteControlPlay) {
-            [self play];
-        }
-        else if (event.subtype == UIEventSubtypeRemoteControlPause) {
-            [self pause];
-        } 
-        else if (event.subtype == UIEventSubtypeRemoteControlTogglePlayPause) {
-            [self toggle];
-        }
-    }  
-}
-
-- (BOOL)canBecomeFirstResponder {
-    return YES;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -182,28 +113,8 @@
 
 #pragma mark - episode methods
 
-- (void)play {
-    [self.streamingAudioPlayer play];
-    [self.episodeButton setTitle:@"Pause Episode" forState:UIControlStateNormal];
-    [self setPlaying:YES];
-}
-
-- (void)pause {
-    [self.streamingAudioPlayer pause];
-    [self.episodeButton setTitle:@"Play Episode" forState:UIControlStateNormal];
-    [self setPlaying:NO];
-}
-
-- (void)toggle {
-    if ([self isPlaying]) {
-        [self pause];
-    } else {
-        [self play];
-    }
-}
-
 - (void)playEpisode {
-    [self toggle];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationBeginPlayingEpisode object:self.movie];
 }
 
 - (void)playTrailer {

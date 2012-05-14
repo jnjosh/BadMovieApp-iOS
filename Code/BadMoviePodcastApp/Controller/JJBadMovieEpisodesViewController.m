@@ -15,6 +15,8 @@
 #import "AFJSONRequestOperation.h"
 #import "UIImageView+AFNetworking.h"
 
+static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
+
 @interface JJBadMovieEpisodesViewController ()
 
 @property (nonatomic, strong) NSArray *episodes;
@@ -97,27 +99,12 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"BadMovieCell";
-    JJBadMovieEpisodeCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    JJBadMovieEpisodeCell *cell = [tableView dequeueReusableCellWithIdentifier:jj_episodeCellIdentifier];
     if (! cell) {
-        cell = [[JJBadMovieEpisodeCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
-        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-        
-//        [cell.textLabel setTextColor:[UIColor darkGrayColor]];
-//        [cell.textLabel setShadowColor:[UIColor whiteColor]];
-//        [cell.textLabel setShadowOffset:(CGSize){0, 1}];
-//
-//        [cell.detailTextLabel setNumberOfLines:2];
-//        [cell.detailTextLabel setFont:[UIFont systemFontOfSize:12]];
-        
+        cell = [[JJBadMovieEpisodeCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:jj_episodeCellIdentifier];
     }
     JJBadMovie *movie = [self.episodes objectAtIndex:indexPath.row];
     [cell setEpisode:movie];
-    
-//    [cell.textLabel setText:movie.name];
-//    [cell.detailTextLabel setText:movie.descriptionText];
-//    [cell.imageView setImageWithURL:[NSURL URLWithString:movie.photo] placeholderImage:[UIImage imageNamed:@"placeholder.png"]];
     return cell;
 }
 
