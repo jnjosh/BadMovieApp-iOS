@@ -4,3 +4,6 @@
 [submodule "Code/Libraries/JSONKit"]
 	path = Code/Libraries/JSONKit
 	url = git://github.com/johnezang/JSONKit.git
+[submodule "Code/Libraries/SDURLCache"]
+	path = Code/Libraries/SDURLCache
+	url = git://github.com/rs/SDURLCache.git

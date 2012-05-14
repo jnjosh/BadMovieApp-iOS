@@ -35,17 +35,22 @@ episodes = [
 
 set :public_folder, File.dirname(__FILE__) + '/static'
 
+before do
+  cache_control :public, :must_revalidate, :max_age => 60
+end
+
 get '/' do
 	redirect "/episodes"
 end
 
 get '/episodes' do
-	puts Time.now
+	last_modified episodes.first[:published]
 	content_type :json
 	episodes.to_json
 end
 
 get '/episodes/:episode' do
+	last_modified episodes.first[:published]
 	content_type :json
 	episodes.select { |e| e[:number] == params[:episode].to_i }.to_json
 end

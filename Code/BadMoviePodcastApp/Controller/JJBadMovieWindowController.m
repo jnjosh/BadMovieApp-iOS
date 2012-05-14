@@ -11,6 +11,7 @@
 #import "JJBadMovieWindowController.h"
 #import "JJBadMoviePlayerViewController.h"
 #import "JJBadMovieEpisodesViewController.h"
+#import "SDURLCache.h"
 
 static inline CGFloat degreesToRadian(CGFloat degree)
 {
@@ -42,6 +43,8 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 - (id)init {
     if (self = [super init]) {
         [[self class] configureAppearance];
+        [[self class] configureCache];
+        
         _navigationController = [[UINavigationController alloc] initWithRootViewController:[[JJBadMovieEpisodesViewController alloc] initWithStyle:UITableViewStylePlain]];
         [_navigationController setDelegate:self];
         [_navigationController.view setBackgroundColor:[UIColor clearColor]];
@@ -145,8 +148,20 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 #pragma mark - class methods
 
 + (void)configureAppearance {
-    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"ui.navigationbar.background.png"] forBarMetrics:UIBarMetricsDefault];
-    [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTintColor:[UIColor colorWithRed:89/255.0 green:0.0 blue:0.0 alpha:1.0]];
+    static dispatch_once_t appearanceOnceToken;
+    dispatch_once(&appearanceOnceToken, ^{
+        [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"ui.navigationbar.background.png"] forBarMetrics:UIBarMetricsDefault];
+        [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTintColor:[UIColor colorWithRed:89/255.0 green:0.0 blue:0.0 alpha:1.0]];
+    });
+}
+
++ (void)configureCache {
+    static dispatch_once_t cacheOnceToken;
+    dispatch_once(&cacheOnceToken, ^{
+        SDURLCache *urlCache = [[SDURLCache alloc] initWithMemoryCapacity:4*1024*1024 diskCapacity:20*1024*1024 diskPath:[SDURLCache defaultCachePath]];
+        [urlCache setMinCacheInterval:0];
+        [NSURLCache setSharedURLCache:urlCache];
+    });
 }
 
 @end

@@ -17,6 +17,7 @@
 @property (nonatomic, strong) JJBadMoviePlayerViewController *playerController;
 
 + (void)configureAppearance;
++ (void)configureCache;
 - (void)presentAudioPlayer;
 - (void)hideAudioPlayer;
 
