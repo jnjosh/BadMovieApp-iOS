@@ -60,9 +60,6 @@
     [self.headerView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [self.headerView setAutoresizesSubviews:YES];
     
-    UIImageView *placeholderImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.playing.png"]];
-    [self.headerView addSubview:placeholderImage];
-    
     self.episodeImageView = [[UIImageView alloc] initWithFrame:(CGRect){10, 10, 128, 128}];
     [self.episodeImageView setContentMode:UIViewContentModeScaleToFill];
     [self.episodeImageView setBackgroundColor:[UIColor whiteColor]];
@@ -70,7 +67,6 @@
     UIImage *image = [[SDImageCache sharedImageCache] imageFromKey:self.movie.photo fromDisk:YES];
     [self.episodeImageView setImage:image];
     [self.headerView addSubview:self.episodeImageView];
-    [placeholderImage setCenter:self.episodeImageView.center];
     
     UILabel *episodeNumber = [[UILabel alloc] initWithFrame:(CGRect){ 148, 10, 162, 128 }];
     [episodeNumber setBackgroundColor:[UIColor clearColor]];
@@ -121,7 +117,7 @@
 #pragma mark - episode methods
 
 - (void)playEpisode {
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGRect:self.episodeImageView.frame], @"episodeImageFrame", self.episodeImageView, @"episodeImage", nil];
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGRect:self.episodeImageView.frame], @"episodeImageFrame", self.episodeImageView.image, @"episodeImage", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationBeginPlayingEpisode object:self.movie];
     [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self userInfo:userInfo];
 }

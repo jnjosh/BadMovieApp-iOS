@@ -79,20 +79,65 @@ static inline CGFloat degreesToRadian(CGFloat degree)
     if (viewController) {
         [self presentPlayerControlBarButtonItemForViewController:viewController];
 
-        UIImageView *imageView = [[note userInfo] objectForKey:@"episodeImage"];
-        CGPoint imagePoint = imageView.frame.origin;
+        UIImageView *imageViewForAnimation = [[UIImageView alloc] initWithImage:[[note userInfo] objectForKey:@"episodeImage"]];
+        [imageViewForAnimation setContentMode:UIViewContentModeScaleAspectFit];
+        CGRect originRect = [[[note userInfo] objectForKey:@"episodeImageFrame"] CGRectValue];
+        CGPoint imagePoint = originRect.origin;
         
-        CGPoint viewPoint = [self.navigationController.view convertPoint:imagePoint fromView:imageView.superview];
-        [imageView setFrame:(CGRect){viewPoint, imageView.frame.size}];
-        [self.navigationController.view addSubview:imageView];
+        CGPoint viewPoint = [self.navigationController.view convertPoint:imagePoint fromView:viewController.view];
+        [imageViewForAnimation setFrame:(CGRect){viewPoint, originRect.size}];
+        CGRect targetRect = (CGRect){ 300, 44, 30, 30 };
+
+        CGRect imageFrame = imageViewForAnimation.frame;
+        CGPoint viewOrigin = imageFrame.origin;
+        viewOrigin.y = viewOrigin.y + imageFrame.size.height / 2.0f;
+        viewOrigin.x = viewOrigin.x + imageFrame.size.width / 2.0f;
         
-        CGRect targetRect = (CGRect){ 290, 30, 35, 25 };
-        [UIView animateWithDuration:0.5 animations:^{
-            [imageView setFrame:targetRect];
-            [imageView setAlpha:0.0];
-        } completion:^(BOOL finished) {
-            [imageView removeFromSuperview];
-        }];
+        imageViewForAnimation.frame = imageFrame;
+        imageViewForAnimation.layer.position = viewOrigin;
+        [self.navigationController.view addSubview:imageViewForAnimation];
+
+        // Set up fade out effect
+        CABasicAnimation *fadeOutAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+        [fadeOutAnimation setToValue:[NSNumber numberWithFloat:0.3]];
+        fadeOutAnimation.fillMode = kCAFillModeForwards;
+        fadeOutAnimation.removedOnCompletion = NO;
+        
+        // Set up scaling
+        CABasicAnimation *resizeAnimation = [CABasicAnimation animationWithKeyPath:@"bounds.size"];
+        [resizeAnimation setToValue:[NSValue valueWithCGSize:targetRect.size]];
+        resizeAnimation.fillMode = kCAFillModeForwards;
+        resizeAnimation.removedOnCompletion = NO;
+        
+        // Set up path movement
+        CAKeyframeAnimation *pathAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
+        pathAnimation.calculationMode = kCAAnimationPaced;
+        pathAnimation.fillMode = kCAFillModeForwards;
+        pathAnimation.removedOnCompletion = NO;
+        
+        CGPoint endPoint = targetRect.origin;
+        CGMutablePathRef curvedPath = CGPathCreateMutable();
+        CGPathMoveToPoint(curvedPath, NULL, viewOrigin.x, viewOrigin.y);
+        CGPathAddCurveToPoint(curvedPath, NULL, endPoint.x, viewOrigin.y + 200, endPoint.x, viewOrigin.y, endPoint.x, endPoint.y);
+        pathAnimation.path = curvedPath;
+        CGPathRelease(curvedPath);
+        
+        CAAnimationGroup *group = [CAAnimationGroup animation]; 
+        group.fillMode = kCAFillModeForwards;
+        group.removedOnCompletion = NO;
+        [group setAnimations:[NSArray arrayWithObjects:fadeOutAnimation, pathAnimation, resizeAnimation, nil]];
+        group.duration = 0.5f;
+        group.delegate = self;
+        [group setValue:imageViewForAnimation forKey:@"imageViewBeingAnimated"];
+        
+        [imageViewForAnimation.layer addAnimation:group forKey:@"savingAnimation"];
+    }
+}
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
+    if (flag) {
+        UIImageView *imageView = [anim valueForKey:@"imageViewBeingAnimated"];
+        [imageView removeFromSuperview];
     }
 }
 
