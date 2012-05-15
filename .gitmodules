@@ -7,3 +7,6 @@
 [submodule "Code/Libraries/SDURLCache"]
 	path = Code/Libraries/SDURLCache
 	url = git://github.com/rs/SDURLCache.git
+[submodule "Code/Libraries/SDWebImage"]
+	path = Code/Libraries/SDWebImage
+	url = git://github.com/rs/SDWebImage.git

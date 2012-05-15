@@ -13,7 +13,8 @@
 #import "JJBadMovieViewController.h"
 #import "JJBadMovieEpisodeCell.h"
 #import "AFJSONRequestOperation.h"
-#import "UIImageView+AFNetworking.h"
+
+#import "SDWebImageManager.h"
 
 static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 
@@ -51,11 +52,18 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
     AFJSONRequestOperation *jsonRequest = [AFJSONRequestOperation JSONRequestOperationWithRequest:urlRequest success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         
         NSMutableArray *episodeList = [NSMutableArray array];
+        NSUInteger rowIndex = 0;
         for (id episode in JSON) {
             JJBadMovie *badMovie = [JJBadMovie instanceFromDictionary:episode];
             if (badMovie) {
                 [episodeList addObject:badMovie];
+                if (! [badMovie cachedImage]) {
+                    [[SDWebImageManager sharedManager] downloadWithURL:[NSURL URLWithString:badMovie.photo] delegate:self options:SDWebImageProgressiveDownload success:^(UIImage *image) {
+                        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:rowIndex inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+                    } failure:nil];
+                }
             }
+            rowIndex++;
         }
         self.episodes = [NSArray arrayWithArray:episodeList];
         [self.tableView reloadData];

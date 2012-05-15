@@ -10,7 +10,7 @@
 #import "JJBadMovieWebViewController.h"
 #import "JJBadMovie.h"
 #import "JJBadMovieEnvironment.h"
-#import "UIImageView+AFNetworking.h"
+#import "SDImageCache.h"
 
 @interface JJBadMovieViewController ()
 
@@ -62,7 +62,9 @@
     UIImageView *episodeImageView = [[UIImageView alloc] initWithFrame:(CGRect){10, 10, 128, 128}];
     [episodeImageView setContentMode:UIViewContentModeScaleToFill];
     [episodeImageView setBackgroundColor:[UIColor whiteColor]];
-    [episodeImageView setImageWithURL:[NSURL URLWithString:self.movie.photo]];
+    
+    UIImage *image = [[SDImageCache sharedImageCache] imageFromKey:self.movie.photo fromDisk:YES];
+    [episodeImageView setImage:image];
     [self.headerView addSubview:episodeImageView];
     
     UILabel *episodeNumber = [[UILabel alloc] initWithFrame:(CGRect){ 148, 10, 162, 128 }];

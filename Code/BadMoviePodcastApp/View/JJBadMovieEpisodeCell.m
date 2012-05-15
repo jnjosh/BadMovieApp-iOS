@@ -11,6 +11,9 @@
 
 static UIColor *jj_textColor = nil;
 static UIColor *jj_selectedTextColor = nil;
+static UIColor *jj_detailTextColor = nil;
+static UIFont *jj_titleFont = nil;
+static UIFont *jj_detailFont = nil;
 
 @implementation JJBadMovieEpisodeCell
 
@@ -24,6 +27,9 @@ static UIColor *jj_selectedTextColor = nil;
     if (! jj_textColor && self == [JJBadMovieEpisodeCell class]) {
         jj_textColor = [UIColor darkGrayColor];
         jj_selectedTextColor = [UIColor whiteColor];
+        jj_detailTextColor = [UIColor lightGrayColor];
+        jj_titleFont = [UIFont boldSystemFontOfSize:17.0f];
+        jj_detailFont = [UIFont systemFontOfSize:11.0f];
     }
 }
 
@@ -44,6 +50,14 @@ static UIColor *jj_selectedTextColor = nil;
     CGColorRef shadowColorRef;
     CGSize shadowSize;
     
+    [jj_selectedTextColor set];
+    CGContextFillRect(context, (CGRect){10, 10, 65, 65});
+    
+    UIImage *image = [self.episode cachedImage];
+    if (image) {
+        [image drawInRect:(CGRect){15, 15, 55, 55}];
+    }
+    
     [jj_textColor set];
     if ([self isSelected] || [self isHighlighted]) {
         shadowColorRef = jj_textColor.CGColor;
@@ -54,20 +68,20 @@ static UIColor *jj_selectedTextColor = nil;
     }
     
     CGRect titleRect = rect;
-    titleRect.origin.x += 10;
+    titleRect.origin.x += 85;
     titleRect.origin.y += 10;
-    titleRect.size.width -= 40;
+    titleRect.size.width -= 115;
     titleRect.size.height = 20;
     CGContextSetShadowWithColor(context, shadowSize, 0.0, shadowColorRef);
-    [[self.episode name] drawInRect:titleRect withFont:[UIFont boldSystemFontOfSize:17.0f] lineBreakMode:UILineBreakModeTailTruncation];
+    [[self.episode name] drawInRect:titleRect withFont:jj_titleFont lineBreakMode:UILineBreakModeTailTruncation];
 
     CGRect descRect = rect;
-    descRect.origin.x += 10;
+    descRect.origin.x += 85;
     descRect.origin.y += 32;
-    descRect.size.width -= 40;
+    descRect.size.width -= 115;
     descRect.size.height = 38;
-    [[UIColor lightGrayColor] set];
-    [[self.episode descriptionText] drawInRect:descRect withFont:[UIFont systemFontOfSize:11.0f] lineBreakMode:UILineBreakModeWordWrap];
+    [jj_detailTextColor set];
+    [[self.episode descriptionText] drawInRect:descRect withFont:jj_detailFont lineBreakMode:UILineBreakModeWordWrap];
     
 }
 

@@ -7,6 +7,7 @@
 //
 
 #import "JJBadMovie.h"
+#import "SDImageCache.h"
 
 @implementation JJBadMovie
 
@@ -23,6 +24,11 @@
     JJBadMovie *instance = [[JJBadMovie alloc] init];
     [instance setAttributesFromDictionary:aDictionary];
     return instance;
+}
+
+- (UIImage *)cachedImage {
+    UIImage *imageFromCache = [[SDImageCache sharedImageCache] imageFromKey:self.photo fromDisk:YES];
+    return imageFromCache ? : nil;
 }
 
 - (void)setAttributesFromDictionary:(NSDictionary *)aDictionary {
