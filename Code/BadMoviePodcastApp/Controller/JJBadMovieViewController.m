@@ -17,6 +17,7 @@
 @property (nonatomic, strong) JJBadMovie *movie;
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) UIButton *episodeButton;
+@property (nonatomic, strong) UIImageView *episodeImageView;
 
 - (void)playEpisode;
 - (void)playTrailer;
@@ -30,7 +31,7 @@
 
 @synthesize movie = _movie;
 @synthesize headerView = _headerView;
-@synthesize episodeButton = _episodeButton;
+@synthesize episodeButton = _episodeButton, episodeImageView = _episodeImageView;
 
 #pragma mark - lifecycle
 
@@ -59,13 +60,17 @@
     [self.headerView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [self.headerView setAutoresizesSubviews:YES];
     
-    UIImageView *episodeImageView = [[UIImageView alloc] initWithFrame:(CGRect){10, 10, 128, 128}];
-    [episodeImageView setContentMode:UIViewContentModeScaleToFill];
-    [episodeImageView setBackgroundColor:[UIColor whiteColor]];
+    UIImageView *placeholderImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.playing.png"]];
+    [self.headerView addSubview:placeholderImage];
+    
+    self.episodeImageView = [[UIImageView alloc] initWithFrame:(CGRect){10, 10, 128, 128}];
+    [self.episodeImageView setContentMode:UIViewContentModeScaleToFill];
+    [self.episodeImageView setBackgroundColor:[UIColor whiteColor]];
     
     UIImage *image = [[SDImageCache sharedImageCache] imageFromKey:self.movie.photo fromDisk:YES];
-    [episodeImageView setImage:image];
-    [self.headerView addSubview:episodeImageView];
+    [self.episodeImageView setImage:image];
+    [self.headerView addSubview:self.episodeImageView];
+    [placeholderImage setCenter:self.episodeImageView.center];
     
     UILabel *episodeNumber = [[UILabel alloc] initWithFrame:(CGRect){ 148, 10, 162, 128 }];
     [episodeNumber setBackgroundColor:[UIColor clearColor]];
@@ -116,8 +121,9 @@
 #pragma mark - episode methods
 
 - (void)playEpisode {
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGRect:self.episodeImageView.frame], @"episodeImageFrame", self.episodeImageView, @"episodeImage", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationBeginPlayingEpisode object:self.movie];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self userInfo:userInfo];
 }
 
 - (void)playTrailer {

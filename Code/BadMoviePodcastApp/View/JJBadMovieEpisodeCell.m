@@ -24,7 +24,7 @@ static UIFont *jj_detailFont = nil;
 #pragma mark - class
 
 + (void)initialize {
-    if (! jj_textColor && self == [JJBadMovieEpisodeCell class]) {
+    if (self == [JJBadMovieEpisodeCell class]) {
         jj_textColor = [UIColor darkGrayColor];
         jj_selectedTextColor = [UIColor whiteColor];
         jj_detailTextColor = [UIColor lightGrayColor];
@@ -82,7 +82,6 @@ static UIFont *jj_detailFont = nil;
     descRect.size.height = 38;
     [jj_detailTextColor set];
     [[self.episode descriptionText] drawInRect:descRect withFont:jj_detailFont lineBreakMode:UILineBreakModeWordWrap];
-    
 }
 
 #pragma mark - properties

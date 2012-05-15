@@ -75,8 +75,24 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 #pragma mark - player control
 
 - (void)showPlayerControl:(NSNotification *)note {
-    if ([note object]) {
-        [self presentPlayerControlBarButtonItemForViewController:[note object]];
+    UIViewController *viewController = [note object];
+    if (viewController) {
+        [self presentPlayerControlBarButtonItemForViewController:viewController];
+
+        UIImageView *imageView = [[note userInfo] objectForKey:@"episodeImage"];
+        CGPoint imagePoint = imageView.frame.origin;
+        
+        CGPoint viewPoint = [self.navigationController.view convertPoint:imagePoint fromView:imageView.superview];
+        [imageView setFrame:(CGRect){viewPoint, imageView.frame.size}];
+        [self.navigationController.view addSubview:imageView];
+        
+        CGRect targetRect = (CGRect){ 290, 30, 35, 25 };
+        [UIView animateWithDuration:0.5 animations:^{
+            [imageView setFrame:targetRect];
+            [imageView setAlpha:0.0];
+        } completion:^(BOOL finished) {
+            [imageView removeFromSuperview];
+        }];
     }
 }
 
