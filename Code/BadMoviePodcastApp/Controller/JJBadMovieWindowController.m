@@ -11,6 +11,7 @@
 #import "JJBadMovieWindowController.h"
 #import "JJBadMoviePlayerViewController.h"
 #import "JJBadMovieEpisodesViewController.h"
+#import "JJBadMovieEpisodeDataSource.h"
 #import "SDURLCache.h"
 
 static inline CGFloat degreesToRadian(CGFloat degree)
@@ -45,7 +46,10 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         [[self class] configureAppearance];
         [[self class] configureCache];
         
-        _navigationController = [[UINavigationController alloc] initWithRootViewController:[[JJBadMovieEpisodesViewController alloc] initWithStyle:UITableViewStylePlain]];
+        JJBadMovieEpisodeDataSource *dataSource = [[JJBadMovieEpisodeDataSource alloc] init];
+        JJBadMovieEpisodesViewController *episodeViewController = [[JJBadMovieEpisodesViewController alloc] initWithEpisodeDataSource:dataSource];
+        
+        _navigationController = [[UINavigationController alloc] initWithRootViewController:episodeViewController];
         [_navigationController setDelegate:self];
         [_navigationController.view setBackgroundColor:[UIColor clearColor]];
 

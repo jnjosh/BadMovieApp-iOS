@@ -27,12 +27,12 @@
 }
 
 - (UIImage *)cachedImage {
-    UIImage *imageFromCache = [[SDImageCache sharedImageCache] imageFromKey:self.photo fromDisk:YES];
+    UIImage *imageFromCache = [[SDImageCache sharedImageCache] imageFromKey:self.photo fromDisk:NO];
     return imageFromCache ? : nil;
 }
 
 - (void)setAttributesFromDictionary:(NSDictionary *)aDictionary {
-    if (![aDictionary isKindOfClass:[NSDictionary class]]) {
+    if (! [aDictionary isKindOfClass:[NSDictionary class]]) {
         return;
     }
     self.descriptionText = [aDictionary objectForKey:@"description"];

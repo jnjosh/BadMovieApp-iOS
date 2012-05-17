@@ -12,16 +12,16 @@
 #import "JJBadMovie.h"
 #import "JJBadMovieViewController.h"
 #import "JJBadMovieEpisodeCell.h"
-#import "AFJSONRequestOperation.h"
-
-#import "SDWebImageManager.h"
+#import "JJBadMovieEpisodeDataSource.h"
 
 static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 
 @interface JJBadMovieEpisodesViewController ()
 
-@property (nonatomic, strong) NSArray *episodes;
+@property (nonatomic, strong) JJBadMovieEpisodeDataSource *dataSource;
+
 - (void)showSettings;
+- (void)downloadImageInView;
 
 @end
 
@@ -29,9 +29,18 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 
 #pragma mark - synth
 
-@synthesize episodes = _episodes;
+@synthesize dataSource = _dataSource;
 
 #pragma mark - lifecycle
+
+- (id)initWithEpisodeDataSource:(JJBadMovieEpisodeDataSource *)dataSource {
+    if (self = [self initWithStyle:UITableViewStylePlain]) {
+        self.dataSource = dataSource;
+    }
+    return self;
+}
+
+#pragma mark - view loading
 
 - (void)viewDidLoad
 {
@@ -46,35 +55,25 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
     
     UIBarButtonItem *settingsGear = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ui.button.settings.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(showSettings)];
     [self.navigationItem setLeftBarButtonItem:settingsGear];
-    
-    NSURL *episodeURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/episodes", kJJBadMovieAPIURLRoot]];
-    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:episodeURL];
-    AFJSONRequestOperation *jsonRequest = [AFJSONRequestOperation JSONRequestOperationWithRequest:urlRequest success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        
-        NSMutableArray *episodeList = [NSMutableArray array];
-        NSUInteger rowIndex = 0;
-        for (id episode in JSON) {
-            JJBadMovie *badMovie = [JJBadMovie instanceFromDictionary:episode];
-            if (badMovie) {
-                [episodeList addObject:badMovie];
-                if (! [badMovie cachedImage]) {
-                    [[SDWebImageManager sharedManager] downloadWithURL:[NSURL URLWithString:badMovie.photo] delegate:self options:SDWebImageProgressiveDownload success:^(UIImage *image) {
-                        [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:rowIndex inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-                    } failure:nil];
-                }
-            }
-            rowIndex++;
-        }
-        self.episodes = [NSArray arrayWithArray:episodeList];
-        [self.tableView reloadData];
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        NSLog(@"ERROR: %@", error);
-    }];
-    [jsonRequest start];
 }
 
-- (void)viewDidUnload
-{
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    if (self.dataSource) {
+        [self.dataSource loadEpisodesWithCompletionHandler:^{
+            [self.tableView reloadData]; 
+        }];
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+        [self downloadImageInView];
+    });
+}
+
+- (void)viewDidUnload {
     [super viewDidUnload];
 }
 
@@ -86,11 +85,31 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 #pragma mark - methods
 
 - (void)showSettings {
-
     JJBadMovieSettingsViewController *settingsView = [[JJBadMovieSettingsViewController alloc] initWithStyle:UITableViewStyleGrouped];
     UINavigationController *settingsNavigation = [[UINavigationController alloc] initWithRootViewController:settingsView];
-
     [self presentModalViewController:settingsNavigation animated:YES];
+}
+
+- (void)downloadImageInView {
+    for (NSIndexPath *path in [self.tableView indexPathsForVisibleRows]) {
+        [self.dataSource downloadImageForIndexPath:path completionHandler:^{
+            if ([[self.tableView indexPathsForVisibleRows] containsObject:path]) {
+                [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:path] withRowAnimation:UITableViewRowAnimationNone]; 
+            }
+        }];
+    }
+}
+
+#pragma mark - scroll delegates
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (! decelerate) {
+        [self downloadImageInView];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self downloadImageInView];
 }
 
 #pragma mark - Table view data source
@@ -102,7 +121,7 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.episodes count];
+    return [self.dataSource.episodes count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -111,20 +130,21 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
     if (! cell) {
         cell = [[JJBadMovieEpisodeCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:jj_episodeCellIdentifier];
     }
-    JJBadMovie *movie = [self.episodes objectAtIndex:indexPath.row];
+    JJBadMovie *movie = [self.dataSource episodeForIndexPath:indexPath];
     [cell setEpisode:movie];
+    
     return cell;
 }
 
 #pragma mark - Table view delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 75.0;
+    return 85.0;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    JJBadMovie *movie = [self.episodes objectAtIndex:indexPath.row];
+    JJBadMovie *movie = [self.dataSource episodeForIndexPath:indexPath];
     JJBadMovieViewController *detailViewController = [[JJBadMovieViewController alloc] initWithBadMovie:movie];
     [self.navigationController pushViewController:detailViewController animated:YES];
 }

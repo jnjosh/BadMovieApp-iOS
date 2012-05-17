@@ -8,5 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class JJBadMovieEpisodeDataSource;
+
 @interface JJBadMovieEpisodesViewController : UITableViewController
+
+- (id)initWithEpisodeDataSource:(JJBadMovieEpisodeDataSource *)dataSource;
+
 @end

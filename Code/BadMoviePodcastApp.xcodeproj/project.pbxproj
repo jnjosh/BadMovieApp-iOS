@@ -37,6 +37,7 @@
 		A42E1B52155B680000043EA7 /* placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A42E1B51155B680000043EA7 /* placeholder@2x.png */; };
 		A42E1B54155B6AFA00043EA7 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A42E1B53155B6AFA00043EA7 /* MediaPlayer.framework */; };
 		A42E1B57155B71D300043EA7 /* JJBadMovieWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B56155B71D300043EA7 /* JJBadMovieWebViewController.m */; };
+		A46B1BB91564853C004E546A /* JJBadMovieEpisodeDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = A46B1BB81564853C004E546A /* JJBadMovieEpisodeDataSource.m */; };
 		A46D525A155F4DE200BC1CE5 /* ui.button.settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A46D5259155F4DE200BC1CE5 /* ui.button.settings@2x.png */; };
 		A46D5265155F560100BC1CE5 /* ui.navigationbar.background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A46D5264155F560100BC1CE5 /* ui.navigationbar.background@2x.png */; };
 		A46D526A155F5BFD00BC1CE5 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = A46D5268155F5BFC00BC1CE5 /* Default.png */; };
@@ -52,7 +53,6 @@
 		A4704D2C1561D3CD0079C534 /* SDWebImagePrefetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = A4704D241561D3CD0079C534 /* SDWebImagePrefetcher.m */; };
 		A4704D2D1561D3CD0079C534 /* UIButton+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A4704D261561D3CD0079C534 /* UIButton+WebCache.m */; };
 		A4704D2F1561D40C0079C534 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4704D2E1561D40C0079C534 /* ImageIO.framework */; };
-		A4704D311561EB210079C534 /* ui.playing@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4704D301561EB210079C534 /* ui.playing@2x.png */; };
 		A4CD774C1560AE2400F11AF8 /* ui.buttons.pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4CD774A1560AE2400F11AF8 /* ui.buttons.pause@2x.png */; };
 		A4CD774D1560AE2400F11AF8 /* ui.buttons.play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4CD774B1560AE2400F11AF8 /* ui.buttons.play@2x.png */; };
 		A4CD77501560B26300F11AF8 /* ui.buttons.skip.back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4CD774E1560B26300F11AF8 /* ui.buttons.skip.back@2x.png */; };
@@ -120,6 +120,8 @@
 		A42E1B53155B6AFA00043EA7 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		A42E1B55155B71D300043EA7 /* JJBadMovieWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieWebViewController.h; sourceTree = "<group>"; };
 		A42E1B56155B71D300043EA7 /* JJBadMovieWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieWebViewController.m; sourceTree = "<group>"; };
+		A46B1BB71564853C004E546A /* JJBadMovieEpisodeDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieEpisodeDataSource.h; sourceTree = "<group>"; };
+		A46B1BB81564853C004E546A /* JJBadMovieEpisodeDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieEpisodeDataSource.m; sourceTree = "<group>"; };
 		A46D5259155F4DE200BC1CE5 /* ui.button.settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.button.settings@2x.png"; sourceTree = "<group>"; };
 		A46D5264155F560100BC1CE5 /* ui.navigationbar.background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.navigationbar.background@2x.png"; sourceTree = "<group>"; };
 		A46D5268155F5BFC00BC1CE5 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
@@ -150,7 +152,6 @@
 		A4704D261561D3CD0079C534 /* UIButton+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIButton+WebCache.m"; path = "SDWebImage/SDWebImage/UIButton+WebCache.m"; sourceTree = "<group>"; };
 		A4704D271561D3CD0079C534 /* UIImageView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImageView+WebCache.h"; path = "SDWebImage/SDWebImage/UIImageView+WebCache.h"; sourceTree = "<group>"; };
 		A4704D2E1561D40C0079C534 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
-		A4704D301561EB210079C534 /* ui.playing@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "ui.playing@2x.png"; path = "../../../../../../Desktop/ui.playing@2x.png"; sourceTree = "<group>"; };
 		A4CD774A1560AE2400F11AF8 /* ui.buttons.pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.pause@2x.png"; sourceTree = "<group>"; };
 		A4CD774B1560AE2400F11AF8 /* ui.buttons.play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.play@2x.png"; sourceTree = "<group>"; };
 		A4CD774E1560B26300F11AF8 /* ui.buttons.skip.back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.skip.back@2x.png"; sourceTree = "<group>"; };
@@ -248,6 +249,8 @@
 				A42E1B0A155B5C7000043EA7 /* JJAppDelegate.m */,
 				A42E1B44155B607C00043EA7 /* JJBadMovieEnvironment.h */,
 				A42E1B45155B607C00043EA7 /* JJBadMovieEnvironment.m */,
+				A46B1BB71564853C004E546A /* JJBadMovieEpisodeDataSource.h */,
+				A46B1BB81564853C004E546A /* JJBadMovieEpisodeDataSource.m */,
 				A42E1B01155B5C7000043EA7 /* Supporting Files */,
 			);
 			name = Application;
@@ -332,7 +335,6 @@
 		A42E1B4E155B67D000043EA7 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				A4704D301561EB210079C534 /* ui.playing@2x.png */,
 				A4CD77541560C1AB00F11AF8 /* Default@2x.png */,
 				A4CD774A1560AE2400F11AF8 /* ui.buttons.pause@2x.png */,
 				A4CD774B1560AE2400F11AF8 /* ui.buttons.play@2x.png */,
@@ -464,7 +466,6 @@
 				A4CD77501560B26300F11AF8 /* ui.buttons.skip.back@2x.png in Resources */,
 				A4CD77511560B26300F11AF8 /* ui.buttons.skip.forward@2x.png in Resources */,
 				A4CD77551560C1AB00F11AF8 /* Default@2x.png in Resources */,
-				A4704D311561EB210079C534 /* ui.playing@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -505,6 +506,7 @@
 				A4704D2B1561D3CD0079C534 /* SDWebImageManager.m in Sources */,
 				A4704D2C1561D3CD0079C534 /* SDWebImagePrefetcher.m in Sources */,
 				A4704D2D1561D3CD0079C534 /* UIButton+WebCache.m in Sources */,
+				A46B1BB91564853C004E546A /* JJBadMovieEpisodeDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -593,8 +595,8 @@
 				INFOPLIST_FILE = "BadMoviePodcastApp/BadMoviePodcastApp-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = badmovieapp;
-				PROVISIONING_PROFILE = "FF06B482-3F88-406C-BEFA-415F60B497B4";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "FF06B482-3F88-406C-BEFA-415F60B497B4";
+				PROVISIONING_PROFILE = "192DD405-60FE-4C73-947C-4908288C244E";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "192DD405-60FE-4C73-947C-4908288C244E";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

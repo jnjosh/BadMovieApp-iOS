@@ -15,6 +15,11 @@ static UIColor *jj_detailTextColor = nil;
 static UIFont *jj_titleFont = nil;
 static UIFont *jj_detailFont = nil;
 
+const CGRect jj_imageRect = (CGRect){15,15,55,55};
+const CGRect jj_imageBorderRect = (CGRect){10,10,65,65};
+const CGRect jj_titleTextRect = (CGRect){85,10,205,20};
+const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
+
 @implementation JJBadMovieEpisodeCell
 
 #pragma mark - synth
@@ -47,41 +52,31 @@ static UIFont *jj_detailFont = nil;
 
 - (void)drawRect:(CGRect)rect {
     CGContextRef context = UIGraphicsGetCurrentContext();
-    CGColorRef shadowColorRef;
-    CGSize shadowSize;
-    
-    [jj_selectedTextColor set];
-    CGContextFillRect(context, (CGRect){10, 10, 65, 65});
     
     UIImage *image = [self.episode cachedImage];
     if (image) {
-        [image drawInRect:(CGRect){15, 15, 55, 55}];
+        [jj_selectedTextColor set];
+        CGContextFillRect(context, jj_imageBorderRect);
+        [image drawInRect:jj_imageRect];
+    } else {
+        [jj_detailTextColor set];
+        CGContextFillRect(context, jj_imageBorderRect);
     }
     
-    [jj_textColor set];
-    if ([self isSelected] || [self isHighlighted]) {
-        shadowColorRef = jj_textColor.CGColor;
-        shadowSize = (CGSize){0, 0};
-    } else {
+    if (! [self isSelected] && ! [self isHighlighted]) {
+        CGColorRef shadowColorRef;
+        CGSize shadowSize;
+
         shadowColorRef = jj_selectedTextColor.CGColor;
         shadowSize = (CGSize){0, 1};
+        CGContextSetShadowWithColor(context, shadowSize, 0.0, shadowColorRef);
     }
-    
-    CGRect titleRect = rect;
-    titleRect.origin.x += 85;
-    titleRect.origin.y += 10;
-    titleRect.size.width -= 115;
-    titleRect.size.height = 20;
-    CGContextSetShadowWithColor(context, shadowSize, 0.0, shadowColorRef);
-    [[self.episode name] drawInRect:titleRect withFont:jj_titleFont lineBreakMode:UILineBreakModeTailTruncation];
 
-    CGRect descRect = rect;
-    descRect.origin.x += 85;
-    descRect.origin.y += 32;
-    descRect.size.width -= 115;
-    descRect.size.height = 38;
+    [jj_textColor set];
+    [[self.episode name] drawInRect:jj_titleTextRect withFont:jj_titleFont lineBreakMode:UILineBreakModeTailTruncation];
+
     [jj_detailTextColor set];
-    [[self.episode descriptionText] drawInRect:descRect withFont:jj_detailFont lineBreakMode:UILineBreakModeWordWrap];
+    [[self.episode descriptionText] drawInRect:jj_detailTextRect withFont:jj_detailFont lineBreakMode:UILineBreakModeWordWrap];
 }
 
 #pragma mark - properties
@@ -99,7 +94,8 @@ static UIFont *jj_detailFont = nil;
     [self setNeedsDisplay];
 }
 
-- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated 
+{
     [super setHighlighted:highlighted animated:animated];
     [self setNeedsDisplay];
 }
