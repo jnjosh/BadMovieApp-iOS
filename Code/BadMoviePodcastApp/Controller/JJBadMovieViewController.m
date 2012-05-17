@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 jnjosh.com. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "JJBadMovieViewController.h"
 #import "JJBadMovieWebViewController.h"
 #import "JJBadMovie.h"
@@ -18,6 +19,7 @@
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) UIButton *episodeButton;
 @property (nonatomic, strong) UIImageView *episodeImageView;
+@property (nonatomic, strong) UIScrollView *scrollView;
 
 - (void)playEpisode;
 - (void)playTrailer;
@@ -30,7 +32,7 @@
 #pragma mark - synth
 
 @synthesize movie = _movie;
-@synthesize headerView = _headerView;
+@synthesize headerView = _headerView, scrollView = _scrollView;
 @synthesize episodeButton = _episodeButton, episodeImageView = _episodeImageView;
 
 #pragma mark - lifecycle
@@ -53,53 +55,81 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = [NSString stringWithFormat:@"Episode %i", [self.movie.number integerValue]];
+    self.title = self.movie.name;
 
     self.headerView = [[UIView alloc] initWithFrame:(CGRect){CGPointZero, {320, 148}}];
-    [self.headerView setBackgroundColor:[UIColor grayColor]];
+    [self.headerView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.moviedetails.png"]]];
     [self.headerView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [self.headerView setAutoresizesSubviews:YES];
     
-    self.episodeImageView = [[UIImageView alloc] initWithFrame:(CGRect){10, 10, 128, 128}];
+    self.episodeImageView = [[UIImageView alloc] initWithFrame:(CGRect){10, 10, 124, 124}];
     [self.episodeImageView setContentMode:UIViewContentModeScaleToFill];
     [self.episodeImageView setBackgroundColor:[UIColor whiteColor]];
+    [self.episodeImageView.layer setBorderColor:[UIColor whiteColor].CGColor];
+    [self.episodeImageView.layer setBorderWidth:2.0];
     
     UIImage *image = [[SDImageCache sharedImageCache] imageFromKey:self.movie.photo fromDisk:YES];
     [self.episodeImageView setImage:image];
     [self.headerView addSubview:self.episodeImageView];
     
-    UILabel *episodeNumber = [[UILabel alloc] initWithFrame:(CGRect){ 148, 10, 162, 128 }];
+    UILabel *episodeNumber = [[UILabel alloc] initWithFrame:CGRectZero];
     [episodeNumber setBackgroundColor:[UIColor clearColor]];
-    [episodeNumber setTextColor:[UIColor whiteColor]];
+    [episodeNumber setTextColor:[UIColor blackColor]];
+    [episodeNumber setShadowColor:[UIColor whiteColor]];
+    [episodeNumber setShadowOffset:(CGSize){0,1}];
+    [episodeNumber setFont:[UIFont boldSystemFontOfSize:16.0]];
     [episodeNumber setNumberOfLines:4];
-    [episodeNumber setText:[NSString stringWithFormat:@"%@", self.movie.name]];
+    [episodeNumber setText:[NSString stringWithFormat:@"%@: %@", self.movie.number, self.movie.name]];
+    [episodeNumber setTextAlignment:UITextAlignmentLeft];
+    CGSize constraint = (CGSize){162, CGFLOAT_MAX};
+    CGSize episodeTitleSize = [episodeNumber.text sizeWithFont:episodeNumber.font constrainedToSize:constraint lineBreakMode:UILineBreakModeWordWrap];
+    [episodeNumber setFrame:(CGRect){ {142, 10}, episodeTitleSize }];
     [self.headerView addSubview:episodeNumber];
+    
+    self.episodeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [self.episodeButton setFrame:(CGRect){ 142, 92, 160, 44}];
+    [self.episodeButton setTitle:@"Play Episode" forState:UIControlStateNormal];
+    [self.episodeButton addTarget:self action:@selector(playEpisode) forControlEvents:UIControlEventTouchUpInside];
+    [self.headerView addSubview:self.episodeButton];
 
     [self.view addSubview:self.headerView];
 
-    UILabel *episodeDescription = [[UILabel alloc] initWithFrame:(CGRect){ 10, 148, 300, 128 }];
-    [episodeDescription setTextColor:[UIColor blackColor]];
-    [episodeDescription setNumberOfLines:5];
-    [episodeDescription setText:self.movie.descriptionText];
-    [self.view addSubview:episodeDescription];
+    self.scrollView = [[UIScrollView alloc] initWithFrame:(CGRect){ 0, self.headerView.frame.size.height, 320, 312}];
+    [self.scrollView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.tableview.background.png"]]];
+    [self.scrollView setAutoresizingMask:self.view.autoresizingMask];
     
-    self.episodeButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [self.episodeButton setFrame:(CGRect){ 10, episodeDescription.frame.origin.y + episodeDescription.frame.size.height + 10, 300, 44}];
-    [self.episodeButton setTitle:@"Play Episode" forState:UIControlStateNormal];
-    [self.episodeButton addTarget:self action:@selector(playEpisode) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.episodeButton];
+    ////
+
+    UILabel *episodeDescription = [[UILabel alloc] initWithFrame:CGRectZero];
+    [episodeDescription setBackgroundColor:[UIColor clearColor]];
+    [episodeDescription setTextColor:[UIColor blackColor]];
+    [episodeDescription setFont:[UIFont systemFontOfSize:14.0]];
+    [episodeDescription setShadowColor:[UIColor whiteColor]];
+    [episodeDescription setShadowOffset:(CGSize){0,1}];
+    [episodeDescription setText:self.movie.descriptionText];
+    [episodeDescription setNumberOfLines:5];
+    CGSize descriptionConstraint = (CGSize){300, CGFLOAT_MAX};
+    CGSize episodeDescriptionSize = [episodeDescription.text sizeWithFont:episodeDescription.font constrainedToSize:descriptionConstraint lineBreakMode:UILineBreakModeWordWrap];
+    [episodeDescription setFrame:(CGRect){ {10, 10}, episodeDescriptionSize }];
+    [self.scrollView addSubview:episodeDescription];
 
     UIButton *youtubeTrailer = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [youtubeTrailer setFrame:(CGRect){ 10, self.episodeButton.frame.origin.y + self.episodeButton.frame.size.height + 10, 145, 44}];
+    [youtubeTrailer setFrame:(CGRect){ 10, episodeDescription.frame.origin.y + episodeDescription.frame.size.height + 10, 145, 44}];
     [youtubeTrailer setTitle:@"Watch Trailer" forState:UIControlStateNormal];
     [youtubeTrailer addTarget:self action:@selector(playTrailer) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:youtubeTrailer];
+    [self.scrollView addSubview:youtubeTrailer];
 
     UIButton *imdbPage = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [imdbPage setFrame:(CGRect){ youtubeTrailer.frame.size.width + 20, self.episodeButton.frame.origin.y + self.episodeButton.frame.size.height + 10, 145, 44}];
+    [imdbPage setFrame:(CGRect){ youtubeTrailer.frame.size.width + 20, episodeDescription.frame.origin.y + episodeDescription.frame.size.height + 10, 145, 44}];
     [imdbPage setTitle:@"IMDb" forState:UIControlStateNormal];
     [imdbPage addTarget:self action:@selector(showMovieInfo) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:imdbPage];
+    [self.scrollView addSubview:imdbPage];
+    
+    [self.view addSubview:self.scrollView];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [self.scrollView setContentSize:(CGSize){self.scrollView.frame.size.width, self.scrollView.frame.size.height * 1.01}];
 }
 
 - (void)viewDidUnload {
@@ -107,7 +137,7 @@
     
     self.headerView = nil;
     self.episodeButton = nil;
-}
+    self.scrollView = nil;}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
