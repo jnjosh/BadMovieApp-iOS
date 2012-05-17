@@ -21,13 +21,14 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 
 @interface JJBadMovieWindowController ()
 
+@property (nonatomic, strong) UIBarButtonItem *nowPlayingButton;
 @property (nonatomic, strong) UIView *downView;
 @property (nonatomic, strong) UIImageView *vignetteView;
 
 - (CGImageRef)imageFromLayer:(CALayer *)layer size:(CGSize)size;
 
 - (void)showPlayerControl:(NSNotification *)note;
-- (void)presentPlayerControlBarButtonItemForViewController:(UIViewController *)viewController;
+- (void)presentNowPlayingEpisodeView:(UIImageView *)episodeView forViewController:(UIViewController *)viewController;
 
 @end
 
@@ -36,7 +37,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 
 #pragma mark - synth
 
-@synthesize downView = _downView, vignetteView = _vignetteView;
+@synthesize downView = _downView, vignetteView = _vignetteView, nowPlayingButton = _nowPlayingButton;
 @synthesize navigationController = _navigationController, playerController = _playerController, window = _window;
 
 #pragma mark - lifecycle
@@ -73,7 +74,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 #pragma mark - navigation controller delegate
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    [self presentPlayerControlBarButtonItemForViewController:viewController];
+    [self presentNowPlayingEpisodeView:nil forViewController:viewController];
 }
 
 #pragma mark - player control
@@ -81,8 +82,6 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 - (void)showPlayerControl:(NSNotification *)note {
     UIViewController *viewController = [note object];
     if (viewController) {
-        [self presentPlayerControlBarButtonItemForViewController:viewController];
-
         UIImageView *imageViewForAnimation = [[UIImageView alloc] initWithImage:[[note userInfo] objectForKey:@"episodeImage"]];
         [imageViewForAnimation setContentMode:UIViewContentModeScaleAspectFit];
         CGRect originRect = [[[note userInfo] objectForKey:@"episodeImageFrame"] CGRectValue];
@@ -133,6 +132,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         group.duration = 0.5f;
         group.delegate = self;
         [group setValue:imageViewForAnimation forKey:@"imageViewBeingAnimated"];
+        [group setValue:viewController forKey:@"imageViewWillReplaceViewController"];
         
         [imageViewForAnimation.layer addAnimation:group forKey:@"savingAnimation"];
     }
@@ -141,14 +141,34 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
     if (flag) {
         UIImageView *imageView = [anim valueForKey:@"imageViewBeingAnimated"];
-        [imageView removeFromSuperview];
+        UIViewController *viewController = [anim valueForKey:@"imageViewWillReplaceViewController"];
+        [self presentNowPlayingEpisodeView:imageView forViewController:viewController];
     }
 }
 
-- (void)presentPlayerControlBarButtonItemForViewController:(UIViewController *)viewController {
+- (void)presentNowPlayingEpisodeView:(UIImageView *)episodeView forViewController:(UIViewController *)viewController {
     if (self.playerController.currentEpisode) {
-        UIBarButtonItem *settingsItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemPlay target:self action:@selector(presentAudioPlayer)];
-        [viewController.navigationItem setRightBarButtonItem:settingsItem animated:NO];
+        if (episodeView) {
+            UIImage *episodeImage = [episodeView image];
+            [episodeView removeFromSuperview];
+            UIImage *playOverlay = [UIImage imageNamed:@"ui.nowplaying.png"];
+            UIImage *playOverlayHighlighted = [UIImage imageNamed:@"ui.nowplaying.highlighted.png"];
+            UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+            [button setImage:playOverlay forState:UIControlStateNormal];
+            [button setImage:playOverlayHighlighted forState:UIControlStateHighlighted];
+            [button setBackgroundImage:episodeImage forState:UIControlStateNormal];
+            [button setBackgroundImage:episodeImage forState:UIControlStateHighlighted];
+            [button setFrame:(CGRect){CGPointZero, {30, 30}}];
+            [button addTarget:self action:@selector(presentAudioPlayer) forControlEvents:UIControlEventTouchUpInside];
+            [button.layer setMasksToBounds:YES];
+            [button.layer setBorderColor:[UIColor blackColor].CGColor];
+            [button.layer setBorderWidth:0.5];
+            [button.layer setCornerRadius:4.0];
+            self.nowPlayingButton = [[UIBarButtonItem alloc] initWithCustomView:button];
+        }
+        [viewController.navigationItem setRightBarButtonItem:self.nowPlayingButton animated:NO];
+    } else {
+        [episodeView removeFromSuperview];
     }
 }
 
@@ -217,6 +237,9 @@ static inline CGFloat degreesToRadian(CGFloat degree)
     dispatch_once(&appearanceOnceToken, ^{
         [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"ui.navigationbar.background.png"] forBarMetrics:UIBarMetricsDefault];
         [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTintColor:[UIColor colorWithRed:89/255.0 green:0.0 blue:0.0 alpha:1.0]];
+        [[UISlider appearance] setMinimumTrackTintColor:[UIColor darkGrayColor]];
+        [[UISlider appearance] setMaximumTrackTintColor:[UIColor lightGrayColor]];
+        [[UISlider appearance] setThumbTintColor:[UIColor blackColor]];
     });
 }
 
