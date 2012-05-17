@@ -14,6 +14,7 @@ static UIColor *jj_selectedTextColor = nil;
 static UIColor *jj_detailTextColor = nil;
 static UIFont *jj_titleFont = nil;
 static UIFont *jj_detailFont = nil;
+static UIImage *jj_moviePlaceholderImage = nil;
 
 const CGRect jj_imageRect = (CGRect){15,15,55,55};
 const CGRect jj_imageBorderRect = (CGRect){10,10,65,65};
@@ -35,6 +36,7 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
         jj_detailTextColor = [UIColor lightGrayColor];
         jj_titleFont = [UIFont boldSystemFontOfSize:17.0f];
         jj_detailFont = [UIFont systemFontOfSize:11.0f];
+        jj_moviePlaceholderImage = [UIImage imageNamed:@"ui.placeholder.png"];
     }
 }
 
@@ -60,13 +62,12 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
         [image drawInRect:jj_imageRect];
     } else {
         [jj_detailTextColor set];
-        CGContextFillRect(context, jj_imageBorderRect);
+        [jj_moviePlaceholderImage drawInRect:jj_imageBorderRect];
     }
     
     if (! [self isSelected] && ! [self isHighlighted]) {
         CGColorRef shadowColorRef;
         CGSize shadowSize;
-
         shadowColorRef = jj_selectedTextColor.CGColor;
         shadowSize = (CGSize){0, 1};
         CGContextSetShadowWithColor(context, shadowSize, 0.0, shadowColorRef);
