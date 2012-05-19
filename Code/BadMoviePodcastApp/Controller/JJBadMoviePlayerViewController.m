@@ -22,6 +22,8 @@
 @property (nonatomic, strong) UIButton *skipBackButton;
 @property (nonatomic, strong) UILabel *currentlyPlaying;
 
+@property (nonatomic, strong) UISlider *progressSlider;
+
 @property (nonatomic, strong) AVPlayer *streamingAudioPlayer;
 @property (nonatomic, strong) MPVolumeView *volumeView;
 
@@ -42,6 +44,9 @@
 @synthesize currentlyPlaying = _currentlyPlaying;
 @synthesize playPauseEpisodeButton = _playPauseEpisodeButton, volumeView = _volumeView;
 @synthesize skipBackButton = _skipBackButton, skipForwardButton = _skipForwardButton;
+
+@synthesize progressSlider = _progressSlider;
+
 @synthesize streamingAudioPlayer = _streamingAudioPlayer;
 
 #pragma mark - lifecycle
@@ -93,6 +98,9 @@
     [self.currentlyPlaying setShadowOffset:(CGSize){0, -1}];
     [self.view addSubview:self.currentlyPlaying];
 
+    self.progressSlider = [[UISlider alloc] initWithFrame:(CGRect){10, 100, 280, 20}];
+    [self.view addSubview:self.progressSlider];
+    
     self.volumeView = [[MPVolumeView alloc] initWithFrame:(CGRect){10, 120, 280, 20}];
     [self.volumeView sizeThatFits:self.volumeView.frame.size];
     [self.view addSubview:self.volumeView];
@@ -108,6 +116,8 @@
     self.skipBackButton = nil;
     self.skipForwardButton = nil;
     self.currentlyPlaying = nil;
+    
+    self.progressSlider = nil;
     
     self.volumeView = nil;
     self.streamingAudioPlayer = nil;
@@ -195,6 +205,10 @@
     
     // load player
     self.streamingAudioPlayer = [AVPlayer playerWithURL:[NSURL URLWithString:self.currentEpisode.url]];
+
+//    [self.progressSlider setMinimumValue:0];
+//    [self.progressSlider setMaximumValue:self.streamingAudioPlayer.currentTime.value];
+
     
     NSError *playbackError = nil;
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&playbackError];
@@ -208,16 +222,30 @@
         NSLog(@"%@", [activationError localizedDescription]);
     }
     
-    //    MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithImage:episodeImageView.image];
-    NSDictionary *mediaDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                     kJJBadMovieAlbumTitle, MPMediaItemPropertyAlbumTitle,
-                                     self.currentEpisode.number, MPMediaItemPropertyAlbumTrackNumber,
-                                     kJJBadMovieArtistName, MPMediaItemPropertyArtist,
-                                     //                                     artwork, MPMediaItemPropertyArtwork,
-                                     kJJBadMovieGenre, MPMediaItemPropertyGenre,
-                                     self.currentEpisode.name, MPMediaItemPropertyTitle,
-                                     self.currentEpisode.name, MPMediaItemPropertyPodcastTitle,
-                                     nil];
+    UIImage *episodeImage = [episode cachedImage];
+    NSDictionary *mediaDictionary = nil;
+    if (episodeImage) {
+        MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithImage:episodeImage];
+        mediaDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                           kJJBadMovieAlbumTitle, MPMediaItemPropertyAlbumTitle,
+                           self.currentEpisode.number, MPMediaItemPropertyAlbumTrackNumber,
+                           kJJBadMovieArtistName, MPMediaItemPropertyArtist,
+                           artwork, MPMediaItemPropertyArtwork,
+                           kJJBadMovieGenre, MPMediaItemPropertyGenre,
+                           self.currentEpisode.name, MPMediaItemPropertyTitle,
+                           self.currentEpisode.name, MPMediaItemPropertyPodcastTitle,
+                           nil];
+    } else {
+        mediaDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    kJJBadMovieAlbumTitle, MPMediaItemPropertyAlbumTitle,
+                                    self.currentEpisode.number, MPMediaItemPropertyAlbumTrackNumber,
+                                    kJJBadMovieArtistName, MPMediaItemPropertyArtist,
+                                    kJJBadMovieGenre, MPMediaItemPropertyGenre,
+                                    self.currentEpisode.name, MPMediaItemPropertyTitle,
+                                    self.currentEpisode.name, MPMediaItemPropertyPodcastTitle,
+                                    nil];
+        
+    }
     [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:mediaDictionary];
     
     [self play];

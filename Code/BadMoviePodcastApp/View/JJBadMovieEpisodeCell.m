@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 jnjosh.com. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "JJBadMovieEpisodeCell.h"
 #import "JJBadMovie.h"
 
@@ -21,11 +22,18 @@ const CGRect jj_imageBorderRect = (CGRect){10,10,65,65};
 const CGRect jj_titleTextRect = (CGRect){85,10,205,20};
 const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
 
+@interface JJBadMovieEpisodeCell ()
+
+- (void)cleanImageLayer;
+
+@end
+
+
 @implementation JJBadMovieEpisodeCell
 
 #pragma mark - synth
 
-@synthesize episode = _episode;
+@synthesize episode = _episode, imageLayer = _imageLayer;
 
 #pragma mark - class
 
@@ -52,18 +60,58 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
 
 #pragma mark - draw
 
+- (void)cleanImageLayer {
+    if (self.imageLayer) {
+        [self.imageLayer removeFromSuperlayer];
+        self.imageLayer = nil;
+    }
+}
+
+- (void)layoutSubviews {
+    if (! [self.episode cachedImage]) {
+        [self cleanImageLayer];
+        return;
+    }
+    
+    BOOL animateImage = YES;
+    if (self.imageLayer) {
+        animateImage = NO;
+        [self cleanImageLayer];
+    }
+    
+    self.imageLayer = [CALayer layer];
+    self.imageLayer.contents = (__bridge id)[[self.episode cachedImage] CGImage];
+    self.imageLayer.frame = (CGRect){15, 15, 55, 55};
+    self.imageLayer.opaque = NO;
+    self.imageLayer.opacity = animateImage ? 0.0 : 1.0;
+    
+    if (animateImage) {
+        CABasicAnimation *layerShow = [CABasicAnimation animation];
+        [layerShow setKeyPath:@"opacity"];
+        [layerShow setFromValue:[NSNumber numberWithFloat:0.0]];
+        [layerShow setToValue:[NSNumber numberWithFloat:1.0]];
+        [layerShow setDuration:0.5];
+        [layerShow setRemovedOnCompletion:NO];
+        [layerShow setAutoreverses:NO];
+        [layerShow setFillMode:kCAFillModeForwards];
+        [self.imageLayer addAnimation:layerShow forKey:@"showLayer"];
+    }
+    
+    [self.layer addSublayer:self.imageLayer];
+}
+
 - (void)drawRect:(CGRect)rect {
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    UIImage *image = [self.episode cachedImage];
-    if (image) {
-        [jj_selectedTextColor set];
-        CGContextFillRect(context, jj_imageBorderRect);
-        [image drawInRect:jj_imageRect];
-    } else {
-        [jj_detailTextColor set];
+//    UIImage *image = [self.episode cachedImage];
+//    if (image) {
+//        [jj_selectedTextColor set];
+//        CGContextFillRect(context, jj_imageBorderRect);
+//        [image drawInRect:jj_imageRect];
+//    } else {
+//        [jj_detailTextColor set];
         [jj_moviePlaceholderImage drawInRect:jj_imageBorderRect];
-    }
+//    }
     
     if (! [self isSelected] && ! [self isHighlighted]) {
         CGColorRef shadowColorRef;
@@ -85,6 +133,7 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
 - (void)setEpisode:(JJBadMovie *)episode {
     if (! [_episode isEqual:episode]) {
         _episode = episode;
+        
         [self setNeedsDisplay];
     }
 }

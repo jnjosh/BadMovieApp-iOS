@@ -19,6 +19,7 @@
 @synthesize published = _published;
 @synthesize url = _url;
 @synthesize video = _video;
+@synthesize displayed = _displayed;
 
 + (JJBadMovie *)instanceFromDictionary:(NSDictionary *)aDictionary {
     JJBadMovie *instance = [[JJBadMovie alloc] init];
@@ -27,7 +28,7 @@
 }
 
 - (UIImage *)cachedImage {
-    UIImage *imageFromCache = [[SDImageCache sharedImageCache] imageFromKey:self.photo fromDisk:NO];
+    UIImage *imageFromCache = [[SDImageCache sharedImageCache] imageFromKey:self.photo fromDisk:YES];
     return imageFromCache ? : nil;
 }
 

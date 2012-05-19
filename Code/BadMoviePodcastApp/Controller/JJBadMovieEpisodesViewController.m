@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 jnjosh.com. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "JJBadMovieEpisodesViewController.h"
 #import "JJBadMovieSettingsViewController.h"
 #import "JJBadMovieEnvironment.h"
@@ -67,12 +68,6 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
     }
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
-        [self downloadImageInView];
-    });
-}
-
 - (void)viewDidUnload {
     [super viewDidUnload];
 }
@@ -132,6 +127,10 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
     }
     JJBadMovie *movie = [self.dataSource episodeForIndexPath:indexPath];
     [cell setEpisode:movie];
+    
+    [self.dataSource downloadImageForIndexPath:indexPath completionHandler:^{
+        [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone]; 
+    }];
     
     return cell;
 }
