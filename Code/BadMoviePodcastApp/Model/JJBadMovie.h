@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface JJBadMovie : NSObject
+@interface JJBadMovie : NSObject <NSCoding>
 
 @property (nonatomic, copy) NSString *descriptionText;
 @property (nonatomic, copy) NSString *imdb;
