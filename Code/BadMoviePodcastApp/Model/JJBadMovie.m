@@ -19,7 +19,6 @@
 @synthesize published = _published;
 @synthesize url = _url;
 @synthesize video = _video;
-@synthesize displayed = _displayed;
 
 + (JJBadMovie *)instanceFromDictionary:(NSDictionary *)aDictionary {
     JJBadMovie *instance = [[JJBadMovie alloc] init];

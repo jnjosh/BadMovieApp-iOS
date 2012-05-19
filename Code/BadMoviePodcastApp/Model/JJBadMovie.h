@@ -18,7 +18,6 @@
 @property (nonatomic, copy) NSString *published;
 @property (nonatomic, copy) NSString *url;
 @property (nonatomic, copy) NSString *video;
-@property (nonatomic, assign, getter = hasDisplayed) BOOL displayed;
 
 @property (nonatomic, strong, readonly) UIImage *cachedImage;
 
