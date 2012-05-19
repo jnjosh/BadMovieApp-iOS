@@ -17,6 +17,9 @@ static UIFont *jj_titleFont = nil;
 static UIFont *jj_detailFont = nil;
 static UIImage *jj_moviePlaceholderImage = nil;
 
+static CGColorRef jj_shadowColorRef;
+
+const CGSize jj_shadowOffsetSize = (CGSize){0, 1};
 const CGRect jj_imageRect = (CGRect){15,15,55,55};
 const CGRect jj_imageBorderRect = (CGRect){10,10,65,65};
 const CGRect jj_titleTextRect = (CGRect){85,10,205,20};
@@ -45,6 +48,7 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
         jj_titleFont = [UIFont boldSystemFontOfSize:17.0f];
         jj_detailFont = [UIFont systemFontOfSize:11.0f];
         jj_moviePlaceholderImage = [UIImage imageNamed:@"ui.placeholder.png"];
+        jj_shadowColorRef = [jj_selectedTextColor CGColor];
     }
 }
 
@@ -81,7 +85,7 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
     
     self.imageLayer = [CALayer layer];
     self.imageLayer.contents = (__bridge id)[[self.episode cachedImage] CGImage];
-    self.imageLayer.frame = (CGRect){15, 15, 55, 55};
+    self.imageLayer.frame = jj_imageRect;
     self.imageLayer.opaque = NO;
     self.imageLayer.opacity = animateImage ? 0.0 : 1.0;
     
@@ -102,23 +106,10 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
 
 - (void)drawRect:(CGRect)rect {
     CGContextRef context = UIGraphicsGetCurrentContext();
-    
-//    UIImage *image = [self.episode cachedImage];
-//    if (image) {
-//        [jj_selectedTextColor set];
-//        CGContextFillRect(context, jj_imageBorderRect);
-//        [image drawInRect:jj_imageRect];
-//    } else {
-//        [jj_detailTextColor set];
-        [jj_moviePlaceholderImage drawInRect:jj_imageBorderRect];
-//    }
+    [jj_moviePlaceholderImage drawInRect:jj_imageBorderRect];
     
     if (! [self isSelected] && ! [self isHighlighted]) {
-        CGColorRef shadowColorRef;
-        CGSize shadowSize;
-        shadowColorRef = jj_selectedTextColor.CGColor;
-        shadowSize = (CGSize){0, 1};
-        CGContextSetShadowWithColor(context, shadowSize, 0.0, shadowColorRef);
+        CGContextSetShadowWithColor(context, jj_shadowOffsetSize, 0.0, jj_shadowColorRef);
     }
 
     [jj_textColor set];

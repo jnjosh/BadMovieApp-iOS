@@ -588,15 +588,15 @@
 		A42E1B0F155B5C7000043EA7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Josh Johnson (4UH3R9P93N)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Josh Johnson (4UH3R9P93N)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Joshua Johnson (32DF94Y494)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Joshua Johnson (32DF94Y494)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BadMoviePodcastApp/BadMoviePodcastApp-Prefix.pch";
 				INFOPLIST_FILE = "BadMoviePodcastApp/BadMoviePodcastApp-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = badmovieapp;
-				PROVISIONING_PROFILE = "AEAEE20E-BC95-4BA8-9609-E2454361CB9B";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AEAEE20E-BC95-4BA8-9609-E2454361CB9B";
+				PROVISIONING_PROFILE = "A6040F0B-71FB-4112-85A7-9602629FC555";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A6040F0B-71FB-4112-85A7-9602629FC555";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
