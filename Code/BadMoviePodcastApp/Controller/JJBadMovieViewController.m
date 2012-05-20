@@ -7,6 +7,7 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
+#import <Twitter/Twitter.h>
 #import "JJBadMovieViewController.h"
 #import "JJBadMovieWebViewController.h"
 #import "JJBadMovie.h"
@@ -35,9 +36,12 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
 - (void)playEpisode;
 - (void)playTrailer;
 - (void)showMovieInfo;
+- (void)displayShareSheet;
 
 - (UITableViewCell *)cellForDescriptionRow;
 - (UITableViewCell *)cellForLinkRow:(NSIndexPath *)indexPath;
+- (void)copyEpisodeURL;
+- (void)tweetEpisode;
 
 @end
 
@@ -91,7 +95,7 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
     [self.episodeImageView setBackgroundColor:[UIColor whiteColor]];
     [self.episodeImageView setImage:image];
     [self.episodeImageView.layer setShadowColor:[[UIColor blackColor] CGColor]];
-    [self.episodeImageView.layer setShadowOffset:(CGSize){0, 0}];
+    [self.episodeImageView.layer setShadowOffset:(CGSize){0, 1}];
     [self.episodeImageView.layer setShadowRadius:2.0];
     [self.episodeImageView.layer setShadowOpacity:1.0];
     [self.headerView addSubview:self.episodeImageView];
@@ -108,12 +112,12 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
     [self.downloadButton setFrame:(CGRect){ 208, 48, 26, 26 }];
     [self.downloadButton setShowsTouchWhenHighlighted:YES];
     [self.headerView addSubview:self.downloadButton];
-
     
     self.shareEpisodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.shareEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.share.png"] forState:UIControlStateNormal];
     [self.shareEpisodeButton setFrame:(CGRect){ 280, 48, 26, 26 }];
     [self.shareEpisodeButton setShowsTouchWhenHighlighted:YES];
+    [self.shareEpisodeButton addTarget:self action:@selector(displayShareSheet) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview:self.shareEpisodeButton];
     
     UISwipeGestureRecognizer *swipeBackGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeBack)];
@@ -258,7 +262,39 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
     return linkCell;
 }
 
+#pragma mark - action sheet delegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 0:
+            [self tweetEpisode];
+            break;
+        case 1:
+            [self copyEpisodeURL];
+            break;
+    }
+}
+
+#pragma mark - share methods
+
+- (void)tweetEpisode {
+    TWTweetComposeViewController *twitterController = [[TWTweetComposeViewController alloc] init];
+    [twitterController setInitialText:[NSString stringWithFormat:@"Listened to the %@ review on @BadMoviePodcast", self.movie.name]];
+    [twitterController addURL:[NSURL URLWithString:@"http://badmoviepodcast.com"]];
+    [self presentModalViewController:twitterController animated:YES];
+}
+
+- (void)copyEpisodeURL {
+    [[UIPasteboard generalPasteboard] setURL:[NSURL URLWithString:@"http://badmoviepodcast.com"]];
+}
+
 #pragma mark - episode methods
+
+- (void)displayShareSheet {
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Tweet", @"Copy URL", nil];
+    [actionSheet setActionSheetStyle:UIActionSheetStyleBlackTranslucent];
+    [actionSheet showInView:self.view];
+}
 
 - (void)swipeBack {
     [self.navigationController popViewControllerAnimated:YES];

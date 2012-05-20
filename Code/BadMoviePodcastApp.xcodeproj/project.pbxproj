@@ -59,6 +59,7 @@
 		A4704D2D1561D3CD0079C534 /* UIButton+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A4704D261561D3CD0079C534 /* UIButton+WebCache.m */; };
 		A4704D2F1561D40C0079C534 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4704D2E1561D40C0079C534 /* ImageIO.framework */; };
 		A4B41EBB156945110059F9F7 /* ui.moviedetails@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4B41EBA156945110059F9F7 /* ui.moviedetails@2x.png */; };
+		A4B41EBD156948A30059F9F7 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4B41EBC156948A30059F9F7 /* Twitter.framework */; };
 		A4CD774C1560AE2400F11AF8 /* ui.buttons.pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4CD774A1560AE2400F11AF8 /* ui.buttons.pause@2x.png */; };
 		A4CD774D1560AE2400F11AF8 /* ui.buttons.play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4CD774B1560AE2400F11AF8 /* ui.buttons.play@2x.png */; };
 		A4CD77501560B26300F11AF8 /* ui.buttons.skip.back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4CD774E1560B26300F11AF8 /* ui.buttons.skip.back@2x.png */; };
@@ -164,6 +165,7 @@
 		A4704D271561D3CD0079C534 /* UIImageView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImageView+WebCache.h"; path = "SDWebImage/SDWebImage/UIImageView+WebCache.h"; sourceTree = "<group>"; };
 		A4704D2E1561D40C0079C534 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		A4B41EBA156945110059F9F7 /* ui.moviedetails@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.moviedetails@2x.png"; sourceTree = "<group>"; };
+		A4B41EBC156948A30059F9F7 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		A4CD774A1560AE2400F11AF8 /* ui.buttons.pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.pause@2x.png"; sourceTree = "<group>"; };
 		A4CD774B1560AE2400F11AF8 /* ui.buttons.play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.play@2x.png"; sourceTree = "<group>"; };
 		A4CD774E1560B26300F11AF8 /* ui.buttons.skip.back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.skip.back@2x.png"; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4B41EBD156948A30059F9F7 /* Twitter.framework in Frameworks */,
 				A4704D2F1561D40C0079C534 /* ImageIO.framework in Frameworks */,
 				A4E1C06B155CA42800CDCD93 /* AudioToolbox.framework in Frameworks */,
 				A4F48D79155C7EB8007B35F6 /* AVFoundation.framework in Frameworks */,
@@ -217,6 +220,7 @@
 		A42E1AF9155B5C7000043EA7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A4B41EBC156948A30059F9F7 /* Twitter.framework */,
 				A4704D2E1561D40C0079C534 /* ImageIO.framework */,
 				A40959F1155ED766006DAA33 /* CoreImage.framework */,
 				A4E1C06A155CA42800CDCD93 /* AudioToolbox.framework */,
