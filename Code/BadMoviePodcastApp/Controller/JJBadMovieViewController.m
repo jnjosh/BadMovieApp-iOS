@@ -90,6 +90,10 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
     [self.episodeImageView setContentMode:UIViewContentModeScaleToFill];
     [self.episodeImageView setBackgroundColor:[UIColor whiteColor]];
     [self.episodeImageView setImage:image];
+    [self.episodeImageView.layer setShadowColor:[[UIColor blackColor] CGColor]];
+    [self.episodeImageView.layer setShadowOffset:(CGSize){0, 0}];
+    [self.episodeImageView.layer setShadowRadius:2.0];
+    [self.episodeImageView.layer setShadowOpacity:1.0];
     [self.headerView addSubview:self.episodeImageView];
     
     self.episodeButton = [UIButton buttonWithType:UIButtonTypeCustom];

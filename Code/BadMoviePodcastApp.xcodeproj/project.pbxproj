@@ -38,7 +38,6 @@
 		A42E1B57155B71D300043EA7 /* JJBadMovieWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B56155B71D300043EA7 /* JJBadMovieWebViewController.m */; };
 		A4394EE31565D23400E44CE0 /* ui.placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4394EE21565D23400E44CE0 /* ui.placeholder@2x.png */; };
 		A43B74A215689DBE00BDC1CE /* ui.buttons.share@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A43B74A115689DBE00BDC1CE /* ui.buttons.share@2x.png */; };
-		A43B74A41568B78900BDC1CE /* ui.moviedetails@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A43B74A31568B78900BDC1CE /* ui.moviedetails@2x.png */; };
 		A43B74A61568C60C00BDC1CE /* ui.buttons.download@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A43B74A51568C60C00BDC1CE /* ui.buttons.download@2x.png */; };
 		A46B1BB91564853C004E546A /* JJBadMovieEpisodeDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = A46B1BB81564853C004E546A /* JJBadMovieEpisodeDataSource.m */; };
 		A46B1BCC1564A2ED004E546A /* ui.nowplaying.highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A46B1BCA1564A2ED004E546A /* ui.nowplaying.highlighted@2x.png */; };
@@ -59,6 +58,7 @@
 		A4704D2C1561D3CD0079C534 /* SDWebImagePrefetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = A4704D241561D3CD0079C534 /* SDWebImagePrefetcher.m */; };
 		A4704D2D1561D3CD0079C534 /* UIButton+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A4704D261561D3CD0079C534 /* UIButton+WebCache.m */; };
 		A4704D2F1561D40C0079C534 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4704D2E1561D40C0079C534 /* ImageIO.framework */; };
+		A4B41EBB156945110059F9F7 /* ui.moviedetails@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4B41EBA156945110059F9F7 /* ui.moviedetails@2x.png */; };
 		A4CD774C1560AE2400F11AF8 /* ui.buttons.pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4CD774A1560AE2400F11AF8 /* ui.buttons.pause@2x.png */; };
 		A4CD774D1560AE2400F11AF8 /* ui.buttons.play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4CD774B1560AE2400F11AF8 /* ui.buttons.play@2x.png */; };
 		A4CD77501560B26300F11AF8 /* ui.buttons.skip.back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4CD774E1560B26300F11AF8 /* ui.buttons.skip.back@2x.png */; };
@@ -127,7 +127,6 @@
 		A42E1B56155B71D300043EA7 /* JJBadMovieWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieWebViewController.m; sourceTree = "<group>"; };
 		A4394EE21565D23400E44CE0 /* ui.placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.placeholder@2x.png"; sourceTree = "<group>"; };
 		A43B74A115689DBE00BDC1CE /* ui.buttons.share@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.share@2x.png"; sourceTree = "<group>"; };
-		A43B74A31568B78900BDC1CE /* ui.moviedetails@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.moviedetails@2x.png"; sourceTree = "<group>"; };
 		A43B74A51568C60C00BDC1CE /* ui.buttons.download@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.download@2x.png"; sourceTree = "<group>"; };
 		A46B1BB71564853C004E546A /* JJBadMovieEpisodeDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieEpisodeDataSource.h; sourceTree = "<group>"; };
 		A46B1BB81564853C004E546A /* JJBadMovieEpisodeDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieEpisodeDataSource.m; sourceTree = "<group>"; };
@@ -164,6 +163,7 @@
 		A4704D261561D3CD0079C534 /* UIButton+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIButton+WebCache.m"; path = "SDWebImage/SDWebImage/UIButton+WebCache.m"; sourceTree = "<group>"; };
 		A4704D271561D3CD0079C534 /* UIImageView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImageView+WebCache.h"; path = "SDWebImage/SDWebImage/UIImageView+WebCache.h"; sourceTree = "<group>"; };
 		A4704D2E1561D40C0079C534 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		A4B41EBA156945110059F9F7 /* ui.moviedetails@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.moviedetails@2x.png"; sourceTree = "<group>"; };
 		A4CD774A1560AE2400F11AF8 /* ui.buttons.pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.pause@2x.png"; sourceTree = "<group>"; };
 		A4CD774B1560AE2400F11AF8 /* ui.buttons.play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.play@2x.png"; sourceTree = "<group>"; };
 		A4CD774E1560B26300F11AF8 /* ui.buttons.skip.back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.skip.back@2x.png"; sourceTree = "<group>"; };
@@ -347,8 +347,8 @@
 		A42E1B4E155B67D000043EA7 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A4B41EBA156945110059F9F7 /* ui.moviedetails@2x.png */,
 				A43B74A51568C60C00BDC1CE /* ui.buttons.download@2x.png */,
-				A43B74A31568B78900BDC1CE /* ui.moviedetails@2x.png */,
 				A43B74A115689DBE00BDC1CE /* ui.buttons.share@2x.png */,
 				A4394EE21565D23400E44CE0 /* ui.placeholder@2x.png */,
 				A46B1BD01564A61C004E546A /* ui.window@2x.png */,
@@ -488,8 +488,8 @@
 				A46B1BD11564A61C004E546A /* ui.window@2x.png in Resources */,
 				A4394EE31565D23400E44CE0 /* ui.placeholder@2x.png in Resources */,
 				A43B74A215689DBE00BDC1CE /* ui.buttons.share@2x.png in Resources */,
-				A43B74A41568B78900BDC1CE /* ui.moviedetails@2x.png in Resources */,
 				A43B74A61568C60C00BDC1CE /* ui.buttons.download@2x.png in Resources */,
+				A4B41EBB156945110059F9F7 /* ui.moviedetails@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
