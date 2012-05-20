@@ -63,6 +63,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         [_window addSubview:_playerController.view];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showPlayerControl:) name:kJJBadMovieNotificationShowPlayerControl object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presentAudioPlayer) name:kJJBadMovieNotificationShowPlayer object:nil];
     }
     return self;
 }

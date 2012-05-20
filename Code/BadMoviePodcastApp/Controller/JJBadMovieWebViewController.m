@@ -57,14 +57,19 @@
 {
     [super viewDidLoad];
     
-    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    [self.activityIndicator setHidesWhenStopped:YES];
-    [self.view addSubview:self.activityIndicator];
-    
     self.webview = [[UIWebView alloc] initWithFrame:CGRectZero];
     [self.webview setAutoresizingMask:self.view.autoresizingMask];
+    [self.webview setBackgroundColor:[UIColor viewFlipsideBackgroundColor]];
     [self.webview setDelegate:self];
     [self.view addSubview:self.webview];
+
+    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    [self.activityIndicator setHidesWhenStopped:YES];
+    [self.activityIndicator startAnimating];
+    [self.navigationItem setTitleView:self.activityIndicator];
+    
+    NSURLRequest *webURLRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:self.webURL]];
+    [self.webview loadRequest:webURLRequest];
 }
 
 - (void)viewDidUnload {
@@ -72,19 +77,6 @@
     
     self.activityIndicator = nil;
     self.webview = nil;
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [self.webview setHidden:YES];
-    
-    self.activityIndicator.center = self.view.center;
-    [self.activityIndicator startAnimating];
-    
-    if (! [self isYoutube]) {
-        NSURLRequest *imdbURL = [NSURLRequest requestWithURL:[NSURL URLWithString:self.webURL]];
-        [self.webview loadRequest:imdbURL];
-    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -96,10 +88,8 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     [self.activityIndicator stopAnimating];
-    [self.webview setHidden:NO];
-    
+    [self.navigationItem setTitleView:nil];
     self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
 }
-
 
 @end

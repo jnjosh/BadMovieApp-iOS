@@ -10,7 +10,7 @@
 
 @class JJBadMovie;
 
-@interface JJBadMovieViewController : UIViewController
+@interface JJBadMovieViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
 - (id)initWithBadMovie:(JJBadMovie *)badMovie;
 

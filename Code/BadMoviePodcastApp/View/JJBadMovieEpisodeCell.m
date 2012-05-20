@@ -16,7 +16,6 @@ static UIColor *jj_detailTextColor = nil;
 static UIFont *jj_titleFont = nil;
 static UIFont *jj_detailFont = nil;
 static UIImage *jj_moviePlaceholderImage = nil;
-
 static CGColorRef jj_shadowColorRef;
 
 const CGSize jj_shadowOffsetSize = (CGSize){0, 1};
@@ -72,6 +71,8 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
 }
 
 - (void)layoutSubviews {
+    [super layoutSubviews];
+    
     if (! [self.episode cachedImage]) {
         [self cleanImageLayer];
         return;
