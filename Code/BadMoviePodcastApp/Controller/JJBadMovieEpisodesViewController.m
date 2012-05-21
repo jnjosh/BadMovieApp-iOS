@@ -20,6 +20,7 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 @interface JJBadMovieEpisodesViewController ()
 
 @property (nonatomic, strong) JJBadMovieEpisodeDataSource *dataSource;
+@property (nonatomic, strong) UITableView *tableView;
 
 - (void)showSettings;
 - (void)downloadImageInView;
@@ -30,12 +31,12 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 
 #pragma mark - synth
 
-@synthesize dataSource = _dataSource;
+@synthesize dataSource = _dataSource, tableView = _tableView;
 
 #pragma mark - lifecycle
 
 - (id)initWithEpisodeDataSource:(JJBadMovieEpisodeDataSource *)dataSource {
-    if (self = [self initWithStyle:UITableViewStylePlain]) {
+    if (self = [self initWithNibName:nil bundle:nil]) {
         self.dataSource = dataSource;
     }
     return self;
@@ -43,14 +44,24 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 
 #pragma mark - view loading
 
+- (void)loadView {
+    self.view = [[UIView alloc] initWithFrame:CGRectZero];
+    [self.view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    [self.tableView setAutoresizingMask:self.view.autoresizingMask];
     [self.tableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.tableview.background.png"]]];
+    [self.tableView setDelegate:self];
+    [self.tableView setDataSource:self];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.tableView setShowsVerticalScrollIndicator:NO];
-
+    [self.view addSubview:self.tableView];
+    
     UIImageView *titleImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.navigationbar.title.png"]];
     [self.navigationItem setTitleView:titleImage];
     
@@ -70,6 +81,8 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 
 - (void)viewDidUnload {
     [super viewDidUnload];
+    
+    self.tableView = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -138,7 +151,7 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 #pragma mark - Table view delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 85.0;
+    return 90.0f;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

@@ -98,8 +98,8 @@
     [self.currentlyPlaying setShadowOffset:(CGSize){0, -1}];
     [self.view addSubview:self.currentlyPlaying];
 
-    self.progressSlider = [[UISlider alloc] initWithFrame:(CGRect){10, 100, 280, 20}];
-    [self.view addSubview:self.progressSlider];
+//    self.progressSlider = [[UISlider alloc] initWithFrame:(CGRect){10, 100, 280, 20}];
+//    [self.view addSubview:self.progressSlider];
     
     self.volumeView = [[MPVolumeView alloc] initWithFrame:(CGRect){10, 120, 280, 20}];
     [self.volumeView sizeThatFits:self.volumeView.frame.size];
@@ -205,10 +205,6 @@
     
     // load player
     self.streamingAudioPlayer = [AVPlayer playerWithURL:[NSURL URLWithString:self.currentEpisode.url]];
-
-//    [self.progressSlider setMinimumValue:0];
-//    [self.progressSlider setMaximumValue:self.streamingAudioPlayer.currentTime.value];
-
     
     NSError *playbackError = nil;
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&playbackError];

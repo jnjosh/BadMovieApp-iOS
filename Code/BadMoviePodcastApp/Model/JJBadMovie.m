@@ -56,6 +56,14 @@ NSString * const kJJBadMovieEpisodeKeyVideo = @"com.jnjosh.episode.video";
     [aCoder encodeObject:self.video forKey:kJJBadMovieEpisodeKeyVideo];
 }
 
+- (BOOL)isEqual:(id)object {
+    if ([object isKindOfClass:[self class]]) {
+        JJBadMovie *otherClass = object;
+        return [[self number] compare:[otherClass number]] == NSOrderedSame;
+    }
+    return NO;
+}
+
 #pragma mark - class methods
 
 + (JJBadMovie *)instanceFromDictionary:(NSDictionary *)aDictionary {

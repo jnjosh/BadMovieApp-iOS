@@ -10,7 +10,7 @@
 
 @class JJBadMovieEpisodeDataSource;
 
-@interface JJBadMovieEpisodesViewController : UITableViewController
+@interface JJBadMovieEpisodesViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
 - (id)initWithEpisodeDataSource:(JJBadMovieEpisodeDataSource *)dataSource;
 

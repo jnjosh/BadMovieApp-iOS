@@ -10,6 +10,7 @@
 
 @interface JJBadMovieWebViewController : UIViewController <UIWebViewDelegate>
 
+- (id)initWithLocalHTML:(NSString *)localHTML;
 - (id)initWithYouTubeVideo:(NSString *)youtubeVideoString;
 - (id)initWithIMDBUrl:(NSString *)imdbUrl;
 

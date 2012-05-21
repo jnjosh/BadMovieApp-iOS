@@ -10,3 +10,6 @@
 [submodule "Code/Libraries/SDWebImage"]
 	path = Code/Libraries/SDWebImage
 	url = git://github.com/rs/SDWebImage.git
+[submodule "Code/Libraries/MBProgressHUD"]
+	path = Code/Libraries/MBProgressHUD
+	url = git://github.com/jdg/MBProgressHUD.git

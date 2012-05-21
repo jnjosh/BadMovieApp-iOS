@@ -14,6 +14,7 @@
 @property (nonatomic, strong) UIWebView *webview;
 @property (nonatomic, assign) BOOL isYoutube;
 @property (nonatomic, copy) NSString *webURL;
+@property (nonatomic, copy) NSString *webFile;
 
 @end
 
@@ -22,10 +23,17 @@
 #pragma mark - synth
 
 @synthesize isYoutube = _isYoutube;
-@synthesize webURL = _webURL;
+@synthesize webURL = _webURL, webFile = _webFile;
 @synthesize activityIndicator = _activityIndicator, webview = _webview;
 
 #pragma mark - lifecycle
+
+- (id)initWithLocalHTML:(NSString *)localHTML {
+    if (self = [self initWithNibName:nil bundle:nil]) {
+        _webFile = [localHTML copy];
+    }
+    return self;
+}
 
 - (id)initWithYouTubeVideo:(NSString *)youtubeVideoString {
     if (self = [self initWithNibName:nil bundle:nil]) {
@@ -68,8 +76,14 @@
     [self.activityIndicator startAnimating];
     [self.navigationItem setTitleView:self.activityIndicator];
     
-    NSURLRequest *webURLRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:self.webURL]];
-    [self.webview loadRequest:webURLRequest];
+    if (self.webURL) {
+        NSURLRequest *webURLRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:self.webURL]];
+        [self.webview loadRequest:webURLRequest];
+    } else if (self.webFile) {
+        NSString *htmlFile = [[NSBundle mainBundle] pathForResource:self.webFile ofType:@"html" inDirectory:nil];
+        NSData *htmlData = [NSData dataWithContentsOfFile:htmlFile];
+        [self.webview loadData:htmlData MIMEType:@"text/html" textEncodingName:@"UTF-8" baseURL:[NSURL URLWithString:@""]];
+    }
 }
 
 - (void)viewDidUnload {
@@ -85,6 +99,14 @@
 }
 
 #pragma mark - web view
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    if (self.webFile) {
+        [[UIApplication sharedApplication] openURL:request.URL];   
+        return NO;
+    }
+    return YES;
+}
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     [self.activityIndicator stopAnimating];

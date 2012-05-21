@@ -13,6 +13,7 @@
 #import "JJBadMovie.h"
 #import "JJBadMovieEnvironment.h"
 #import "SDImageCache.h"
+#import "MBProgressHUD.h"
 
 const NSUInteger kJJBadMovieCellRowHeader = 0;
 const NSUInteger kJJBadMovieCellRowDescription = 1;
@@ -102,23 +103,39 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
     
     self.episodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
-    [self.episodeButton setFrame:(CGRect){ 142, 48, 26, 26 }];
+    [self.episodeButton setFrame:(CGRect){ 162, 48, 26, 26 }];
     [self.episodeButton setShowsTouchWhenHighlighted:YES];
     [self.episodeButton addTarget:self action:@selector(playEpisode) forControlEvents:UIControlEventTouchUpInside];
+    [self.episodeButton.layer setShadowColor:[[UIColor blackColor] CGColor]];
+    [self.episodeButton.layer setShadowOffset:(CGSize){0, 1}];
+    [self.episodeButton.layer setShadowRadius:2.0];
+    [self.episodeButton.layer setShadowOpacity:1.0];
     [self.headerView addSubview:self.episodeButton];
 
-    self.downloadButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.downloadButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.download.png"] forState:UIControlStateNormal];
-    [self.downloadButton setFrame:(CGRect){ 208, 48, 26, 26 }];
-    [self.downloadButton setShowsTouchWhenHighlighted:YES];
-    [self.headerView addSubview:self.downloadButton];
+//    self.downloadButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [self.downloadButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.download.png"] forState:UIControlStateNormal];
+//    [self.downloadButton setFrame:(CGRect){ 208, 48, 26, 26 }];
+//    [self.downloadButton setShowsTouchWhenHighlighted:YES];
+//    [self.downloadButton.layer setShadowColor:[[UIColor blackColor] CGColor]];
+//    [self.downloadButton.layer setShadowOffset:(CGSize){0, 1}];
+//    [self.downloadButton.layer setShadowRadius:2.0];
+//    [self.downloadButton.layer setShadowOpacity:1.0];
+//    [self.headerView addSubview:self.downloadButton];
     
     self.shareEpisodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.shareEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.share.png"] forState:UIControlStateNormal];
-    [self.shareEpisodeButton setFrame:(CGRect){ 280, 48, 26, 26 }];
+    [self.shareEpisodeButton setFrame:(CGRect){ 240, 48, 26, 26 }];
     [self.shareEpisodeButton setShowsTouchWhenHighlighted:YES];
     [self.shareEpisodeButton addTarget:self action:@selector(displayShareSheet) forControlEvents:UIControlEventTouchUpInside];
+    [self.shareEpisodeButton.layer setShadowColor:[[UIColor blackColor] CGColor]];
+    [self.shareEpisodeButton.layer setShadowOffset:(CGSize){0, 1}];
+    [self.shareEpisodeButton.layer setShadowRadius:2.0];
+    [self.shareEpisodeButton.layer setShadowOpacity:1.0];
     [self.headerView addSubview:self.shareEpisodeButton];
+    
+    UIImageView *fadeView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.tableview.fade.png"]];
+    [fadeView setFrame:(CGRect){{0, self.headerView.frame.size.height},fadeView.frame.size}];
+    [self.view insertSubview:fadeView aboveSubview:self.tableView];
     
     UISwipeGestureRecognizer *swipeBackGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeBack)];
     [swipeBackGesture setDirection:UISwipeGestureRecognizerDirectionRight];
@@ -212,8 +229,7 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
         return 22;
     } else if (indexPath.row == kJJBadMovieCellRowDescription) {
         CGSize descriptionConstraint = (CGSize){300, CGFLOAT_MAX};
-        NSString *descriptionText = [NSString stringWithFormat:@"%@\n\n%@", self.movie.name, self.movie.descriptionText];
-        CGSize episodeDescriptionSize = [descriptionText sizeWithFont:[UIFont systemFontOfSize:16.0] constrainedToSize:descriptionConstraint lineBreakMode:UILineBreakModeWordWrap];
+        CGSize episodeDescriptionSize = [self.movie.descriptionText sizeWithFont:[UIFont systemFontOfSize:16.0] constrainedToSize:descriptionConstraint lineBreakMode:UILineBreakModeWordWrap];
         return episodeDescriptionSize.height + 20;
     } else if (indexPath.row == kJJBadMovieCellRowYouTube || indexPath.row == kJJBadMovieCellRowImdb) {
         return 54;
@@ -234,7 +250,7 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
         [descriptionCell.textLabel setShadowColor:[UIColor whiteColor]];
         [descriptionCell.textLabel setShadowOffset:(CGSize){0, 1}];
     }
-    descriptionCell.textLabel.text = [NSString stringWithFormat:@"%@\n\n%@", self.movie.name, self.movie.descriptionText];
+    descriptionCell.textLabel.text = self.movie.descriptionText;
     return descriptionCell;
 }
 
@@ -250,7 +266,7 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
         [linkCell.textLabel setFont:[UIFont boldSystemFontOfSize:16.0]];
         [linkCell.textLabel setTextColor:[UIColor darkGrayColor]];
         [linkCell.textLabel setShadowColor:[UIColor whiteColor]];
-        [linkCell.textLabel setHighlightedTextColor:[UIColor blackColor]];
+        [linkCell.textLabel setHighlightedTextColor:[UIColor whiteColor]];
         [linkCell.textLabel setShadowOffset:(CGSize){0, 1}];
     }
     
@@ -279,13 +295,23 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
 
 - (void)tweetEpisode {
     TWTweetComposeViewController *twitterController = [[TWTweetComposeViewController alloc] init];
-    [twitterController setInitialText:[NSString stringWithFormat:@"Listened to the %@ review on @BadMoviePodcast", self.movie.name]];
+    [twitterController setInitialText:[NSString stringWithFormat:@"Listened to Episode #%@ - %@ on @BadMoviePodcast", self.movie.number, self.movie.name]];
     [twitterController addURL:[NSURL URLWithString:@"http://badmoviepodcast.com"]];
     [self presentModalViewController:twitterController animated:YES];
 }
 
 - (void)copyEpisodeURL {
     [[UIPasteboard generalPasteboard] setURL:[NSURL URLWithString:@"http://badmoviepodcast.com"]];
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.mode = MBProgressHUDModeText;
+    hud.labelText = @"Link Copied";
+
+    double delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+    });
 }
 
 #pragma mark - episode methods

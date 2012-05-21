@@ -7,6 +7,7 @@
 //
 
 #import "JJBadMovieSettingsViewController.h"
+#import "JJBadMovieWebViewController.h"
 
 @interface JJBadMovieSettingsViewController ()
 
@@ -14,6 +15,7 @@
 @property (nonatomic, strong) NSArray *settings;
 
 - (void)closeSettings;
+- (void)followOnTwitter;
 
 @end
 
@@ -25,7 +27,7 @@
 - (id)initWithStyle:(UITableViewStyle)style
 {
     if (self = [super initWithStyle:style]) {
-        _settings = [NSArray arrayWithObjects:@"Push Notifications", @"Follow @BadMoviePodcast", @"About Bad Movie Podcast App", nil];
+        _settings = [NSArray arrayWithObjects:@"Follow @BadMoviePodcast", @"About Bad Movie Podcast App", nil];
     }
     return self;
 }
@@ -48,7 +50,7 @@
     UILabel *footerLabel = [[UILabel alloc] initWithFrame:self.footerView.bounds];
     [footerLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [footerLabel setNumberOfLines:2];
-    [footerLabel setText:@"Bad Movie Podcast App 1.0 (100)\nDesigned and Developed by Josh Johnson"];
+    [footerLabel setText:@"Bad Movie Podcast App 1.0 (178)\nDesigned and Developed by Josh Johnson"];
     [footerLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:10]];
     [footerLabel setTextColor:[UIColor grayColor]];
     [footerLabel setShadowColor:[UIColor whiteColor]];
@@ -104,6 +106,35 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    
+    if (indexPath.section == 0) {
+        [self followOnTwitter];
+    } else if (indexPath.section == 1) {
+        JJBadMovieWebViewController *webViewController = [[JJBadMovieWebViewController alloc] initWithLocalHTML:@"about"];
+        [self.navigationController pushViewController:webViewController animated:YES];
+    }
+    
 }
+
+#pragma mark - settings methods
+
+- (void)followOnTwitter {
+    NSURL *tweetbotURL = [NSURL URLWithString:@"tweetbot:///user_profile/BadMoviePodcast"];
+    if ([[UIApplication sharedApplication] canOpenURL:tweetbotURL]) {
+        [[UIApplication sharedApplication] openURL:tweetbotURL];
+    }
+    
+    NSURL *twitterURL = [NSURL URLWithString:@"twitter://user?screen_name=BadMoviePodcast"];
+    if ([[UIApplication sharedApplication] canOpenURL:twitterURL]) {
+        [[UIApplication sharedApplication] openURL:twitterURL];
+    }
+    
+    NSURL *twitURL = [NSURL URLWithString:@"twit:///user?screen_name=BadMoviePodcast"];
+    if ([[UIApplication sharedApplication] canOpenURL:twitURL]) {
+        [[UIApplication sharedApplication] openURL:twitURL];
+    }
+    
+}
+
 
 @end
