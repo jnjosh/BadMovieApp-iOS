@@ -122,18 +122,23 @@
     NSURL *tweetbotURL = [NSURL URLWithString:@"tweetbot:///user_profile/BadMoviePodcast"];
     if ([[UIApplication sharedApplication] canOpenURL:tweetbotURL]) {
         [[UIApplication sharedApplication] openURL:tweetbotURL];
+        return;
     }
     
     NSURL *twitterURL = [NSURL URLWithString:@"twitter://user?screen_name=BadMoviePodcast"];
     if ([[UIApplication sharedApplication] canOpenURL:twitterURL]) {
         [[UIApplication sharedApplication] openURL:twitterURL];
+        return;
     }
     
     NSURL *twitURL = [NSURL URLWithString:@"twit:///user?screen_name=BadMoviePodcast"];
     if ([[UIApplication sharedApplication] canOpenURL:twitURL]) {
         [[UIApplication sharedApplication] openURL:twitURL];
+        return;
     }
-    
+
+    NSURL *twitterWebURL = [NSURL URLWithString:@"http://www.twitter.com/BadMoviePodcast"];
+    [[UIApplication sharedApplication] openURL:twitterWebURL];
 }
 
 

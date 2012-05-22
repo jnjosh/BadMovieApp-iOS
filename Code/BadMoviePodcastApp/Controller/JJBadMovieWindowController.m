@@ -10,8 +10,10 @@
 #import "JJBadMovieEnvironment.h"
 #import "JJBadMovieWindowController.h"
 #import "JJBadMoviePlayerViewController.h"
+#import "JJBadMovieViewController.h"
 #import "JJBadMovieEpisodesViewController.h"
 #import "JJBadMovieEpisodeDataSource.h"
+#import "JJBadMovie.h"
 #import "SDURLCache.h"
 
 static inline CGFloat degreesToRadian(CGFloat degree)
@@ -76,6 +78,10 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     [self presentNowPlayingEpisodeView:nil forViewController:viewController];
+    if ([viewController isKindOfClass:[JJBadMovieViewController class]]) {
+        JJBadMovieViewController *badMovieViewController = (JJBadMovieViewController *)viewController;
+        [badMovieViewController setCurrentMovie:self.playerController.currentEpisode];
+    }
 }
 
 #pragma mark - player control

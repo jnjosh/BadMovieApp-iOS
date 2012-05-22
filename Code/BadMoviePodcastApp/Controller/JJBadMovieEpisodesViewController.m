@@ -151,7 +151,7 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 #pragma mark - Table view delegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 90.0f;
+    return 86.0f;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

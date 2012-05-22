@@ -12,6 +12,8 @@
 
 @interface JJBadMovieViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate>
 
+@property (nonatomic, assign) JJBadMovie *currentMovie;
+
 - (id)initWithBadMovie:(JJBadMovie *)badMovie;
 
 @end

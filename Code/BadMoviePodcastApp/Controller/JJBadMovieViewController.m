@@ -17,8 +17,8 @@
 
 const NSUInteger kJJBadMovieCellRowHeader = 0;
 const NSUInteger kJJBadMovieCellRowDescription = 1;
-const NSUInteger kJJBadMovieCellRowImdb = 2;
-const NSUInteger kJJBadMovieCellRowYouTube = 3;
+
+const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 @interface JJBadMovieViewController ()
 
@@ -37,10 +37,10 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
 - (void)playEpisode;
 - (void)playTrailer;
 - (void)showMovieInfo;
+- (void)downloadPodcast;
 - (void)displayShareSheet;
 
 - (UITableViewCell *)cellForDescriptionRow;
-- (UITableViewCell *)cellForLinkRow:(NSIndexPath *)indexPath;
 - (void)copyEpisodeURL;
 - (void)tweetEpisode;
 
@@ -50,7 +50,7 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
 
 #pragma mark - synth
 
-@synthesize movie = _movie;
+@synthesize movie = _movie, currentMovie = _currentMovie;
 @synthesize headerView = _headerView, tableView = _tableView, sectionHeaderView = _sectionHeaderView;
 @synthesize episodeButton = _episodeButton, episodeImageView = _episodeImageView;
 @synthesize shareEpisodeButton = _shareEpisodeButton, downloadButton = _downloadButton;
@@ -62,6 +62,10 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
         self.movie = badMovie;
     }
     return self;
+}
+
+- (void)dealloc {
+    _currentMovie = nil;
 }
 
 #pragma mark - view
@@ -77,7 +81,7 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
     [super viewDidLoad];
     self.title = self.movie.name;
     
-    self.tableView = [[UITableView alloc] initWithFrame:(CGRect){ 0, 122, 320, 294 } style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc] initWithFrame:(CGRect){ 0, 122, 320, 250 } style:UITableViewStylePlain];
     [self.tableView setDelegate:self];
     [self.tableView setDataSource:self];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
@@ -101,41 +105,60 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
     [self.episodeImageView.layer setShadowOpacity:1.0];
     [self.headerView addSubview:self.episodeImageView];
     
+    UIImage *playPauseImage = [[UIImage imageNamed:@"ui.buttons.playpause.png"] resizableImageWithCapInsets:(UIEdgeInsets){0, 11, 0, 11}];
+    UIImage *playPausePressedImage = [[UIImage imageNamed:@"ui.buttons.playpause.pressed.png"] resizableImageWithCapInsets:(UIEdgeInsets){0, 11, 0, 11}];
     self.episodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
-    [self.episodeButton setFrame:(CGRect){ 162, 48, 26, 26 }];
-    [self.episodeButton setShowsTouchWhenHighlighted:YES];
+    [self.episodeButton setFrame:(CGRect){ 152, 48, 125, 22.5 }];
+    [self.episodeButton setShowsTouchWhenHighlighted:NO];
+    [self.episodeButton setBackgroundImage:playPauseImage forState:UIControlStateNormal];
+    [self.episodeButton setBackgroundImage:playPausePressedImage forState:UIControlStateHighlighted];
     [self.episodeButton addTarget:self action:@selector(playEpisode) forControlEvents:UIControlEventTouchUpInside];
-    [self.episodeButton.layer setShadowColor:[[UIColor blackColor] CGColor]];
-    [self.episodeButton.layer setShadowOffset:(CGSize){0, 1}];
-    [self.episodeButton.layer setShadowRadius:2.0];
-    [self.episodeButton.layer setShadowOpacity:1.0];
+    [self.episodeButton.titleLabel setFont:[UIFont boldSystemFontOfSize:10.0]];
+    [self.episodeButton.titleLabel setShadowOffset:(CGSize){0, -1}];
+    [self.episodeButton setTitleShadowColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [self.episodeButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateHighlighted];
+    [self.episodeButton setTitle:@"Play Episode" forState:UIControlStateNormal];
     [self.headerView addSubview:self.episodeButton];
 
-//    self.downloadButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//    [self.downloadButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.download.png"] forState:UIControlStateNormal];
-//    [self.downloadButton setFrame:(CGRect){ 208, 48, 26, 26 }];
-//    [self.downloadButton setShowsTouchWhenHighlighted:YES];
-//    [self.downloadButton.layer setShadowColor:[[UIColor blackColor] CGColor]];
-//    [self.downloadButton.layer setShadowOffset:(CGSize){0, 1}];
-//    [self.downloadButton.layer setShadowRadius:2.0];
-//    [self.downloadButton.layer setShadowOpacity:1.0];
-//    [self.headerView addSubview:self.downloadButton];
-    
-    self.shareEpisodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.shareEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.share.png"] forState:UIControlStateNormal];
-    [self.shareEpisodeButton setFrame:(CGRect){ 240, 48, 26, 26 }];
-    [self.shareEpisodeButton setShowsTouchWhenHighlighted:YES];
-    [self.shareEpisodeButton addTarget:self action:@selector(displayShareSheet) forControlEvents:UIControlEventTouchUpInside];
-    [self.shareEpisodeButton.layer setShadowColor:[[UIColor blackColor] CGColor]];
-    [self.shareEpisodeButton.layer setShadowOffset:(CGSize){0, 1}];
-    [self.shareEpisodeButton.layer setShadowRadius:2.0];
-    [self.shareEpisodeButton.layer setShadowOpacity:1.0];
-    [self.headerView addSubview:self.shareEpisodeButton];
-    
     UIImageView *fadeView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.tableview.fade.png"]];
     [fadeView setFrame:(CGRect){{0, self.headerView.frame.size.height},fadeView.frame.size}];
     [self.view insertSubview:fadeView aboveSubview:self.tableView];
+    
+    UIImageView *toolbarView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.toolbar.png"]];
+    [toolbarView setFrame:(CGRect){{0, self.tableView.frame.origin.y + self.tableView.frame.size.height}, toolbarView.frame.size}];
+    [self.view insertSubview:toolbarView aboveSubview:self.tableView];
+
+    UIButton *saveButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [saveButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.offline.png"] forState:UIControlStateNormal];
+    [saveButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.offline.pressed.png"] forState:UIControlStateHighlighted];
+    [saveButton setFrame:(CGRect){ 29, kJJBadMovieToolbarItemVerticalOffset, 44, 44 }];
+    [saveButton addTarget:self action:@selector(downloadPodcast) forControlEvents:UIControlEventTouchUpInside];
+    [saveButton setShowsTouchWhenHighlighted:NO];
+    [self.view addSubview:saveButton];
+
+    UIButton *imdbButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [imdbButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.imdb.png"] forState:UIControlStateNormal];
+    [imdbButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.imdb.pressed.png"] forState:UIControlStateHighlighted];
+    [imdbButton setFrame:(CGRect){ 101, kJJBadMovieToolbarItemVerticalOffset, 44, 44 }];
+    [imdbButton setShowsTouchWhenHighlighted:NO];
+    [imdbButton addTarget:self action:@selector(showMovieInfo) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:imdbButton];
+
+    UIButton *youtubeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [youtubeButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.film.png"] forState:UIControlStateNormal];
+    [youtubeButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.film.pressed.png"] forState:UIControlStateHighlighted];
+    [youtubeButton setFrame:(CGRect){ 173, kJJBadMovieToolbarItemVerticalOffset, 44, 44 }];
+    [youtubeButton setShowsTouchWhenHighlighted:NO];
+    [youtubeButton addTarget:self action:@selector(playTrailer) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:youtubeButton];
+
+    self.shareEpisodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.shareEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.download.png"] forState:UIControlStateNormal];
+    [self.shareEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.download.pressed.png"] forState:UIControlStateHighlighted];
+    [self.shareEpisodeButton setFrame:(CGRect){ 245, kJJBadMovieToolbarItemVerticalOffset, 44, 44 }];
+    [self.shareEpisodeButton setShowsTouchWhenHighlighted:NO];
+    [self.shareEpisodeButton addTarget:self action:@selector(displayShareSheet) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.shareEpisodeButton];
     
     UISwipeGestureRecognizer *swipeBackGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeBack)];
     [swipeBackGesture setDirection:UISwipeGestureRecognizerDirectionRight];
@@ -146,7 +169,7 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
     self.sectionHeaderView = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"sectionHeaderView"];
     [self.sectionHeaderView setBackgroundColor:[UIColor clearColor]];
     [self.sectionHeaderView setSelectionStyle:UITableViewCellSelectionStyleNone];
-    UILabel *sectionLabel = [[UILabel alloc] initWithFrame:(CGRect){10, 0, 150, 20}];
+    UILabel *sectionLabel = [[UILabel alloc] initWithFrame:(CGRect){10, 2, 150, 20}];
     [sectionLabel setBackgroundColor:[UIColor clearColor]];
     [sectionLabel setTextAlignment:UITextAlignmentLeft];
     [sectionLabel setTextColor:[UIColor lightGrayColor]];
@@ -163,7 +186,7 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
     [dateFormatter setDateStyle:NSDateFormatterLongStyle];
     NSString *dateString = [dateFormatter stringFromDate:date];
     
-    UILabel *publishedLabel = [[UILabel alloc] initWithFrame:(CGRect){ 160, 0, 150, 20 }];
+    UILabel *publishedLabel = [[UILabel alloc] initWithFrame:(CGRect){ 160, 2, 150, 20 }];
     [publishedLabel setText:dateString];
     [publishedLabel setBackgroundColor:[UIColor clearColor]];
     [publishedLabel setFont:[UIFont systemFontOfSize:12.0]];
@@ -187,6 +210,14 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
     self.tableView = nil;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+//    if ([self.currentMovie isEqual:self.movie]) {
+//        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.pause.png"] forState:UIControlStateNormal];
+//    } else {
+//        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
+//    }
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
@@ -199,7 +230,7 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 4;
+    return 2;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -209,19 +240,12 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
         cell = self.sectionHeaderView;
     } else if (indexPath.row == kJJBadMovieCellRowDescription) {
         cell = [self cellForDescriptionRow];
-    } else { 
-        cell = [self cellForLinkRow:indexPath];
     }
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    if (indexPath.row == kJJBadMovieCellRowImdb) {
-        [self showMovieInfo];
-    } else if (indexPath.row == kJJBadMovieCellRowYouTube) {
-        [self playTrailer];
-    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -231,8 +255,6 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
         CGSize descriptionConstraint = (CGSize){300, CGFLOAT_MAX};
         CGSize episodeDescriptionSize = [self.movie.descriptionText sizeWithFont:[UIFont systemFontOfSize:16.0] constrainedToSize:descriptionConstraint lineBreakMode:UILineBreakModeWordWrap];
         return episodeDescriptionSize.height + 20;
-    } else if (indexPath.row == kJJBadMovieCellRowYouTube || indexPath.row == kJJBadMovieCellRowImdb) {
-        return 54;
     }
     return 44;
 }
@@ -252,30 +274,6 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
     }
     descriptionCell.textLabel.text = self.movie.descriptionText;
     return descriptionCell;
-}
-
-- (UITableViewCell *)cellForLinkRow:(NSIndexPath *)indexPath {
-    static NSString *jj_cellForDescription = @"com.jnjosh.linkCell";
-    UITableViewCell *linkCell = [self.tableView dequeueReusableCellWithIdentifier:jj_cellForDescription];
-    if (! linkCell) {
-        linkCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:jj_cellForDescription];
-        UIView *backgroundSelectView = [[UIView alloc] initWithFrame:linkCell.bounds];
-        [backgroundSelectView setBackgroundColor:[UIColor clearColor]];
-        [linkCell setSelectedBackgroundView:backgroundSelectView];
-        [linkCell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
-        [linkCell.textLabel setFont:[UIFont boldSystemFontOfSize:16.0]];
-        [linkCell.textLabel setTextColor:[UIColor darkGrayColor]];
-        [linkCell.textLabel setShadowColor:[UIColor whiteColor]];
-        [linkCell.textLabel setHighlightedTextColor:[UIColor whiteColor]];
-        [linkCell.textLabel setShadowOffset:(CGSize){0, 1}];
-    }
-    
-    if (indexPath.row == kJJBadMovieCellRowImdb) {
-        linkCell.textLabel.text = @"View on IMDb.com";
-    } else if (indexPath.row == kJJBadMovieCellRowYouTube) {
-        linkCell.textLabel.text = @"Watch a video on YouTube";
-    }
-    return linkCell;
 }
 
 #pragma mark - action sheet delegate
@@ -341,6 +339,13 @@ const NSUInteger kJJBadMovieCellRowYouTube = 3;
 - (void)showMovieInfo {
     JJBadMovieWebViewController *movieInfoView = [[JJBadMovieWebViewController alloc] initWithIMDBUrl:self.movie.imdb];
     [self.navigationController pushViewController:movieInfoView animated:YES];
+}
+
+- (void)downloadPodcast {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.mode = MBProgressHUDModeText;
+    hud.labelText = @"Not Implemented Yet...";
+    [hud hide:YES afterDelay:2.0];
 }
 
 @end

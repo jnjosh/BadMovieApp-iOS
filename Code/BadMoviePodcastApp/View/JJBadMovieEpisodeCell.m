@@ -43,7 +43,7 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
     if (self == [JJBadMovieEpisodeCell class]) {
         jj_textColor = [UIColor darkGrayColor];
         jj_selectedTextColor = [UIColor whiteColor];
-        jj_detailTextColor = [UIColor lightGrayColor];
+        jj_detailTextColor = [UIColor grayColor];
         jj_titleFont = [UIFont boldSystemFontOfSize:17.0f];
         jj_detailFont = [UIFont systemFontOfSize:11.0f];
         jj_moviePlaceholderImage = [UIImage imageNamed:@"ui.placeholder.png"];
