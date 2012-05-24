@@ -50,7 +50,7 @@
     UILabel *footerLabel = [[UILabel alloc] initWithFrame:self.footerView.bounds];
     [footerLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [footerLabel setNumberOfLines:2];
-    [footerLabel setText:@"Bad Movie Podcast App 1.0 (178)\nDesigned and Developed by Josh Johnson"];
+    [footerLabel setText:@"Bad Movie Podcast App 1.0 (201)\nDesigned and Developed by Josh Johnson"];
     [footerLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:10]];
     [footerLabel setTextColor:[UIColor grayColor]];
     [footerLabel setShadowColor:[UIColor whiteColor]];

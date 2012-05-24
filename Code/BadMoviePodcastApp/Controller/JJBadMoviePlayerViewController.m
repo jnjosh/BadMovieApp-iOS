@@ -96,7 +96,7 @@
 //    self.progressSlider = [[UISlider alloc] initWithFrame:(CGRect){10, 100, 280, 20}];
 //    [self.view addSubview:self.progressSlider];
     
-    self.volumeView = [[MPVolumeView alloc] initWithFrame:(CGRect){10, 120, 280, 20}];
+    self.volumeView = [[MPVolumeView alloc] initWithFrame:(CGRect){30, 120, 260, 20}];
     [self.volumeView sizeThatFits:self.volumeView.frame.size];
     [self.view addSubview:self.volumeView];
     
