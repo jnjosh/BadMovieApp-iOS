@@ -5,6 +5,7 @@ require 'date'
 # { :number => , :published => Date.new(2012, 4, 26), :name => "", :url => "", :description => "", :photo => "", :video => "", :imdb => "" },
 
 episodes = [
+	{ :number => 83, :published => Date.new(2012, 5, 22), :name => "The Wraith", :url => "http://badmoviepodcast.com/mp3/e083_thewraith.mp3", :description => "@DrQuest decided to torture us with the first AND LAST viewer requested movie. Charlie Sheen was hardly in it. We hardly talked about it. Yet the pain was still unbearable. I’ll be in therapy for a while.", :photo => "http://badmoviepodcast.com/images/e083_thewraith.jpg", :video => "http://www.youtube.com/watch?v=SVNbvr3nKP8", :imdb => "http://www.imdb.com/title/tt0092240/" },
 	{ :number => 82, :published => Date.new(2012, 5, 16), :name => "Lunar Cop", :url => "http://badmoviepodcast.com/mp3/e082_lunarcop.mp3", :description => "Post Big-Bird apocalypse, Moonenites have plans to restore Earth to a non-wasteland. They just have to get rid of the annoying people on it. Space is in the title, but motorcycles in the desert is the reality.", :photo => "http://badmoviepodcast.com/images/e082_lunarcop.jpg", :video => "http://www.youtube.com/watch?v=J5EY-_kkhgM", :imdb => "http://www.imdb.com/title/tt0113719/" },
 	{ :number => 81, :published => Date.new(2012, 5, 10), :name => "Iron Eagle", :url => "http://badmoviepodcast.com/mp3/e081_ironeagle.mp3", :description => "Grand theft F-16. This is “Not Top Gun”, but rather a movie about adult incompetence and teenage empowerment. Also, the power of Freddy Mercury to give you super powers. Use the force, Doug.", :photo => "http://badmoviepodcast.com/images/e081_ironeagle.jpg", :video => "http://www.youtube.com/watch?v=vSR6sxi1RTo", :imdb => "http://www.imdb.com/title/tt0091278/" },
 	{ 
@@ -50,7 +51,7 @@ get '/' do
 end
 
 get '/episodes' do
-	last_modified Date.new(2012, 5, 16)
+	last_modified Date.new(2012, 5, 23)
 	content_type :json
 	episodes.to_json
 end

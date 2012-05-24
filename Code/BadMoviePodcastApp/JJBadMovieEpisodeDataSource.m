@@ -36,6 +36,10 @@
     }
 }
 
+- (void)checkServerForUpdatesWithCompletionHandler:(JJBadMovieEpisodeCompletionBlock)completionHandler {
+    // todo
+}
+
 - (void)loadEpisodesWithCompletionHandler:(JJBadMovieEpisodeCompletionBlock)completionHandler {
     NSURL *episodeURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/episodes", kJJBadMovieAPIURLRoot]];
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:episodeURL];

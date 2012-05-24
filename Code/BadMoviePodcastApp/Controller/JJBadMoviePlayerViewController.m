@@ -67,7 +67,7 @@
     [self.playPauseEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
     [self.playPauseEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.pause.png"] forState:UIControlStateSelected];
     [self.playPauseEpisodeButton addTarget:self action:@selector(togglePlayState) forControlEvents:UIControlEventTouchUpInside];
-    [self.playPauseEpisodeButton setFrame:(CGRect){128, 20, 44, 44}];
+    [self.playPauseEpisodeButton setFrame:(CGRect){138, 20, 44, 44}];
     [self.view addSubview:self.playPauseEpisodeButton];
     
     self.skipBackButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -101,6 +101,7 @@
     [self.view addSubview:self.volumeView];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadEpisode:) name:kJJBadMovieNotificationBeginPlayingEpisode object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pause) name:kJJBadMovieNotificationPausePlayingEpisode object:nil];
 }
 
 - (void)viewDidUnload

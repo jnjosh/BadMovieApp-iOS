@@ -11,6 +11,7 @@
 extern NSString * const kJJBadMovieAPIURLRoot;
 
 extern NSString * const kJJBadMovieNotificationBeginPlayingEpisode;
+extern NSString * const kJJBadMovieNotificationPausePlayingEpisode;
 extern NSString * const kJJBadMovieNotificationShowPlayerControl;
 extern NSString * const kJJBadMovieNotificationShowPlayer;
 

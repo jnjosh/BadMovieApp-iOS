@@ -24,6 +24,8 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 @property (nonatomic, strong) JJBadMovie *movie;
 @property (nonatomic, strong) UIView *headerView;
+@property (nonatomic, assign, getter = isPlaying) BOOL playing;
+
 
 @property (nonatomic, strong) UIButton *episodeButton;
 @property (nonatomic, strong) UIButton *shareEpisodeButton;
@@ -54,6 +56,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 @synthesize headerView = _headerView, tableView = _tableView, sectionHeaderView = _sectionHeaderView;
 @synthesize episodeButton = _episodeButton, episodeImageView = _episodeImageView;
 @synthesize shareEpisodeButton = _shareEpisodeButton, downloadButton = _downloadButton;
+@synthesize playing = _playing;
 
 #pragma mark - lifecycle
 
@@ -89,35 +92,25 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     [self.view addSubview:self.tableView];
 
     self.headerView = [[UIView alloc] initWithFrame:(CGRect){CGPointZero, {320, 122}}];
-    [self.headerView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.moviedetails.png"]]];
+    [self.headerView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.movieview.background.png"]]];
     [self.headerView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [self.headerView setAutoresizesSubviews:YES];
+    [self.headerView setClipsToBounds:YES];
     [self.view addSubview:self.headerView];
     
     UIImage *image = [[SDImageCache sharedImageCache] imageFromKey:self.movie.photo fromDisk:YES];
-    self.episodeImageView = [[UIImageView alloc] initWithFrame:(CGRect){12, self.headerView.center.y - 51, 102, 102}];
+    self.episodeImageView = [[UIImageView alloc] initWithFrame:(CGRect){10, 10, 100, 100}];
     [self.episodeImageView setContentMode:UIViewContentModeScaleToFill];
     [self.episodeImageView setBackgroundColor:[UIColor whiteColor]];
     [self.episodeImageView setImage:image];
-    [self.episodeImageView.layer setShadowColor:[[UIColor blackColor] CGColor]];
-    [self.episodeImageView.layer setShadowOffset:(CGSize){0, 1}];
-    [self.episodeImageView.layer setShadowRadius:2.0];
-    [self.episodeImageView.layer setShadowOpacity:1.0];
     [self.headerView addSubview:self.episodeImageView];
     
-    UIImage *playPauseImage = [[UIImage imageNamed:@"ui.buttons.playpause.png"] resizableImageWithCapInsets:(UIEdgeInsets){0, 11, 0, 11}];
-    UIImage *playPausePressedImage = [[UIImage imageNamed:@"ui.buttons.playpause.pressed.png"] resizableImageWithCapInsets:(UIEdgeInsets){0, 11, 0, 11}];
+    UIImage *playImage = [UIImage imageNamed:@"ui.buttons.play.png"];
     self.episodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.episodeButton setFrame:(CGRect){ 152, 48, 125, 22.5 }];
+    [self.episodeButton setFrame:(CGRect){ 260, 38, 44, 44 }];
     [self.episodeButton setShowsTouchWhenHighlighted:NO];
-    [self.episodeButton setBackgroundImage:playPauseImage forState:UIControlStateNormal];
-    [self.episodeButton setBackgroundImage:playPausePressedImage forState:UIControlStateHighlighted];
+    [self.episodeButton setBackgroundImage:playImage forState:UIControlStateNormal];
     [self.episodeButton addTarget:self action:@selector(playEpisode) forControlEvents:UIControlEventTouchUpInside];
-    [self.episodeButton.titleLabel setFont:[UIFont boldSystemFontOfSize:10.0]];
-    [self.episodeButton.titleLabel setShadowOffset:(CGSize){0, -1}];
-    [self.episodeButton setTitleShadowColor:[UIColor grayColor] forState:UIControlStateNormal];
-    [self.episodeButton setTitleShadowColor:[UIColor clearColor] forState:UIControlStateHighlighted];
-    [self.episodeButton setTitle:@"Play Episode" forState:UIControlStateNormal];
     [self.headerView addSubview:self.episodeButton];
 
     UIImageView *fadeView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.tableview.fade.png"]];
@@ -211,11 +204,12 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-//    if ([self.currentMovie isEqual:self.movie]) {
-//        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.pause.png"] forState:UIControlStateNormal];
-//    } else {
-//        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
-//    }
+    [self setPlaying:[self.currentMovie isEqual:self.movie]];
+    if ([self isPlaying]) {
+        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.pause.png"] forState:UIControlStateNormal];
+    } else {
+        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -325,10 +319,20 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 }
 
 - (void)playEpisode {
-    [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationBeginPlayingEpisode object:self.movie];
+    if (! [self isPlaying]) {
+        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.pause.png"] forState:UIControlStateNormal];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationBeginPlayingEpisode object:self.movie];
+        
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGRect:self.episodeImageView.frame], @"episodeImageFrame", self.episodeImageView.image, @"episodeImage", nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self userInfo:userInfo];
+    } else {
+        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
 
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGRect:self.episodeImageView.frame], @"episodeImageFrame", self.episodeImageView.image, @"episodeImage", nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self userInfo:userInfo];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationPausePlayingEpisode object:self.movie];
+    }
+    
+    [self setPlaying:![self isPlaying]];
 }
 
 - (void)playTrailer {
