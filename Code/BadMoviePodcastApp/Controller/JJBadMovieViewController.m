@@ -332,12 +332,12 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 }
 
 - (void)playTrailer {
-    JJBadMovieWebViewController *movieInfoView = [[JJBadMovieWebViewController alloc] initWithIMDBUrl:self.movie.video];
-    [self.navigationController pushViewController:movieInfoView animated:YES];
+    JJBadMovieWebViewController *trailerWebView = [[JJBadMovieWebViewController alloc] initWithURL:self.movie.video];
+    [self.navigationController pushViewController:trailerWebView animated:YES];
 }
 
 - (void)showMovieInfo {
-    JJBadMovieWebViewController *movieInfoView = [[JJBadMovieWebViewController alloc] initWithIMDBUrl:self.movie.imdb];
+    JJBadMovieWebViewController *movieInfoView = [[JJBadMovieWebViewController alloc] initWithURL:self.movie.imdb];
     [self.navigationController pushViewController:movieInfoView animated:YES];
 }
 

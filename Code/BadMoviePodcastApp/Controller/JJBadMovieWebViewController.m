@@ -12,7 +12,6 @@
 
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) UIWebView *webview;
-@property (nonatomic, assign) BOOL isYoutube;
 @property (nonatomic, copy) NSString *webURL;
 @property (nonatomic, copy) NSString *webFile;
 
@@ -22,7 +21,6 @@
 
 #pragma mark - synth
 
-@synthesize isYoutube = _isYoutube;
 @synthesize webURL = _webURL, webFile = _webFile;
 @synthesize activityIndicator = _activityIndicator, webview = _webview;
 
@@ -35,18 +33,9 @@
     return self;
 }
 
-- (id)initWithYouTubeVideo:(NSString *)youtubeVideoString {
+- (id)initWithURL:(NSString *)webURL {
     if (self = [self initWithNibName:nil bundle:nil]) {
-        _isYoutube = YES;
-        self.webURL = youtubeVideoString;
-    }
-    return self;
-}
-
-- (id)initWithIMDBUrl:(NSString *)imdbUrl {
-    if (self = [self initWithNibName:nil bundle:nil]) {
-        _isYoutube = NO;
-        self.webURL = imdbUrl;
+        self.webURL = webURL;
     }
     return self;
 }
@@ -95,7 +84,7 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return YES;
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark - web view

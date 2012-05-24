@@ -51,15 +51,10 @@
 
 #pragma mark - lifecycle
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
-    }
-    return self;
-}
-
 - (void)loadView {
-    self.view = [[UIView alloc] initWithFrame:(CGRect){ 10, 20, 300, 140 }];
+    self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+    [self.view setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.window.png"]]]; 
     self.view.layer.transform = CATransform3DMakeTranslation(0.0, 0.0, -150.0);
 }
 

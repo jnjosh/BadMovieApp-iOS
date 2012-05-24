@@ -13,6 +13,7 @@
 #import "JJBadMovieViewController.h"
 #import "JJBadMovieEpisodesViewController.h"
 #import "JJBadMovieEpisodeDataSource.h"
+#import "JJBadMovieRootViewController.h"
 #import "JJBadMovie.h"
 #import "SDURLCache.h"
 
@@ -23,6 +24,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 
 @interface JJBadMovieWindowController ()
 
+@property (nonatomic, strong) JJBadMovieRootViewController *rootViewController;
 @property (nonatomic, strong) UIBarButtonItem *nowPlayingButton;
 @property (nonatomic, strong) UIView *downView;
 @property (nonatomic, strong) UIImageView *vignetteView;
@@ -39,6 +41,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 
 #pragma mark - synth
 
+@synthesize rootViewController = _rootViewController;
 @synthesize downView = _downView, vignetteView = _vignetteView, nowPlayingButton = _nowPlayingButton;
 @synthesize navigationController = _navigationController, playerController = _playerController, window = _window;
 
@@ -51,18 +54,18 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         
         JJBadMovieEpisodeDataSource *dataSource = [[JJBadMovieEpisodeDataSource alloc] init];
         JJBadMovieEpisodesViewController *episodeViewController = [[JJBadMovieEpisodesViewController alloc] initWithEpisodeDataSource:dataSource];
+        _playerController = [[JJBadMoviePlayerViewController alloc] initWithNibName:nil bundle:nil];
         
         _navigationController = [[UINavigationController alloc] initWithRootViewController:episodeViewController];
         [_navigationController setDelegate:self];
         [_navigationController.view setBackgroundColor:[UIColor clearColor]];
-
-        _window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        _window.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.window.png"]];
-        _window.rootViewController = _navigationController;
         
-        _playerController = [[JJBadMoviePlayerViewController alloc] initWithNibName:nil bundle:nil];
-        [_playerController.view setBackgroundColor:[UIColor clearColor]];
-        [_window addSubview:_playerController.view];
+        _rootViewController = [[JJBadMovieRootViewController alloc] initWithNibName:nil bundle:nil];
+        [_rootViewController addChildViewController:_playerController];
+        [_rootViewController addChildViewController:_navigationController];
+        
+        _window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        _window.rootViewController = _rootViewController;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showPlayerControl:) name:kJJBadMovieNotificationShowPlayerControl object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presentAudioPlayer) name:kJJBadMovieNotificationShowPlayer object:nil];
@@ -193,7 +196,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
     
     self.vignetteView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.vignette.png"]];
     [self.vignetteView setContentMode:UIViewContentModeScaleAspectFill];
-    [self.vignetteView setFrame:(CGRect){{0, 20},imageView.frame.size}];
+    [self.vignetteView setFrame:(CGRect){{0, 10},imageView.frame.size}];
     [self.vignetteView setAlpha:0.0];
     [self.downView addSubview:self.vignetteView];
     
@@ -243,6 +246,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
     static dispatch_once_t appearanceOnceToken;
     dispatch_once(&appearanceOnceToken, ^{
         [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"ui.navigationbar.background.png"] forBarMetrics:UIBarMetricsDefault];
+        [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"ui.navigationbar.landscape.background.png"] forBarMetrics:UIBarMetricsLandscapePhone];
         [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTintColor:[UIColor colorWithRed:89/255.0 green:0.0 blue:0.0 alpha:1.0]];
         [[UISlider appearance] setMinimumTrackTintColor:[UIColor darkGrayColor]];
         [[UISlider appearance] setMaximumTrackTintColor:[UIColor lightGrayColor]];
