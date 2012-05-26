@@ -283,6 +283,16 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     }
 }
 
+#pragma mark - JJBadMovieAudioPlayerDelegate methods 
+
+- (void)playerViewControllerDidBeginPlaying:(JJBadMoviePlayerViewController *)playerViewController {
+    
+}
+
+- (void)playerViewControllerDidPause:(JJBadMoviePlayerViewController *)playerViewController {
+    NSLog(@"Paused!");
+}
+
 #pragma mark - share methods
 
 - (void)tweetEpisode {

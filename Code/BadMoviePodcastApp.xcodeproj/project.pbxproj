@@ -90,6 +90,7 @@
 		A4F48D79155C7EB8007B35F6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4F48D78155C7EB8007B35F6 /* AVFoundation.framework */; };
 		A4F48D8C155C91B5007B35F6 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A4F48D8A155C91B5007B35F6 /* Icon.png */; };
 		A4F48D8D155C91B5007B35F6 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4F48D8B155C91B5007B35F6 /* Icon@2x.png */; };
+		A4FC14D41570A8D500367A3C /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4FC14D31570A8D500367A3C /* CoreMedia.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -218,6 +219,8 @@
 		A4F48D78155C7EB8007B35F6 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A4F48D8A155C91B5007B35F6 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		A4F48D8B155C91B5007B35F6 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		A4FC14D31570A8D500367A3C /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		A4FC14D71570ACDF00367A3C /* JJBadMovieAudioPlayerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JJBadMovieAudioPlayerDelegate.h; path = Protocols/JJBadMovieAudioPlayerDelegate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -225,6 +228,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4FC14D41570A8D500367A3C /* CoreMedia.framework in Frameworks */,
 				A4B41EBD156948A30059F9F7 /* Twitter.framework in Frameworks */,
 				A4704D2F1561D40C0079C534 /* ImageIO.framework in Frameworks */,
 				A4E1C06B155CA42800CDCD93 /* AudioToolbox.framework in Frameworks */,
@@ -262,6 +266,7 @@
 		A42E1AF9155B5C7000043EA7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A4FC14D31570A8D500367A3C /* CoreMedia.framework */,
 				A4B41EBC156948A30059F9F7 /* Twitter.framework */,
 				A4704D2E1561D40C0079C534 /* ImageIO.framework */,
 				A40959F1155ED766006DAA33 /* CoreImage.framework */,
@@ -302,6 +307,7 @@
 		A42E1B16155B5D6700043EA7 /* Application */ = {
 			isa = PBXGroup;
 			children = (
+				A4FC14D61570AC8D00367A3C /* Protocols */,
 				A42E1B4E155B67D000043EA7 /* Resources */,
 				A42E1B09155B5C7000043EA7 /* JJAppDelegate.h */,
 				A42E1B0A155B5C7000043EA7 /* JJAppDelegate.m */,
@@ -490,6 +496,14 @@
 				A4B41EC0156977C20059F9F7 /* MBProgressHUD.m */,
 			);
 			name = MBProgressHUD;
+			sourceTree = "<group>";
+		};
+		A4FC14D61570AC8D00367A3C /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				A4FC14D71570ACDF00367A3C /* JJBadMovieAudioPlayerDelegate.h */,
+			);
+			name = Protocols;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

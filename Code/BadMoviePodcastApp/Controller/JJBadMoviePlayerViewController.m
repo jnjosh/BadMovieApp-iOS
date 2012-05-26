@@ -9,9 +9,12 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import <AVFoundation/AVFoundation.h>
 #import <QuartzCore/QuartzCore.h>
+#import <CoreMedia/CoreMedia.h>
 #import "JJBadMovieEnvironment.h"
 #import "JJBadMoviePlayerViewController.h"
 #import "JJBadMovie.h"
+
+static dispatch_queue_t jj_player_queue = nil;
 
 @interface JJBadMoviePlayerViewController ()
 
@@ -38,6 +41,15 @@
 
 @implementation JJBadMoviePlayerViewController
 
+#pragma mark - class
+
++ (void)initialize {
+    if (self == [JJBadMoviePlayerViewController class]) {
+        jj_player_queue = dispatch_queue_create("com.jnjosh.player_queue", NULL);
+    }
+}
+
+
 #pragma mark - synth
 
 @synthesize currentEpisode = _currentEpisode, playing = _playing;
@@ -48,6 +60,7 @@
 @synthesize progressSlider = _progressSlider;
 
 @synthesize streamingAudioPlayer = _streamingAudioPlayer;
+@synthesize delegate = _delegate;
 
 #pragma mark - lifecycle
 
@@ -162,12 +175,24 @@
     [self.streamingAudioPlayer play];
     [self setPlaying:YES];
     [self.playPauseEpisodeButton setSelected:YES];
+
+    if (self.delegate) {
+        if ([self.delegate respondsToSelector:@selector(playerViewControllerDidBeginPlaying:)]) {
+            [self.delegate playerViewControllerDidBeginPlaying:self];
+        }
+    }
 }
 
 - (void)pause {
     [self.streamingAudioPlayer pause];
     [self setPlaying:NO];
     [self.playPauseEpisodeButton setSelected:NO];
+    
+    if (self.delegate) {
+        if ([self.delegate respondsToSelector:@selector(playerViewControllerDidPause:)]) {
+            [self.delegate playerViewControllerDidPause:self];
+        }
+    }
 }
 
 - (void)togglePlayState {
@@ -180,13 +205,21 @@
 
 - (void)skipForward {
     CMTime currentTime = [self.streamingAudioPlayer currentTime];
-    currentTime.value += 30;
+
+    CGFloat seconds = currentTime.value / currentTime.timescale;
+    seconds += 30;
+    currentTime.value = seconds * currentTime.timescale;
+
     [self.streamingAudioPlayer seekToTime:currentTime];
 }
 
 - (void)skipBackward {
     CMTime currentTime = [self.streamingAudioPlayer currentTime];
-    currentTime.value -= 30;
+    
+    CGFloat seconds = currentTime.value / currentTime.timescale;
+    seconds -= 30;
+    currentTime.value = seconds * currentTime.timescale;
+    
     [self.streamingAudioPlayer seekToTime:currentTime];
 }
 
@@ -201,6 +234,13 @@
     
     // load player
     self.streamingAudioPlayer = [AVPlayer playerWithURL:[NSURL URLWithString:self.currentEpisode.url]];
+    [self.streamingAudioPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:jj_player_queue usingBlock:^(CMTime time) {
+       
+        CGFloat seconds = time.value / time.timescale;
+        
+        NSLog(@"seconds: %f", seconds);
+        
+    }];
     
     NSError *playbackError = nil;
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&playbackError];

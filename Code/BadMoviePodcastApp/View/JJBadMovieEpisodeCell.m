@@ -95,7 +95,7 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
         [layerShow setKeyPath:@"opacity"];
         [layerShow setFromValue:[NSNumber numberWithFloat:0.0]];
         [layerShow setToValue:[NSNumber numberWithFloat:1.0]];
-        [layerShow setDuration:0.5];
+        [layerShow setDuration:0.75];
         [layerShow setRemovedOnCompletion:NO];
         [layerShow setAutoreverses:NO];
         [layerShow setFillMode:kCAFillModeForwards];
@@ -125,7 +125,6 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
 - (void)setEpisode:(JJBadMovie *)episode {
     if (! [_episode isEqual:episode]) {
         _episode = episode;
-        
         [self setNeedsDisplay];
     }
 }

@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "JJBadMovieAudioPlayerDelegate.h"
 
 @class JJBadMovie;
 
-@interface JJBadMovieViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate>
+@interface JJBadMovieViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate, JJBadMovieAudioPlayerDelegate>
 
 @property (nonatomic, assign) JJBadMovie *currentMovie;
 

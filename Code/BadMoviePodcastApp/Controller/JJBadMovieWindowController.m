@@ -84,6 +84,9 @@ static inline CGFloat degreesToRadian(CGFloat degree)
     if ([viewController isKindOfClass:[JJBadMovieViewController class]]) {
         JJBadMovieViewController *badMovieViewController = (JJBadMovieViewController *)viewController;
         [badMovieViewController setCurrentMovie:self.playerController.currentEpisode];
+        [self.playerController setDelegate:badMovieViewController];
+    } else {
+        [self.playerController setDelegate:nil];
     }
 }
 

@@ -59,7 +59,6 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
     [self.tableView setDelegate:self];
     [self.tableView setDataSource:self];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    [self.tableView setShowsVerticalScrollIndicator:NO];
     [self.view addSubview:self.tableView];
     
     UIImageView *titleImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.navigationbar.title.png"]];
