@@ -23,6 +23,8 @@ static dispatch_queue_t jj_player_queue = nil;
 
 @property (nonatomic, assign, getter = isPlaying) BOOL playing;
 
+@property (nonatomic, strong) UIImageView *currentEpisodeImage;
+
 @property (nonatomic, strong) UIButton *playPauseEpisodeButton;
 @property (nonatomic, strong) UIButton *skipForwardButton;
 @property (nonatomic, strong) UIButton *skipBackButton;
@@ -45,7 +47,6 @@ static dispatch_queue_t jj_player_queue = nil;
 - (void)episodeDidFinishPlaying:(NSNotification *)note;
 
 - (void)loadEpisode:(NSNotification *)note;
-- (void)unloadCurrentEpisode:(BOOL)fullUnload;
 
 @end
 
@@ -70,6 +71,8 @@ static dispatch_queue_t jj_player_queue = nil;
 @synthesize playClock = _playClock, playRemainingClock = _playRemainingClock;
 @synthesize progressSlider = _progressSlider;
 
+@synthesize currentEpisodeImage = _currentEpisodeImage;
+
 @synthesize streamingAudioPlayer = _streamingAudioPlayer;
 @synthesize delegate = _delegate;
 
@@ -86,26 +89,30 @@ static dispatch_queue_t jj_player_queue = nil;
 {
     [super viewDidLoad];
     
+    self.currentEpisodeImage = [[UIImageView alloc] initWithFrame:(CGRect) { CGPointZero, 320, 320 }];
+    [self.currentEpisodeImage setAlpha:0.1];
+    [self.view addSubview:self.currentEpisodeImage];
+    
     self.playPauseEpisodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.playPauseEpisodeButton setShowsTouchWhenHighlighted:YES];
     [self.playPauseEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
     [self.playPauseEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.pause.png"] forState:UIControlStateSelected];
     [self.playPauseEpisodeButton addTarget:self action:@selector(togglePlayState) forControlEvents:UIControlEventTouchUpInside];
-    [self.playPauseEpisodeButton setFrame:(CGRect){138, 20, 44, 44}];
+    [self.playPauseEpisodeButton setFrame:(CGRect){138, 40, 44, 44}];
     [self.view addSubview:self.playPauseEpisodeButton];
     
     self.skipBackButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.skipBackButton setShowsTouchWhenHighlighted:YES];
     [self.skipBackButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.skip.back.png"] forState:UIControlStateNormal];
     [self.skipBackButton addTarget:self action:@selector(skipBackward) forControlEvents:UIControlEventTouchUpInside];
-    [self.skipBackButton setFrame:(CGRect){self.playPauseEpisodeButton.frame.origin.x - 66, 20, 44, 44}];
+    [self.skipBackButton setFrame:(CGRect){self.playPauseEpisodeButton.frame.origin.x - 66, 40, 44, 44}];
     [self.view addSubview:self.skipBackButton];
 
     self.skipForwardButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.skipForwardButton setShowsTouchWhenHighlighted:YES];
     [self.skipForwardButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.skip.forward.png"] forState:UIControlStateNormal];
     [self.skipForwardButton addTarget:self action:@selector(skipForward) forControlEvents:UIControlEventTouchUpInside];
-    [self.skipForwardButton setFrame:(CGRect){self.playPauseEpisodeButton.frame.origin.x + 66, 20, 44, 44}];
+    [self.skipForwardButton setFrame:(CGRect){self.playPauseEpisodeButton.frame.origin.x + 66, 40, 44, 44}];
     [self.view addSubview:self.skipForwardButton];
     
     self.currentlyPlaying = [[UILabel alloc] initWithFrame:(CGRect){0, 74, 300, 24}];
@@ -115,7 +122,7 @@ static dispatch_queue_t jj_player_queue = nil;
     [self.currentlyPlaying setTextColor:[UIColor whiteColor]];
     [self.currentlyPlaying setShadowColor:[UIColor blackColor]];
     [self.currentlyPlaying setShadowOffset:(CGSize){0, -1}];
-    [self.view addSubview:self.currentlyPlaying];
+//    [self.view addSubview:self.currentlyPlaying];
     
     self.playClock = [[UILabel alloc] initWithFrame:(CGRect){0, 0, 300, 24}];
     [self.playClock setBackgroundColor:[UIColor clearColor]];
@@ -137,11 +144,10 @@ static dispatch_queue_t jj_player_queue = nil;
 
 //    self.progressSlider = [[UISlider alloc] initWithFrame:(CGRect){10, 100, 280, 20}];
 //    [self.view addSubview:self.progressSlider];
-//    (CGRect){self.skipForwardButton.frame.origin.x + 66, 20, 44, 44}
     
-    self.volumeView = [[MPVolumeView alloc] initWithFrame:(CGRect){self.skipForwardButton.frame.origin.x + 66, 20, 44, 44}];
+    self.volumeView = [[MPVolumeView alloc] initWithFrame:(CGRect){self.skipForwardButton.frame.origin.x + 66, 44, 30, 30}];
 #if TARGET_IPHONE_SIMULATOR
-    [self.volumeView setBackgroundColor:[UIColor redColor]];
+    [self.volumeView setBackgroundColor:[UIColor lightGrayColor]];
 #endif
     [self.volumeView setShowsVolumeSlider:NO];
     [self.volumeView setShowsRouteButton:YES];
@@ -274,55 +280,47 @@ static dispatch_queue_t jj_player_queue = nil;
     }
 }
 
-- (void)unloadCurrentEpisode:(BOOL)fullUnload {
-    if (fullUnload) {
-        [self.streamingAudioPlayer pause];
-        [self.streamingAudioPlayer removeTimeObserver:_timeObserver];
-        self.streamingAudioPlayer = nil;
-    }
-}
-
 - (void)loadEpisode:(NSNotification *)note {
     JJBadMovie *episode = [note object];
     if (! episode || ! [episode isKindOfClass:[JJBadMovie class]]) return;
     
-    if (self.currentEpisode) {
-        [self unloadCurrentEpisode:YES];
-    }
-
     [self setCurrentEpisode:episode];
     [self.currentlyPlaying setText:[NSString stringWithFormat:@"Now Playing: %@", episode.name]];
     
     // load player
-    self.streamingAudioPlayer = [AVPlayer playerWithURL:[NSURL URLWithString:self.currentEpisode.url]];
-    [self.streamingAudioPlayer setActionAtItemEnd:AVPlayerActionAtItemEndPause];
-    _timeObserver = [self.streamingAudioPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:jj_player_queue usingBlock:^(CMTime time) {
-        CGFloat duration = self.streamingAudioPlayer.currentItem.duration.value / self.streamingAudioPlayer.currentItem.duration.timescale;
+    if (! self.streamingAudioPlayer) {
+        self.streamingAudioPlayer = [AVPlayer playerWithURL:[NSURL URLWithString:self.currentEpisode.url]];
+        [self.streamingAudioPlayer setActionAtItemEnd:AVPlayerActionAtItemEndPause];
+        _timeObserver = [self.streamingAudioPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:jj_player_queue usingBlock:^(CMTime time) {
+            CGFloat duration = self.streamingAudioPlayer.currentItem.duration.value / self.streamingAudioPlayer.currentItem.duration.timescale;
 
-        // calculate progress
-        CGFloat currentSeconds = time.value / time.timescale;
+            // calculate progress
+            CGFloat currentSeconds = time.value / time.timescale;
 
-        CGFloat progressHours = floorf(currentSeconds / (60 * 60));
-        CGFloat minutesDivisor = fmodf(currentSeconds, (60 * 60));
-        CGFloat progressMinutes = floorf(minutesDivisor / 60);
-        
-        CGFloat secondsDivisor = fmodf(minutesDivisor, 60);
-        CGFloat progressSeconds = ceilf(secondsDivisor);
-        
-        // calculate remaining
-        CGFloat remainingSeconds = duration - currentSeconds;
-        CGFloat remainHours = floorf(remainingSeconds / (60 * 60));
-        CGFloat minutesRemainDivisor = fmodf(remainingSeconds, (60 * 60));
-        CGFloat remainMinutes = floorf(minutesRemainDivisor / 60);
-        
-        CGFloat secondsRemainDivisor = fmodf(minutesRemainDivisor, 60);
-        CGFloat remainSeconds = ceilf(secondsRemainDivisor);
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.playClock setText:[NSString stringWithFormat:@"%02d:%02d:%02d", (int)progressHours, (int)progressMinutes, (int)progressSeconds]];
-            [self.playRemainingClock setText:[NSString stringWithFormat:@"%02d:%02d:%02d", (int)remainHours, (int)remainMinutes, (int)remainSeconds]];
-        });
-    }];
+            CGFloat progressHours = floorf(currentSeconds / (60 * 60));
+            CGFloat minutesDivisor = fmodf(currentSeconds, (60 * 60));
+            CGFloat progressMinutes = floorf(minutesDivisor / 60);
+            
+            CGFloat secondsDivisor = fmodf(minutesDivisor, 60);
+            CGFloat progressSeconds = ceilf(secondsDivisor);
+            
+            // calculate remaining
+            CGFloat remainingSeconds = duration - currentSeconds;
+            CGFloat remainHours = MAX(floorf(remainingSeconds / (60 * 60)), 0);
+            CGFloat minutesRemainDivisor = fmodf(remainingSeconds, (60 * 60));
+            CGFloat remainMinutes = MAX(floorf(minutesRemainDivisor / 60), 0);
+            
+            CGFloat secondsRemainDivisor = fmodf(minutesRemainDivisor, 60);
+            CGFloat remainSeconds = MAX(ceilf(secondsRemainDivisor), 0);
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.playClock setText:[NSString stringWithFormat:@"%02d:%02d:%02d", (int)progressHours, (int)progressMinutes, (int)progressSeconds]];
+                [self.playRemainingClock setText:[NSString stringWithFormat:@"%02d:%02d:%02d", (int)remainHours, (int)remainMinutes, (int)remainSeconds]];
+            });
+        }];
+    } else {
+        [self.streamingAudioPlayer replaceCurrentItemWithPlayerItem:[AVPlayerItem playerItemWithURL:[NSURL URLWithString:self.currentEpisode.url]]];
+    }
     
     NSError *playbackError = nil;
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&playbackError];
@@ -339,6 +337,8 @@ static dispatch_queue_t jj_player_queue = nil;
     UIImage *episodeImage = [episode cachedImage];
     NSDictionary *mediaDictionary = nil;
     if (episodeImage) {
+        [self.currentEpisodeImage setImage:episodeImage];
+        
         MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithImage:episodeImage];
         mediaDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
                            kJJBadMovieAlbumTitle, MPMediaItemPropertyAlbumTitle,
