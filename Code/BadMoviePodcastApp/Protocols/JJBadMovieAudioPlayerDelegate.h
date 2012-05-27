@@ -16,5 +16,6 @@
 
 - (void)playerViewControllerDidBeginPlaying:(JJBadMoviePlayerViewController *)playerViewController;
 - (void)playerViewControllerDidPause:(JJBadMoviePlayerViewController *)playerViewController;
+- (void)playerViewControllerDidEndPlaying:(JJBadMoviePlayerViewController *)playerViewController;
 
 @end

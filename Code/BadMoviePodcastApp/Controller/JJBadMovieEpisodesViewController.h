@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SSPullToRefresh.h"
 
 @class JJBadMovieEpisodeDataSource;
 
-@interface JJBadMovieEpisodesViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface JJBadMovieEpisodesViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, SSPullToRefreshViewDelegate>
 
 - (id)initWithEpisodeDataSource:(JJBadMovieEpisodeDataSource *)dataSource;
 

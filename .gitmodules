@@ -13,3 +13,6 @@
 [submodule "Code/Libraries/MBProgressHUD"]
 	path = Code/Libraries/MBProgressHUD
 	url = git://github.com/jdg/MBProgressHUD.git
+[submodule "Code/Libraries/SSPullToRefresh"]
+	path = Code/Libraries/SSPullToRefresh
+	url = git://github.com/samsoffes/sspulltorefresh.git

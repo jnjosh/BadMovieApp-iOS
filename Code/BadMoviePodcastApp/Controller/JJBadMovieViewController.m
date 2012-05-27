@@ -22,10 +22,8 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 @interface JJBadMovieViewController ()
 
-@property (nonatomic, strong) JJBadMovie *movie;
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, assign, getter = isPlaying) BOOL playing;
-
 
 @property (nonatomic, strong) UIButton *episodeButton;
 @property (nonatomic, strong) UIButton *shareEpisodeButton;
@@ -65,10 +63,6 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
         self.movie = badMovie;
     }
     return self;
-}
-
-- (void)dealloc {
-    _currentMovie = nil;
 }
 
 #pragma mark - view
@@ -204,8 +198,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    [self setPlaying:[self.currentMovie isEqual:self.movie]];
-    if ([self isPlaying]) {
+    if ([self isCurrentMovie]) {
         [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.pause.png"] forState:UIControlStateNormal];
     } else {
         [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
@@ -286,11 +279,15 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 #pragma mark - JJBadMovieAudioPlayerDelegate methods 
 
 - (void)playerViewControllerDidBeginPlaying:(JJBadMoviePlayerViewController *)playerViewController {
-    
+    NSLog(@"Playing!");
 }
 
 - (void)playerViewControllerDidPause:(JJBadMoviePlayerViewController *)playerViewController {
     NSLog(@"Paused!");
+}
+
+- (void)playerViewControllerDidEndPlaying:(JJBadMoviePlayerViewController *)playerViewController {
+    NSLog(@"Ended!");
 }
 
 #pragma mark - share methods

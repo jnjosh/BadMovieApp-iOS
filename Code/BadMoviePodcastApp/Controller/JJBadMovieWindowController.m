@@ -81,12 +81,16 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     [self presentNowPlayingEpisodeView:nil forViewController:viewController];
+    [self.playerController setDelegate:nil];
+    
     if ([viewController isKindOfClass:[JJBadMovieViewController class]]) {
         JJBadMovieViewController *badMovieViewController = (JJBadMovieViewController *)viewController;
-        [badMovieViewController setCurrentMovie:self.playerController.currentEpisode];
-        [self.playerController setDelegate:badMovieViewController];
-    } else {
-        [self.playerController setDelegate:nil];
+        [badMovieViewController setCurrentMovie:NO];
+        
+        if ([[badMovieViewController movie] isEqual:self.playerController.currentEpisode]) {
+            [badMovieViewController setCurrentMovie:YES];
+            [self.playerController setDelegate:badMovieViewController];
+        }
     }
 }
 
@@ -156,6 +160,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         UIImageView *imageView = [anim valueForKey:@"imageViewBeingAnimated"];
         UIViewController *viewController = [anim valueForKey:@"imageViewWillReplaceViewController"];
         [self presentNowPlayingEpisodeView:imageView forViewController:viewController];
+        [self.playerController setDelegate:(JJBadMovieViewController *)viewController];
     }
 }
 
@@ -251,6 +256,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"ui.navigationbar.background.png"] forBarMetrics:UIBarMetricsDefault];
         [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"ui.navigationbar.landscape.background.png"] forBarMetrics:UIBarMetricsLandscapePhone];
         [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTintColor:[UIColor colorWithRed:89/255.0 green:0.0 blue:0.0 alpha:1.0]];
+        
         [[UISlider appearance] setMinimumTrackTintColor:[UIColor darkGrayColor]];
         [[UISlider appearance] setMaximumTrackTintColor:[UIColor lightGrayColor]];
         [[UISlider appearance] setThumbTintColor:[UIColor blackColor]];

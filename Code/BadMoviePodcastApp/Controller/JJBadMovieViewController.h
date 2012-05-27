@@ -13,7 +13,9 @@
 
 @interface JJBadMovieViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate, JJBadMovieAudioPlayerDelegate>
 
-@property (nonatomic, assign) JJBadMovie *currentMovie;
+@property (nonatomic, strong) JJBadMovie *movie;
+
+@property (nonatomic, assign, getter = isCurrentMovie) BOOL currentMovie;
 
 - (id)initWithBadMovie:(JJBadMovie *)badMovie;
 

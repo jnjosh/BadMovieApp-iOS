@@ -22,6 +22,8 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 @property (nonatomic, strong) JJBadMovieEpisodeDataSource *dataSource;
 @property (nonatomic, strong) UITableView *tableView;
 
+@property (nonatomic, strong) SSPullToRefreshView *pullToRefreshView;
+
 - (void)showSettings;
 - (void)downloadImageInView;
 
@@ -32,6 +34,7 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 #pragma mark - synth
 
 @synthesize dataSource = _dataSource, tableView = _tableView;
+@synthesize pullToRefreshView = _pullToRefreshView;
 
 #pragma mark - lifecycle
 
@@ -60,6 +63,11 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
     [self.tableView setDataSource:self];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.view addSubview:self.tableView];
+    
+    self.pullToRefreshView = [[SSPullToRefreshView alloc] initWithScrollView:self.tableView delegate:self];
+    SSPullToRefreshSimpleContentView *contentView = [[SSPullToRefreshSimpleContentView alloc] init];
+    [[contentView statusLabel] setTextColor:[UIColor grayColor]];
+    [self.pullToRefreshView setContentView:contentView];
     
     UIImageView *titleImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.navigationbar.title.png"]];
     [self.navigationItem setTitleView:titleImage];
@@ -158,6 +166,16 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
     JJBadMovie *movie = [self.dataSource episodeForIndexPath:indexPath];
     JJBadMovieViewController *detailViewController = [[JJBadMovieViewController alloc] initWithBadMovie:movie];
     [self.navigationController pushViewController:detailViewController animated:YES];
+}
+
+#pragma mark - sspull to refresh view delegate
+
+- (void)pullToRefreshViewDidStartLoading:(SSPullToRefreshView *)view {
+    [self.pullToRefreshView startLoading];
+    [self.dataSource loadEpisodesWithCompletionHandler:^{
+        [self.tableView reloadData];
+        [self.pullToRefreshView finishLoading];
+    }];
 }
 
 @end
