@@ -23,6 +23,8 @@ static dispatch_queue_t jj_player_queue = nil;
 
 @property (nonatomic, assign, getter = isPlaying) BOOL playing;
 
+@property (nonatomic, strong) UIView *nowPlayingView;
+
 @property (nonatomic, strong) UIImageView *currentEpisodeImage;
 
 @property (nonatomic, strong) UIButton *playPauseEpisodeButton;
@@ -44,6 +46,7 @@ static dispatch_queue_t jj_player_queue = nil;
 - (void)skipForward;
 - (void)skipBackward;
 
+- (void)progressSliderDidChange:(id)sender;
 - (void)episodeDidFinishPlaying:(NSNotification *)note;
 
 - (void)loadEpisode:(NSNotification *)note;
@@ -60,7 +63,6 @@ static dispatch_queue_t jj_player_queue = nil;
     }
 }
 
-
 #pragma mark - synth
 
 @synthesize currentEpisode = _currentEpisode, playing = _playing;
@@ -71,6 +73,7 @@ static dispatch_queue_t jj_player_queue = nil;
 @synthesize playClock = _playClock, playRemainingClock = _playRemainingClock;
 @synthesize progressSlider = _progressSlider;
 
+@synthesize nowPlayingView = _nowPlayingView;
 @synthesize currentEpisodeImage = _currentEpisodeImage;
 
 @synthesize streamingAudioPlayer = _streamingAudioPlayer;
@@ -89,63 +92,75 @@ static dispatch_queue_t jj_player_queue = nil;
 {
     [super viewDidLoad];
     
-    self.currentEpisodeImage = [[UIImageView alloc] initWithFrame:(CGRect) { CGPointZero, 320, 320 }];
+    self.nowPlayingView = [[UIView alloc] initWithFrame:(CGRect){CGPointZero, 320, 20}];
+    [self.nowPlayingView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.player.nowplayingtrack.png"]]];
+    [self.view addSubview:self.nowPlayingView];
+    
+    self.currentlyPlaying = [[UILabel alloc] initWithFrame:(CGRect){0, 0, 320, 20}];
+    [self.currentlyPlaying setBackgroundColor:[UIColor clearColor]];
+    [self.currentlyPlaying setFont:[UIFont boldSystemFontOfSize:10.0f]];
+    [self.currentlyPlaying setTextAlignment:UITextAlignmentCenter];
+    [self.currentlyPlaying setTextColor:[UIColor grayColor]];
+    [self.currentlyPlaying setShadowColor:[UIColor blackColor]];
+    [self.currentlyPlaying setShadowOffset:(CGSize){0, -1}];
+    [self.view addSubview:self.currentlyPlaying];
+    
+    self.currentEpisodeImage = [[UIImageView alloc] initWithFrame:(CGRect) { 0, 20, 320, 320 }];
     [self.currentEpisodeImage setAlpha:0.1];
     [self.view addSubview:self.currentEpisodeImage];
+
+    UIImageView *gradientView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.player.background.gradient.png"]];
+    [self.view addSubview:gradientView];
     
     self.playPauseEpisodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.playPauseEpisodeButton setShowsTouchWhenHighlighted:YES];
-    [self.playPauseEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
-    [self.playPauseEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.pause.png"] forState:UIControlStateSelected];
+    [self.playPauseEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.player.buttons.play.png"] forState:UIControlStateNormal];
     [self.playPauseEpisodeButton addTarget:self action:@selector(togglePlayState) forControlEvents:UIControlEventTouchUpInside];
-    [self.playPauseEpisodeButton setFrame:(CGRect){138, 40, 44, 44}];
+    [self.playPauseEpisodeButton setFrame:(CGRect){138, 60, 44, 44}];
     [self.view addSubview:self.playPauseEpisodeButton];
     
     self.skipBackButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.skipBackButton setShowsTouchWhenHighlighted:YES];
-    [self.skipBackButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.skip.back.png"] forState:UIControlStateNormal];
+    [self.skipBackButton setBackgroundImage:[UIImage imageNamed:@"ui.player.buttons.rewind.png"] forState:UIControlStateNormal];
     [self.skipBackButton addTarget:self action:@selector(skipBackward) forControlEvents:UIControlEventTouchUpInside];
-    [self.skipBackButton setFrame:(CGRect){self.playPauseEpisodeButton.frame.origin.x - 66, 40, 44, 44}];
+    [self.skipBackButton setFrame:(CGRect){self.playPauseEpisodeButton.frame.origin.x - 66, 60, 44, 44}];
     [self.view addSubview:self.skipBackButton];
 
     self.skipForwardButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.skipForwardButton setShowsTouchWhenHighlighted:YES];
-    [self.skipForwardButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.skip.forward.png"] forState:UIControlStateNormal];
+    [self.skipForwardButton setBackgroundImage:[UIImage imageNamed:@"ui.player.buttons.forward.png"] forState:UIControlStateNormal];
     [self.skipForwardButton addTarget:self action:@selector(skipForward) forControlEvents:UIControlEventTouchUpInside];
-    [self.skipForwardButton setFrame:(CGRect){self.playPauseEpisodeButton.frame.origin.x + 66, 40, 44, 44}];
+    [self.skipForwardButton setFrame:(CGRect){self.playPauseEpisodeButton.frame.origin.x + 66, 60, 44, 44}];
     [self.view addSubview:self.skipForwardButton];
     
-    self.currentlyPlaying = [[UILabel alloc] initWithFrame:(CGRect){0, 74, 300, 24}];
-    [self.currentlyPlaying setBackgroundColor:[UIColor clearColor]];
-    [self.currentlyPlaying setFont:[UIFont systemFontOfSize:12.0f]];
-    [self.currentlyPlaying setTextAlignment:UITextAlignmentCenter];
-    [self.currentlyPlaying setTextColor:[UIColor whiteColor]];
-    [self.currentlyPlaying setShadowColor:[UIColor blackColor]];
-    [self.currentlyPlaying setShadowOffset:(CGSize){0, -1}];
-//    [self.view addSubview:self.currentlyPlaying];
-    
-    self.playClock = [[UILabel alloc] initWithFrame:(CGRect){0, 0, 300, 24}];
+    self.playClock = [[UILabel alloc] initWithFrame:(CGRect){25, 122, 43, 24}];
     [self.playClock setBackgroundColor:[UIColor clearColor]];
-    [self.playClock setFont:[UIFont systemFontOfSize:12.0f]];
+    [self.playClock setFont:[UIFont boldSystemFontOfSize:9.0f]];
     [self.playClock setTextAlignment:UITextAlignmentLeft];
     [self.playClock setTextColor:[UIColor whiteColor]];
     [self.playClock setShadowColor:[UIColor blackColor]];
     [self.playClock setShadowOffset:(CGSize){0, -1}];
+    [self.playClock setText:@"0:00:00"];
     [self.view addSubview:self.playClock];
 
-    self.playRemainingClock = [[UILabel alloc] initWithFrame:(CGRect){0, 26, 300, 24}];
+    self.playRemainingClock = [[UILabel alloc] initWithFrame:(CGRect){252, 122, 43, 24}];
     [self.playRemainingClock setBackgroundColor:[UIColor clearColor]];
-    [self.playRemainingClock setFont:[UIFont systemFontOfSize:12.0f]];
-    [self.playRemainingClock setTextAlignment:UITextAlignmentLeft];
+    [self.playRemainingClock setFont:[UIFont boldSystemFontOfSize:9.0f]];
+    [self.playRemainingClock setTextAlignment:UITextAlignmentRight];
     [self.playRemainingClock setTextColor:[UIColor whiteColor]];
     [self.playRemainingClock setShadowColor:[UIColor blackColor]];
     [self.playRemainingClock setShadowOffset:(CGSize){0, -1}];
+    [self.playRemainingClock setText:@"-0:00:00"];
     [self.view addSubview:self.playRemainingClock];
 
-//    self.progressSlider = [[UISlider alloc] initWithFrame:(CGRect){10, 100, 280, 20}];
-//    [self.view addSubview:self.progressSlider];
+    self.progressSlider = [[UISlider alloc] initWithFrame:(CGRect){70, 122, 180, 20}];
+    [self.progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"ui.player.track.png"] resizableImageWithCapInsets:(UIEdgeInsets){0, 0, 0, 6}] forState:UIControlStateNormal];
+    [self.progressSlider setMaximumTrackImage:[[UIImage imageNamed:@"ui.player.track.png"] resizableImageWithCapInsets:(UIEdgeInsets){0, 6, 0, 0}] forState:UIControlStateNormal];
+    [self.progressSlider setThumbImage:[UIImage imageNamed:@"ui.player.track.knob.png"] forState:UIControlStateNormal];
+    [self.progressSlider addTarget:self action:@selector(progressSliderDidChange:) forControlEvents:UIControlEventValueChanged];
+    [self.view addSubview:self.progressSlider];
     
-    self.volumeView = [[MPVolumeView alloc] initWithFrame:(CGRect){self.skipForwardButton.frame.origin.x + 66, 44, 30, 30}];
+    self.volumeView = [[MPVolumeView alloc] initWithFrame:(CGRect){self.skipForwardButton.frame.origin.x + 64, 70, 30, 30}];
 #if TARGET_IPHONE_SIMULATOR
     [self.volumeView setBackgroundColor:[UIColor lightGrayColor]];
 #endif
@@ -153,10 +168,6 @@ static dispatch_queue_t jj_player_queue = nil;
     [self.volumeView setShowsRouteButton:YES];
     [self.volumeView sizeThatFits:self.volumeView.frame.size];
     [self.view addSubview:self.volumeView];
-    
-//    UIView *testView = [[UIView alloc] initWithFrame:(CGRect){20, 20, 150, 150}];
-//    [testView setBackgroundColor:[UIColor yellowColor]];
-//    [self.view addSubview:testView];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadEpisode:) name:kJJBadMovieNotificationBeginPlayingEpisode object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pause) name:kJJBadMovieNotificationPausePlayingEpisode object:nil];
@@ -171,6 +182,7 @@ static dispatch_queue_t jj_player_queue = nil;
     self.skipForwardButton = nil;
     self.currentlyPlaying = nil;
     
+    self.nowPlayingView = nil;
     self.progressSlider = nil;
     self.playRemainingClock = nil;
     self.playClock = nil;
@@ -221,7 +233,7 @@ static dispatch_queue_t jj_player_queue = nil;
 - (void)play {
     [self.streamingAudioPlayer play];
     [self setPlaying:YES];
-    [self.playPauseEpisodeButton setSelected:YES];
+    [self.playPauseEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.player.buttons.pause.png"] forState:UIControlStateNormal];
 
     if (self.delegate) {
         if ([self.delegate respondsToSelector:@selector(playerViewControllerDidBeginPlaying:)]) {
@@ -233,7 +245,7 @@ static dispatch_queue_t jj_player_queue = nil;
 - (void)pause {
     [self.streamingAudioPlayer pause];
     [self setPlaying:NO];
-    [self.playPauseEpisodeButton setSelected:NO];
+    [self.playPauseEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.player.buttons.play.png"] forState:UIControlStateNormal];
     
     if (self.delegate) {
         if ([self.delegate respondsToSelector:@selector(playerViewControllerDidPause:)]) {
@@ -272,6 +284,12 @@ static dispatch_queue_t jj_player_queue = nil;
 
 #pragma mark - Episode Player
 
+- (void)progressSliderDidChange:(id)sender {
+    CMTime currentTime = [self.streamingAudioPlayer currentTime];
+    currentTime.value = self.progressSlider.value * currentTime.timescale;
+    [self.streamingAudioPlayer seekToTime:currentTime];
+}
+
 - (void)episodeDidFinishPlaying:(NSNotification *)note {
     if (self.delegate) {
         if ([self.delegate respondsToSelector:@selector(playerViewControllerDidEndPlaying:)]) {
@@ -285,12 +303,13 @@ static dispatch_queue_t jj_player_queue = nil;
     if (! episode || ! [episode isKindOfClass:[JJBadMovie class]]) return;
     
     [self setCurrentEpisode:episode];
-    [self.currentlyPlaying setText:[NSString stringWithFormat:@"Now Playing: %@", episode.name]];
+    [self.currentlyPlaying setText:[NSString stringWithFormat:@"NOW PLAYING: Episode #%@ - %@", episode.number, episode.name]];
     
     // load player
     if (! self.streamingAudioPlayer) {
         self.streamingAudioPlayer = [AVPlayer playerWithURL:[NSURL URLWithString:self.currentEpisode.url]];
         [self.streamingAudioPlayer setActionAtItemEnd:AVPlayerActionAtItemEndPause];
+        [self.streamingAudioPlayer setAllowsAirPlayVideo:NO];
         _timeObserver = [self.streamingAudioPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:jj_player_queue usingBlock:^(CMTime time) {
             CGFloat duration = self.streamingAudioPlayer.currentItem.duration.value / self.streamingAudioPlayer.currentItem.duration.timescale;
 
@@ -314,8 +333,11 @@ static dispatch_queue_t jj_player_queue = nil;
             CGFloat remainSeconds = MAX(ceilf(secondsRemainDivisor), 0);
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.playClock setText:[NSString stringWithFormat:@"%02d:%02d:%02d", (int)progressHours, (int)progressMinutes, (int)progressSeconds]];
-                [self.playRemainingClock setText:[NSString stringWithFormat:@"%02d:%02d:%02d", (int)remainHours, (int)remainMinutes, (int)remainSeconds]];
+                [self.progressSlider setMinimumValue:0];
+                [self.progressSlider setMaximumValue:duration];
+                [self.progressSlider setValue:currentSeconds];
+                [self.playClock setText:[NSString stringWithFormat:@"%01d:%02d:%02d", (int)progressHours, (int)progressMinutes, (int)progressSeconds]];
+                [self.playRemainingClock setText:[NSString stringWithFormat:@"-%01d:%02d:%02d", (int)remainHours, (int)remainMinutes, (int)remainSeconds]];
             });
         }];
     } else {
@@ -360,6 +382,7 @@ static dispatch_queue_t jj_player_queue = nil;
                                     nil];
         
     }
+
     [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:mediaDictionary];
     
     [self play];

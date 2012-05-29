@@ -256,10 +256,6 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"ui.navigationbar.background.png"] forBarMetrics:UIBarMetricsDefault];
         [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"ui.navigationbar.landscape.background.png"] forBarMetrics:UIBarMetricsLandscapePhone];
         [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setTintColor:[UIColor colorWithRed:89/255.0 green:0.0 blue:0.0 alpha:1.0]];
-        
-        [[UISlider appearance] setMinimumTrackTintColor:[UIColor darkGrayColor]];
-        [[UISlider appearance] setMaximumTrackTintColor:[UIColor lightGrayColor]];
-        [[UISlider appearance] setThumbTintColor:[UIColor blackColor]];
     });
 }
 

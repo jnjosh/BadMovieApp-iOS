@@ -76,34 +76,45 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = self.movie.name;
     
-    self.tableView = [[UITableView alloc] initWithFrame:(CGRect){ 0, 122, 320, 250 } style:UITableViewStylePlain];
+    self.title = self.movie.name;
+
+    self.tableView = [[UITableView alloc] initWithFrame:(CGRect){ 0, 97, 320, 275 } style:UITableViewStylePlain];
     [self.tableView setDelegate:self];
     [self.tableView setDataSource:self];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.tableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.tableview.background.png"]]];
     [self.view addSubview:self.tableView];
 
-    self.headerView = [[UIView alloc] initWithFrame:(CGRect){CGPointZero, {320, 122}}];
-    [self.headerView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.movieview.background.png"]]];
+    self.headerView = [[UIView alloc] initWithFrame:(CGRect){CGPointZero, {320, 97}}];
+    [self.headerView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.background.moviedetail.png"]]];
     [self.headerView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [self.headerView setAutoresizesSubviews:YES];
     [self.headerView setClipsToBounds:YES];
     [self.view addSubview:self.headerView];
     
     UIImage *image = [[SDImageCache sharedImageCache] imageFromKey:self.movie.photo fromDisk:YES];
-    self.episodeImageView = [[UIImageView alloc] initWithFrame:(CGRect){10, 10, 100, 100}];
+    self.episodeImageView = [[UIImageView alloc] initWithFrame:(CGRect){5, 5, 65, 65}];
     [self.episodeImageView setContentMode:UIViewContentModeScaleToFill];
     [self.episodeImageView setBackgroundColor:[UIColor whiteColor]];
     [self.episodeImageView setImage:image];
-    [self.headerView addSubview:self.episodeImageView];
+    UIView *episodeImageContainer = [[UIView alloc] initWithFrame:(CGRect){10,10,75,75}];
+    [episodeImageContainer setBackgroundColor:[UIColor whiteColor]];
+    [episodeImageContainer setClipsToBounds:YES];
+    [episodeImageContainer addSubview:self.episodeImageView];
+    [self.headerView addSubview:episodeImageContainer];
     
-    UIImage *playImage = [UIImage imageNamed:@"ui.buttons.play.png"];
+    UIImage *episodeButtonImage = [UIImage imageNamed:@"ui.buttons.episode.png"];
+    UIImage *episodeButtonImageHighlighted = [UIImage imageNamed:@"ui.buttons.episode.highlighted.png"];
+    UIImage *episodeButtonListenImage = [UIImage imageNamed:@"ui.buttons.image.listen.png"];
+    UIImage *episodeButtonListenImageHighlighted = [UIImage imageNamed:@"ui.buttons.image.listen.highlighted.png"];    
     self.episodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.episodeButton setFrame:(CGRect){ 260, 38, 44, 44 }];
+    [self.episodeButton setFrame:(CGRect){ 173, 28, 137, 39 }];
     [self.episodeButton setShowsTouchWhenHighlighted:NO];
-    [self.episodeButton setBackgroundImage:playImage forState:UIControlStateNormal];
+    [self.episodeButton setBackgroundImage:episodeButtonImage forState:UIControlStateNormal];
+    [self.episodeButton setBackgroundImage:episodeButtonImageHighlighted forState:UIControlStateHighlighted];
+    [self.episodeButton setImage:episodeButtonListenImage forState:UIControlStateNormal];
+    [self.episodeButton setImage:episodeButtonListenImageHighlighted forState:UIControlStateHighlighted];
     [self.episodeButton addTarget:self action:@selector(playEpisode) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview:self.episodeButton];
 
@@ -199,9 +210,9 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 - (void)viewDidAppear:(BOOL)animated {
     if ([self isCurrentMovie]) {
-        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.pause.png"] forState:UIControlStateNormal];
+//        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.pause.png"] forState:UIControlStateNormal];
     } else {
-        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
+//        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
     }
 }
 
@@ -327,14 +338,14 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 - (void)playEpisode {
     if (! [self isPlaying]) {
-        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.pause.png"] forState:UIControlStateNormal];
+//        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.pause.png"] forState:UIControlStateNormal];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationBeginPlayingEpisode object:self.movie];
         
         NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGRect:self.episodeImageView.frame], @"episodeImageFrame", self.episodeImageView.image, @"episodeImage", nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self userInfo:userInfo];
     } else {
-        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
+//        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
 
         [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationPausePlayingEpisode object:self.movie];
     }
