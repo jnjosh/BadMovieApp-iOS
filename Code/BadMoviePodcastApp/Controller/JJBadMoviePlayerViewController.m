@@ -154,11 +154,12 @@ static dispatch_queue_t jj_player_queue = nil;
     [self.view addSubview:self.playRemainingClock];
 
     self.progressSlider = [[UISlider alloc] initWithFrame:(CGRect){70, 122, 180, 20}];
-    [self.progressSlider setMinimumTrackImage:[[UIImage imageNamed:@"ui.player.track.png"] resizableImageWithCapInsets:(UIEdgeInsets){0, 0, 0, 6}] forState:UIControlStateNormal];
-    [self.progressSlider setMaximumTrackImage:[[UIImage imageNamed:@"ui.player.track.png"] resizableImageWithCapInsets:(UIEdgeInsets){0, 6, 0, 0}] forState:UIControlStateNormal];
+    [self.progressSlider setMinimumTrackTintColor:[UIColor darkGrayColor]];
     [self.progressSlider setThumbImage:[UIImage imageNamed:@"ui.player.track.knob.png"] forState:UIControlStateNormal];
     [self.progressSlider addTarget:self action:@selector(progressSliderDidChange:) forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:self.progressSlider];
+
+    
     
     self.volumeView = [[MPVolumeView alloc] initWithFrame:(CGRect){self.skipForwardButton.frame.origin.x + 64, 70, 30, 30}];
 #if TARGET_IPHONE_SIMULATOR
