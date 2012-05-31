@@ -17,6 +17,7 @@ NSString * const kJJBadMovieEpisodeKeyPhoto = @"com.jnjosh.episode.photo";
 NSString * const kJJBadMovieEpisodeKeyPublished = @"com.jnjosh.episode.published";
 NSString * const kJJBadMovieEpisodeKeyURL = @"com.jnjosh.episode.url";
 NSString * const kJJBadMovieEpisodeKeyVideo = @"com.jnjosh.episode.video";
+NSString * const kJJBadMovieEpisodeKeyLocation = @"com.jnjosh.episode.location";
 
 @implementation JJBadMovie
 
@@ -28,6 +29,7 @@ NSString * const kJJBadMovieEpisodeKeyVideo = @"com.jnjosh.episode.video";
 @synthesize published = _published;
 @synthesize url = _url;
 @synthesize video = _video;
+@synthesize location = _location;
 
 #pragma mark - lifecycle
 
@@ -41,6 +43,7 @@ NSString * const kJJBadMovieEpisodeKeyVideo = @"com.jnjosh.episode.video";
         self.published = [aDecoder decodeObjectForKey:kJJBadMovieEpisodeKeyPublished];
         self.url = [aDecoder decodeObjectForKey:kJJBadMovieEpisodeKeyURL];
         self.video = [aDecoder decodeObjectForKey:kJJBadMovieEpisodeKeyVideo];
+        self.location = [aDecoder decodeObjectForKey:kJJBadMovieEpisodeKeyLocation];
     }
     return self;
 }
@@ -54,6 +57,7 @@ NSString * const kJJBadMovieEpisodeKeyVideo = @"com.jnjosh.episode.video";
     [aCoder encodeObject:self.published forKey:kJJBadMovieEpisodeKeyPublished];
     [aCoder encodeObject:self.url forKey:kJJBadMovieEpisodeKeyURL];
     [aCoder encodeObject:self.video forKey:kJJBadMovieEpisodeKeyVideo];
+    [aCoder encodeObject:self.location forKey:kJJBadMovieEpisodeKeyLocation];
 }
 
 - (BOOL)isEqual:(id)object {
@@ -91,6 +95,7 @@ NSString * const kJJBadMovieEpisodeKeyVideo = @"com.jnjosh.episode.video";
     self.published = [aDictionary objectForKey:@"published"];
     self.url = [aDictionary objectForKey:@"url"];
     self.video = [aDictionary objectForKey:@"video"];
+    self.location = [aDictionary objectForKey:@"location"];
 }
 
 @end

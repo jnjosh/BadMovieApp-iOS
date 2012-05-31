@@ -306,12 +306,12 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 - (void)tweetEpisode {
     TWTweetComposeViewController *twitterController = [[TWTweetComposeViewController alloc] init];
     [twitterController setInitialText:[NSString stringWithFormat:@"Listened to Episode #%@ - %@ on @BadMoviePodcast", self.movie.number, self.movie.name]];
-    [twitterController addURL:[NSURL URLWithString:@"http://badmoviepodcast.com"]];
+    [twitterController addURL:[NSURL URLWithString:self.movie.location]];
     [self presentModalViewController:twitterController animated:YES];
 }
 
 - (void)copyEpisodeURL {
-    [[UIPasteboard generalPasteboard] setURL:[NSURL URLWithString:@"http://badmoviepodcast.com"]];
+    [[UIPasteboard generalPasteboard] setURL:[NSURL URLWithString:self.movie.location]];
     
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.mode = MBProgressHUDModeText;

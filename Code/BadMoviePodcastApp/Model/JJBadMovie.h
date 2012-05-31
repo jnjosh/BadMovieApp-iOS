@@ -18,6 +18,7 @@
 @property (nonatomic, copy) NSString *published;
 @property (nonatomic, copy) NSString *url;
 @property (nonatomic, copy) NSString *video;
+@property (nonatomic, copy) NSString *location;
 
 @property (nonatomic, strong, readonly) UIImage *cachedImage;
 
