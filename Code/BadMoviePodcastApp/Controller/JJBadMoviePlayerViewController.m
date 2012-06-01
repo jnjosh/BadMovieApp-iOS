@@ -231,14 +231,7 @@ static dispatch_queue_t jj_player_queue = nil;
         else if (event.subtype == UIEventSubtypeRemoteControlTogglePlayPause) {
             [self togglePlayState];
         }
-        else if (event.subtype == UIEventSubtypeRemoteControlEndSeekingBackward || 
-                 event.subtype == UIEventSubtypeRemoteControlEndSeekingForward || 
-                 event.subtype == UIEventSubtypeRemoteControlBeginSeekingBackward || 
-                 event.subtype == UIEventSubtypeRemoteControlBeginSeekingForward) {
-        }
     }
-    NSLog(@"event: %@", event);
-
 }
 
 - (void)play {
