@@ -9,12 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "JJBadMovieAudioPlayerDelegate.h"
 
-@class JJBadMovie;
+@class JJBadMovie, JJBadMoviePlayerViewController;
 
 @interface JJBadMovieViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate, JJBadMovieAudioPlayerDelegate>
 
 @property (nonatomic, strong) JJBadMovie *movie;
-
+@property (nonatomic, weak) JJBadMoviePlayerViewController *playerController;
 @property (nonatomic, assign, getter = isCurrentMovie) BOOL currentMovie;
 
 - (id)initWithBadMovie:(JJBadMovie *)badMovie;

@@ -10,6 +10,7 @@
 #import <Twitter/Twitter.h>
 #import "JJBadMovieViewController.h"
 #import "JJBadMovieWebViewController.h"
+#import "JJBadMoviePlayerViewController.h"
 #import "JJBadMovie.h"
 #import "JJBadMovieEnvironment.h"
 #import "SDImageCache.h"
@@ -34,7 +35,8 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 @property (nonatomic, strong) UITableViewCell *sectionHeaderView;
 
 - (void)swipeBack;
-- (void)playEpisode;
+- (void)startPlayingEpisode;
+- (void)togglePlayerState;
 - (void)playTrailer;
 - (void)showMovieInfo;
 - (void)downloadPodcast;
@@ -43,6 +45,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 - (UITableViewCell *)cellForDescriptionRow;
 - (void)copyEpisodeURL;
 - (void)tweetEpisode;
+- (void)openInSafari;
 
 @end
 
@@ -54,7 +57,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 @synthesize headerView = _headerView, tableView = _tableView, sectionHeaderView = _sectionHeaderView;
 @synthesize episodeButton = _episodeButton, episodeImageView = _episodeImageView;
 @synthesize shareEpisodeButton = _shareEpisodeButton, downloadButton = _downloadButton;
-@synthesize playing = _playing;
+@synthesize playing = _playing, playerController = _playerController;
 
 #pragma mark - lifecycle
 
@@ -115,7 +118,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     [self.episodeButton setBackgroundImage:episodeButtonImageHighlighted forState:UIControlStateHighlighted];
     [self.episodeButton setImage:episodeButtonListenImage forState:UIControlStateNormal];
     [self.episodeButton setImage:episodeButtonListenImageHighlighted forState:UIControlStateHighlighted];
-    [self.episodeButton addTarget:self action:@selector(playEpisode) forControlEvents:UIControlEventTouchUpInside];
+    [self.episodeButton addTarget:self action:@selector(togglePlayerState) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview:self.episodeButton];
 
     UIImageView *fadeView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.tableview.fade.png"]];
@@ -163,7 +166,6 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     [self.view addGestureRecognizer:swipeBackGesture];
     
     // setup section header
-    
     self.sectionHeaderView = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"sectionHeaderView"];
     [self.sectionHeaderView setBackgroundColor:[UIColor clearColor]];
     [self.sectionHeaderView setSelectionStyle:UITableViewCellSelectionStyleNone];
@@ -206,14 +208,13 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     self.sectionHeaderView = nil;
     self.headerView = nil;
     self.tableView = nil;
+    
+    self.playerController = nil;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    if ([self isCurrentMovie]) {
-//        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.pause.png"] forState:UIControlStateNormal];
-    } else {
-//        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
-    }
+    [super viewDidAppear:animated];
+   
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -278,27 +279,30 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     switch (buttonIndex) {
-        case 0:
-            [self tweetEpisode];
-            break;
-        case 1:
-            [self copyEpisodeURL];
-            break;
+        case 0: [self tweetEpisode]; break;
+        case 1: [self copyEpisodeURL]; break;
+        case 2: [self openInSafari]; break;
     }
 }
 
 #pragma mark - JJBadMovieAudioPlayerDelegate methods 
 
 - (void)playerViewControllerDidBeginPlaying:(JJBadMoviePlayerViewController *)playerViewController {
-    NSLog(@"Playing!");
+    [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.pause.png"] forState:UIControlStateNormal];
+    [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.pause.highlighted.png"] forState:UIControlStateHighlighted];
+    [self setPlaying:YES];
 }
 
 - (void)playerViewControllerDidPause:(JJBadMoviePlayerViewController *)playerViewController {
-    NSLog(@"Paused!");
+    [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.continue.png"] forState:UIControlStateNormal];
+    [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.continue.highlighted.png"] forState:UIControlStateHighlighted];
+    [self setPlaying:NO];
 }
 
 - (void)playerViewControllerDidEndPlaying:(JJBadMoviePlayerViewController *)playerViewController {
-    NSLog(@"Ended!");
+    [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.listen.png"] forState:UIControlStateNormal];
+    [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.listen.highlighted.png"] forState:UIControlStateHighlighted];
+    [self setPlaying:NO];
 }
 
 #pragma mark - share methods
@@ -324,10 +328,14 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     });
 }
 
+- (void)openInSafari {
+    [[UIApplication sharedApplication] openURL:[[NSURL alloc] initWithString:self.movie.location]];
+}
+
 #pragma mark - episode methods
 
 - (void)displayShareSheet {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Tweet", @"Copy URL", nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Tweet", @"Copy URL", @"View in Safari", nil];
     [actionSheet setActionSheetStyle:UIActionSheetStyleBlackTranslucent];
     [actionSheet showInView:self.view];
 }
@@ -336,21 +344,31 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)playEpisode {
-    if (! [self isPlaying]) {
-//        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.pause.png"] forState:UIControlStateNormal];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationBeginPlayingEpisode object:self.movie];
-        
-        NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGRect:self.episodeImageView.frame], @"episodeImageFrame", self.episodeImageView.image, @"episodeImage", nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self userInfo:userInfo];
-    } else {
-//        [self.episodeButton setBackgroundImage:[UIImage imageNamed:@"ui.buttons.play.png"] forState:UIControlStateNormal];
-
-        [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationPausePlayingEpisode object:self.movie];
-    }
+- (void)startPlayingEpisode {
+    [self.playerController setDelegate:self];
+    [self setCurrentMovie:YES];
+    [self.playerController loadEpisode:self.movie];
     
-    [self setPlaying:![self isPlaying]];
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGRect:self.episodeImageView.frame], @"episodeImageFrame", self.episodeImageView.image, @"episodeImage", nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self userInfo:userInfo];
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+        [self.playerController play];
+    });
+}
+
+- (void)togglePlayerState {
+    if ([self isCurrentMovie]) {
+        if (self.playerController.playerState == JJBadMoviePlayerStateNotStarted || self.playerController.playerState == JJBadMoviePlayerStateEnded) {
+            [self startPlayingEpisode];
+        } else if (self.playerController.playerState == JJBadMoviePlayerStatePaused) {
+            [self.playerController play];
+        } else if (self.playerController.playerState == JJBadMoviePlayerStatePlaying) {
+            [self.playerController pause];
+        } 
+    } else {
+        [self startPlayingEpisode];
+    }
 }
 
 - (void)playTrailer {

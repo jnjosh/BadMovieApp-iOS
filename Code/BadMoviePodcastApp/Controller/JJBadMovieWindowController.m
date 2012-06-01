@@ -91,6 +91,8 @@ static inline CGFloat degreesToRadian(CGFloat degree)
             [badMovieViewController setCurrentMovie:YES];
             [self.playerController setDelegate:badMovieViewController];
         }
+        
+        [badMovieViewController setPlayerController:self.playerController];
     }
 }
 

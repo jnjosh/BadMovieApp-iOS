@@ -10,8 +10,6 @@
 
 NSString * const kJJBadMovieAPIURLRoot = @"http://api.badmovieapp.com";
 
-NSString * const kJJBadMovieNotificationBeginPlayingEpisode = @"com.jnjosh.notifications.beginPlayingEpisode";
-NSString * const kJJBadMovieNotificationPausePlayingEpisode = @"com.jnjosh.notifications.pausePlayer";
 NSString * const kJJBadMovieNotificationShowPlayerControl = @"com.jnjosh.notification.showPlayerControl";
 NSString * const kJJBadMovieNotificationShowPlayer = @"com.jnjosh.notification.showPlayer";
 
