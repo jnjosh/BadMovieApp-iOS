@@ -288,21 +288,15 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 #pragma mark - JJBadMovieAudioPlayerDelegate methods 
 
 - (void)playerViewControllerDidBeginPlaying:(JJBadMoviePlayerViewController *)playerViewController {
-    [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.pause.png"] forState:UIControlStateNormal];
-    [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.pause.highlighted.png"] forState:UIControlStateHighlighted];
-    [self setPlaying:YES];
+    [self configureForPlayState:JJBadMoviePlayerStatePlaying];
 }
 
 - (void)playerViewControllerDidPause:(JJBadMoviePlayerViewController *)playerViewController {
-    [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.continue.png"] forState:UIControlStateNormal];
-    [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.continue.highlighted.png"] forState:UIControlStateHighlighted];
-    [self setPlaying:NO];
+    [self configureForPlayState:JJBadMoviePlayerStatePaused];
 }
 
 - (void)playerViewControllerDidEndPlaying:(JJBadMoviePlayerViewController *)playerViewController {
-    [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.listen.png"] forState:UIControlStateNormal];
-    [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.listen.highlighted.png"] forState:UIControlStateHighlighted];
-    [self setPlaying:NO];
+    [self configureForPlayState:JJBadMoviePlayerStateEnded];
 }
 
 #pragma mark - share methods
@@ -334,6 +328,22 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 #pragma mark - episode methods
 
+- (void)configureForPlayState:(JJBadMoviePlayerState)playerState {
+    if (playerState == JJBadMoviePlayerStatePlaying) {
+        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.pause.png"] forState:UIControlStateNormal];
+        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.pause.highlighted.png"] forState:UIControlStateHighlighted];
+        [self setPlaying:YES];
+    } else if (playerState == JJBadMoviePlayerStatePaused) {
+        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.continue.png"] forState:UIControlStateNormal];
+        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.continue.highlighted.png"] forState:UIControlStateHighlighted];
+        [self setPlaying:NO];
+    } else {
+        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.listen.png"] forState:UIControlStateNormal];
+        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.listen.highlighted.png"] forState:UIControlStateHighlighted];
+        [self setPlaying:NO];
+    }
+}
+
 - (void)displayShareSheet {
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Tweet", @"Copy URL", @"View in Safari", nil];
     [actionSheet setActionSheetStyle:UIActionSheetStyleBlackTranslucent];
@@ -347,12 +357,13 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 - (void)startPlayingEpisode {
     [self.playerController setDelegate:self];
     [self setCurrentMovie:YES];
+
     [self.playerController loadEpisode:self.movie];
     
     NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGRect:self.episodeImageView.frame], @"episodeImageFrame", self.episodeImageView.image, @"episodeImage", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self userInfo:userInfo];
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
         [self.playerController play];
     });
 }

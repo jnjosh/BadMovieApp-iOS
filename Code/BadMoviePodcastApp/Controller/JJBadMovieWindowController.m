@@ -89,6 +89,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         
         if ([[badMovieViewController movie] isEqual:self.playerController.currentEpisode]) {
             [badMovieViewController setCurrentMovie:YES];
+            [badMovieViewController configureForPlayState:self.playerController.playerState];
             [self.playerController setDelegate:badMovieViewController];
         }
         

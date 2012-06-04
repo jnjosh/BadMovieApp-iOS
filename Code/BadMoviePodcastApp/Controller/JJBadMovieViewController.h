@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "JJBadMovieAudioPlayerDelegate.h"
+#import "JJBadMoviePlayerViewController.h"
 
-@class JJBadMovie, JJBadMoviePlayerViewController;
+@class JJBadMovie;
 
 @interface JJBadMovieViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate, JJBadMovieAudioPlayerDelegate>
 
@@ -18,5 +19,6 @@
 @property (nonatomic, assign, getter = isCurrentMovie) BOOL currentMovie;
 
 - (id)initWithBadMovie:(JJBadMovie *)badMovie;
+- (void)configureForPlayState:(JJBadMoviePlayerState)playerState;
 
 @end

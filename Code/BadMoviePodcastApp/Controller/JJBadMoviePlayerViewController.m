@@ -48,6 +48,7 @@ static dispatch_queue_t jj_player_queue = nil;
 - (void)progressSliderTouchBegan:(id)sender;
 - (void)progressSliderDidChange:(id)sender;
 - (void)episodeDidFinishPlaying:(NSNotification *)note;
+- (NSDictionary *)nowPlayingDictionaryForDuration:(CGFloat)duration;
 
 @end
 
@@ -175,6 +176,9 @@ static dispatch_queue_t jj_player_queue = nil;
     [self.volumeView setShowsRouteButton:YES];
     [self.volumeView sizeThatFits:self.volumeView.frame.size];
     [self.view addSubview:self.volumeView];
+    
+    self.streamingAudioPlayer = [[AVPlayer alloc] init];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(episodeDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 }
 
 - (void)viewDidUnload
@@ -351,16 +355,9 @@ static dispatch_queue_t jj_player_queue = nil;
     self.playerState = JJBadMoviePlayerStateNotStarted;
     [self.currentlyPlaying setText:[NSString stringWithFormat:@"NOW PLAYING: Episode #%@ - %@", episode.number, episode.name]];
     
-    // cleanup existing player
-    if (self.streamingAudioPlayer) {
-        if (_timeObserver) {
-            [self.streamingAudioPlayer removeTimeObserver:_timeObserver];
-            _timeObserver = nil;
-        }
-    }
-    
     // load player
-    self.streamingAudioPlayer = [AVPlayer playerWithURL:[NSURL URLWithString:self.currentEpisode.url]];
+    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:self.currentEpisode.url]];
+    [self.streamingAudioPlayer replaceCurrentItemWithPlayerItem:playerItem];
     [self.streamingAudioPlayer setActionAtItemEnd:AVPlayerActionAtItemEndPause];
     [self.streamingAudioPlayer setAllowsAirPlayVideo:NO];
     
@@ -385,41 +382,28 @@ static dispatch_queue_t jj_player_queue = nil;
         NSLog(@"%@", [activationError localizedDescription]);
     }
     
-    UIImage *episodeImage = [episode cachedImage];
-    NSDictionary *mediaDictionary = nil;
-    if (episodeImage) {
-        [self.currentEpisodeImage setImage:episodeImage];
-        
-        MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithImage:episodeImage];
-        mediaDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                           kJJBadMovieAlbumTitle, MPMediaItemPropertyAlbumTitle,
-                           self.currentEpisode.number, MPMediaItemPropertyAlbumTrackNumber,
-                           kJJBadMovieArtistName, MPMediaItemPropertyArtist,
-                           artwork, MPMediaItemPropertyArtwork,
-                           kJJBadMovieGenre, MPMediaItemPropertyGenre,
-                           self.currentEpisode.name, MPMediaItemPropertyTitle,
-                           self.currentEpisode.name, MPMediaItemPropertyPodcastTitle,
-                           self.currentEpisode.url, MPMediaItemPropertyAssetURL,
-                           [NSNumber numberWithDouble:duration], MPMediaItemPropertyPlaybackDuration,
-                           nil];
-    } else {
-        mediaDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                    kJJBadMovieAlbumTitle, MPMediaItemPropertyAlbumTitle,
-                                    self.currentEpisode.number, MPMediaItemPropertyAlbumTrackNumber,
-                                    kJJBadMovieArtistName, MPMediaItemPropertyArtist,
-                                    kJJBadMovieGenre, MPMediaItemPropertyGenre,
-                                    self.currentEpisode.name, MPMediaItemPropertyTitle,
-                                    self.currentEpisode.name, MPMediaItemPropertyPodcastTitle,
-                                    self.currentEpisode.url, MPMediaItemPropertyAssetURL,
-                                    [NSNumber numberWithDouble:duration], MPMediaItemPropertyPlaybackDuration,
-                                    
-                                    nil];
-        
-    }
+    [self.currentEpisodeImage setImage:[episode cachedImage]];
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:[self nowPlayingDictionaryForDuration:duration]];
+}
 
-    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:mediaDictionary];
+- (NSDictionary *)nowPlayingDictionaryForDuration:(CGFloat)duration {
+    NSMutableDictionary *mediaDictionary = [NSMutableDictionary dictionary];
+    [mediaDictionary setObject:kJJBadMovieAlbumTitle forKey:MPMediaItemPropertyAlbumTitle];
+    [mediaDictionary setObject:self.currentEpisode.number forKey:MPMediaItemPropertyAlbumTrackNumber];
+    [mediaDictionary setObject:kJJBadMovieArtistName forKey:MPMediaItemPropertyArtist];
+    [mediaDictionary setObject:kJJBadMovieGenre forKey:MPMediaItemPropertyGenre];
+    [mediaDictionary setObject:self.currentEpisode.name forKey:MPMediaItemPropertyTitle];
+    [mediaDictionary setObject:self.currentEpisode.name forKey:MPMediaItemPropertyPodcastTitle];
+    [mediaDictionary setObject:self.currentEpisode.url forKey:MPMediaItemPropertyAssetURL];
+    [mediaDictionary setObject:[NSNumber numberWithDouble:duration] forKey:MPMediaItemPropertyPlaybackDuration];
+
+    UIImage *episodeImage = [self.currentEpisode cachedImage];
+    if (episodeImage) {
+        MPMediaItemArtwork *artwork = [[MPMediaItemArtwork alloc] initWithImage:episodeImage];
+        [mediaDictionary setObject:artwork forKey:MPMediaItemPropertyArtwork];
+    }
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(episodeDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
+    return mediaDictionary;
 }
 
 @end
