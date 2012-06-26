@@ -359,7 +359,6 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     [self.playerController setDelegate:self];
     [self.playerController setCurrentEpisode:self.movie];
     
-    
     NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGRect:self.episodeImageView.frame], @"episodeImageFrame", self.episodeImageView.image, @"episodeImage", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self userInfo:userInfo];
     
