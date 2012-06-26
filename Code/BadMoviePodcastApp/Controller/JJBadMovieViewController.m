@@ -355,17 +355,19 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 }
 
 - (void)startPlayingEpisode {
-    [self.playerController setDelegate:self];
     [self setCurrentMovie:YES];
-
-    [self.playerController loadEpisode:self.movie];
+    [self.playerController setDelegate:self];
+    [self.playerController setCurrentEpisode:self.movie];
+    
     
     NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGRect:self.episodeImageView.frame], @"episodeImageFrame", self.episodeImageView.image, @"episodeImage", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self userInfo:userInfo];
-
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
-        [self.playerController play];
-    });
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0ul), ^{
+        [self.playerController loadEpisodeWithCompletionHandler:^{
+            [self.playerController play];
+        }];
+    });    
 }
 
 - (void)togglePlayerState {

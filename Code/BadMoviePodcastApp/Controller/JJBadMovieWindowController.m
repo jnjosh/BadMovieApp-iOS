@@ -149,6 +149,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         group.fillMode = kCAFillModeForwards;
         group.removedOnCompletion = NO;
         [group setAnimations:[NSArray arrayWithObjects:fadeOutAnimation, pathAnimation, resizeAnimation, nil]];
+        [group setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
         group.duration = 0.5f;
         group.delegate = self;
         [group setValue:imageViewForAnimation forKey:@"imageViewBeingAnimated"];
@@ -226,6 +227,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         CATransform3D moveTranslation = CATransform3DMakeTranslation(0, 120.0f, -40.0f);
         CATransform3D imageMatrix = CATransform3DConcat(moveTranslation, rotationAndPerspectiveTransform);
         
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
         [UIView animateWithDuration:0.25 animations:^{
             self.downView.layer.transform = imageMatrix;
             [self.vignetteView setAlpha:0.8];
@@ -234,6 +236,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 }
 
 - (void)hideAudioPlayer {
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
     [UIView animateWithDuration:0.25 animations:^{
         self.downView.layer.transform = CATransform3DIdentity;
         [self.vignetteView setAlpha:0.0];

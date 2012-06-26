@@ -37,6 +37,9 @@ static dispatch_queue_t jj_player_queue = nil;
 
 @property (nonatomic, strong) UISlider *progressSlider;
 
+@property (nonatomic, strong) AVPlayerItem *playerItem;
+@property (nonatomic, copy) JJBadMovieLoaderCompletionHandler loaderComplete;
+
 @property (nonatomic, strong) AVPlayer *streamingAudioPlayer;
 @property (nonatomic, strong) MPVolumeView *volumeView;
 
@@ -75,7 +78,7 @@ static dispatch_queue_t jj_player_queue = nil;
 @synthesize nowPlayingView = _nowPlayingView;
 @synthesize currentEpisodeImage = _currentEpisodeImage;
 
-@synthesize streamingAudioPlayer = _streamingAudioPlayer;
+@synthesize streamingAudioPlayer = _streamingAudioPlayer, playerItem = _playerItem, loaderComplete = _loaderComplete;
 @synthesize delegate = _delegate, playerState = _playerState;
 
 #pragma mark - lifecycle
@@ -177,7 +180,6 @@ static dispatch_queue_t jj_player_queue = nil;
     [self.volumeView sizeThatFits:self.volumeView.frame.size];
     [self.view addSubview:self.volumeView];
     
-    self.streamingAudioPlayer = [[AVPlayer alloc] init];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(episodeDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:nil];
 }
 
@@ -348,19 +350,21 @@ static dispatch_queue_t jj_player_queue = nil;
     });    
 }
 
-- (void)loadEpisode:(JJBadMovie *)episode {
-    if (! episode || ! [episode isKindOfClass:[JJBadMovie class]]) return;
-    
-    [self setCurrentEpisode:episode];
+- (void)loadEpisodeWithCompletionHandler:(JJBadMovieLoaderCompletionHandler)loaderComplete {
+    if (! self.currentEpisode || ! [self.currentEpisode isKindOfClass:[JJBadMovie class]]) return;
+
+    self.loaderComplete = loaderComplete;
     self.playerState = JJBadMoviePlayerStateNotStarted;
-    [self.currentlyPlaying setText:[NSString stringWithFormat:@"NOW PLAYING: Episode #%@ - %@", episode.number, episode.name]];
+    self.playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:self.currentEpisode.url]];
+
+    if (_timeObserver) {
+        [self.streamingAudioPlayer removeTimeObserver:_timeObserver];
+    }
     
-    // load player
-    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:self.currentEpisode.url]];
-    [self.streamingAudioPlayer replaceCurrentItemWithPlayerItem:playerItem];
+    self.streamingAudioPlayer = [[AVPlayer alloc] initWithPlayerItem:self.playerItem];
     [self.streamingAudioPlayer setActionAtItemEnd:AVPlayerActionAtItemEndPause];
     [self.streamingAudioPlayer setAllowsAirPlayVideo:NO];
-    
+
     __block typeof(self) blockSelf = self;
     _timeObserver = [self.streamingAudioPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:jj_player_queue usingBlock:^(CMTime time) {
         [blockSelf updatePlayerTrackInformation:time];
@@ -382,8 +386,18 @@ static dispatch_queue_t jj_player_queue = nil;
         NSLog(@"%@", [activationError localizedDescription]);
     }
     
-    [self.currentEpisodeImage setImage:[episode cachedImage]];
     [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:[self nowPlayingDictionaryForDuration:duration]];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.currentlyPlaying setText:[NSString stringWithFormat:@"NOW PLAYING: Episode #%@ - %@", [[self currentEpisode] number], [[self currentEpisode] name]]];
+        [self.currentEpisodeImage setImage:[[self currentEpisode] cachedImage]];
+        
+        if (self.loaderComplete) {
+            self.loaderComplete();
+        }
+        self.loaderComplete = nil;
+    });
+    
 }
 
 - (NSDictionary *)nowPlayingDictionaryForDuration:(CGFloat)duration {
