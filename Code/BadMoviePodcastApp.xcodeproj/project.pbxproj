@@ -101,6 +101,7 @@
 		A4D2D552156B42FA002A69D2 /* ui.buttons.playpause.pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4D2D550156B42FA002A69D2 /* ui.buttons.playpause.pressed@2x.png */; };
 		A4D2D553156B42FA002A69D2 /* ui.buttons.playpause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4D2D551156B42FA002A69D2 /* ui.buttons.playpause@2x.png */; };
 		A4D2D559156B4612002A69D2 /* ui.nowplaying@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4D2D558156B4611002A69D2 /* ui.nowplaying@2x.png */; };
+		A4D410891599646E00678B6F /* JJBadMovieDownloadRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A4D410881599646E00678B6F /* JJBadMovieDownloadRequest.m */; };
 		A4E1C06B155CA42800CDCD93 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4E1C06A155CA42800CDCD93 /* AudioToolbox.framework */; };
 		A4E1C073155CAF3F00CDCD93 /* ui.tableview.background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4E1C072155CAF3F00CDCD93 /* ui.tableview.background@2x.png */; };
 		A4F48D79155C7EB8007B35F6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4F48D78155C7EB8007B35F6 /* AVFoundation.framework */; };
@@ -250,6 +251,8 @@
 		A4D2D550156B42FA002A69D2 /* ui.buttons.playpause.pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.playpause.pressed@2x.png"; sourceTree = "<group>"; };
 		A4D2D551156B42FA002A69D2 /* ui.buttons.playpause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.playpause@2x.png"; sourceTree = "<group>"; };
 		A4D2D558156B4611002A69D2 /* ui.nowplaying@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.nowplaying@2x.png"; sourceTree = "<group>"; };
+		A4D410871599646E00678B6F /* JJBadMovieDownloadRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieDownloadRequest.h; sourceTree = "<group>"; };
+		A4D410881599646E00678B6F /* JJBadMovieDownloadRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieDownloadRequest.m; sourceTree = "<group>"; };
 		A4E1C06A155CA42800CDCD93 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		A4E1C072155CAF3F00CDCD93 /* ui.tableview.background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.tableview.background@2x.png"; sourceTree = "<group>"; };
 		A4F48D78155C7EB8007B35F6 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -373,6 +376,8 @@
 				A46D5270155F5E0D00BC1CE5 /* JJBadMovieSettingsViewController.m */,
 				A4554C46156DC8DB00DF1834 /* JJBadMovieRootViewController.h */,
 				A4554C47156DC8DB00DF1834 /* JJBadMovieRootViewController.m */,
+				A4D410871599646E00678B6F /* JJBadMovieDownloadRequest.h */,
+				A4D410881599646E00678B6F /* JJBadMovieDownloadRequest.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -721,6 +726,7 @@
 				A491F78E1571910B00798A85 /* SSPullToRefreshDefaultContentView.m in Sources */,
 				A491F78F1571910B00798A85 /* SSPullToRefreshSimpleContentView.m in Sources */,
 				A491F7901571910B00798A85 /* SSPullToRefreshView.m in Sources */,
+				A4D410891599646E00678B6F /* JJBadMovieDownloadRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

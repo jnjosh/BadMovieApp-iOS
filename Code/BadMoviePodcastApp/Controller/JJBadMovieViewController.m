@@ -15,6 +15,7 @@
 #import "JJBadMovieEnvironment.h"
 #import "SDImageCache.h"
 #import "MBProgressHUD.h"
+#import "JJBadMovieDownloadRequest.h"
 
 const NSUInteger kJJBadMovieCellRowHeader = 0;
 const NSUInteger kJJBadMovieCellRowDescription = 1;
@@ -395,9 +396,17 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 - (void)downloadPodcast {
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.mode = MBProgressHUDModeText;
-    hud.labelText = @"Not Implemented Yet...";
-    [hud hide:YES afterDelay:2.0];
+    hud.mode = MBProgressHUDModeDeterminate;
+    [hud setDimBackground:YES];
+    
+    JJBadMovieDownloadRequest *downloadRequest = [[JJBadMovieDownloadRequest alloc] init];
+    downloadRequest.progressHud = hud;
+
+    [downloadRequest downloadEpisode:self.movie withCompletionHandler:^(NSData *data, NSError *error) {
+        NSLog(@"data: [%@]", data);
+        [hud hide:YES];
+    }];
+    
 }
 
 @end
