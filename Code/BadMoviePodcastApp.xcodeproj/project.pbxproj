@@ -39,6 +39,14 @@
 		A4394EE31565D23400E44CE0 /* ui.placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4394EE21565D23400E44CE0 /* ui.placeholder@2x.png */; };
 		A43B74A215689DBE00BDC1CE /* ui.buttons.share@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A43B74A115689DBE00BDC1CE /* ui.buttons.share@2x.png */; };
 		A43B74A61568C60C00BDC1CE /* ui.buttons.download@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A43B74A51568C60C00BDC1CE /* ui.buttons.download@2x.png */; };
+		A441FD1515A9225C0062D061 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A441FD1415A9225C0062D061 /* CoreData.framework */; };
+		A441FD1915A922BA0062D061 /* BadMovieAppModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A441FD1715A922BA0062D061 /* BadMovieAppModel.xcdatamodeld */; };
+		A441FD1C15A924A20062D061 /* JJEpisode.m in Sources */ = {isa = PBXBuildFile; fileRef = A441FD1B15A924A20062D061 /* JJEpisode.m */; };
+		A441FD2015A925380062D061 /* JJBadMovieWebStore.m in Sources */ = {isa = PBXBuildFile; fileRef = A441FD1F15A925380062D061 /* JJBadMovieWebStore.m */; };
+		A441FD2B15A92A670062D061 /* JJBadMovieBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A441FD2A15A92A670062D061 /* JJBadMovieBaseViewController.m */; };
+		A441FD2F15A92BDE0062D061 /* NSManagedObjectModel+DataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = A441FD2E15A92BDE0062D061 /* NSManagedObjectModel+DataStack.m */; };
+		A441FD3215A92CA40062D061 /* NSPersistentStoreCoordinator+DataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = A441FD3115A92CA40062D061 /* NSPersistentStoreCoordinator+DataStack.m */; };
+		A441FD3515A92EE60062D061 /* NSManagedObjectContext+DataStack.m in Sources */ = {isa = PBXBuildFile; fileRef = A441FD3415A92EE60062D061 /* NSManagedObjectContext+DataStack.m */; };
 		A4554C48156DC8DB00DF1834 /* JJBadMovieRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4554C47156DC8DB00DF1834 /* JJBadMovieRootViewController.m */; };
 		A4554C4A156DD41200DF1834 /* ui.navigationbar.landscape.background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4554C49156DD41200DF1834 /* ui.navigationbar.landscape.background@2x.png */; };
 		A4554C52156DEFA800DF1834 /* ui.movieview.background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4554C51156DEFA700DF1834 /* ui.movieview.background@2x.png */; };
@@ -166,6 +174,20 @@
 		A4394EE21565D23400E44CE0 /* ui.placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.placeholder@2x.png"; sourceTree = "<group>"; };
 		A43B74A115689DBE00BDC1CE /* ui.buttons.share@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.share@2x.png"; sourceTree = "<group>"; };
 		A43B74A51568C60C00BDC1CE /* ui.buttons.download@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.download@2x.png"; sourceTree = "<group>"; };
+		A441FD1415A9225C0062D061 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		A441FD1815A922BA0062D061 /* BadMovieAppModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BadMovieAppModel.xcdatamodel; sourceTree = "<group>"; };
+		A441FD1A15A924A20062D061 /* JJEpisode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJEpisode.h; sourceTree = "<group>"; };
+		A441FD1B15A924A20062D061 /* JJEpisode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJEpisode.m; sourceTree = "<group>"; };
+		A441FD1E15A925380062D061 /* JJBadMovieWebStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieWebStore.h; sourceTree = "<group>"; };
+		A441FD1F15A925380062D061 /* JJBadMovieWebStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieWebStore.m; sourceTree = "<group>"; };
+		A441FD2915A92A670062D061 /* JJBadMovieBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieBaseViewController.h; sourceTree = "<group>"; };
+		A441FD2A15A92A670062D061 /* JJBadMovieBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieBaseViewController.m; sourceTree = "<group>"; };
+		A441FD2D15A92BDE0062D061 /* NSManagedObjectModel+DataStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSManagedObjectModel+DataStack.h"; path = "Categories/NSManagedObjectModel+DataStack.h"; sourceTree = "<group>"; };
+		A441FD2E15A92BDE0062D061 /* NSManagedObjectModel+DataStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSManagedObjectModel+DataStack.m"; path = "Categories/NSManagedObjectModel+DataStack.m"; sourceTree = "<group>"; };
+		A441FD3015A92CA40062D061 /* NSPersistentStoreCoordinator+DataStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSPersistentStoreCoordinator+DataStack.h"; path = "Categories/NSPersistentStoreCoordinator+DataStack.h"; sourceTree = "<group>"; };
+		A441FD3115A92CA40062D061 /* NSPersistentStoreCoordinator+DataStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSPersistentStoreCoordinator+DataStack.m"; path = "Categories/NSPersistentStoreCoordinator+DataStack.m"; sourceTree = "<group>"; };
+		A441FD3315A92EE60062D061 /* NSManagedObjectContext+DataStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSManagedObjectContext+DataStack.h"; path = "Categories/NSManagedObjectContext+DataStack.h"; sourceTree = "<group>"; };
+		A441FD3415A92EE60062D061 /* NSManagedObjectContext+DataStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSManagedObjectContext+DataStack.m"; path = "Categories/NSManagedObjectContext+DataStack.m"; sourceTree = "<group>"; };
 		A4554C46156DC8DB00DF1834 /* JJBadMovieRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieRootViewController.h; sourceTree = "<group>"; };
 		A4554C47156DC8DB00DF1834 /* JJBadMovieRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieRootViewController.m; sourceTree = "<group>"; };
 		A4554C49156DD41200DF1834 /* ui.navigationbar.landscape.background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.navigationbar.landscape.background@2x.png"; sourceTree = "<group>"; };
@@ -264,6 +286,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A441FD1515A9225C0062D061 /* CoreData.framework in Frameworks */,
 				A4FC14D41570A8D500367A3C /* CoreMedia.framework in Frameworks */,
 				A4B41EBD156948A30059F9F7 /* Twitter.framework in Frameworks */,
 				A4704D2F1561D40C0079C534 /* ImageIO.framework in Frameworks */,
@@ -302,6 +325,7 @@
 		A42E1AF9155B5C7000043EA7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A441FD1415A9225C0062D061 /* CoreData.framework */,
 				A4FC14D31570A8D500367A3C /* CoreMedia.framework */,
 				A4B41EBC156948A30059F9F7 /* Twitter.framework */,
 				A4704D2E1561D40C0079C534 /* ImageIO.framework */,
@@ -343,6 +367,8 @@
 		A42E1B16155B5D6700043EA7 /* Application */ = {
 			isa = PBXGroup;
 			children = (
+				A441FD2C15A92BBC0062D061 /* Categories */,
+				A441FD1D15A925070062D061 /* Store */,
 				A4FC14D61570AC8D00367A3C /* Protocols */,
 				A42E1B4E155B67D000043EA7 /* Resources */,
 				A42E1B09155B5C7000043EA7 /* JJAppDelegate.h */,
@@ -373,6 +399,8 @@
 				A46D5270155F5E0D00BC1CE5 /* JJBadMovieSettingsViewController.m */,
 				A4554C46156DC8DB00DF1834 /* JJBadMovieRootViewController.h */,
 				A4554C47156DC8DB00DF1834 /* JJBadMovieRootViewController.m */,
+				A441FD2915A92A670062D061 /* JJBadMovieBaseViewController.h */,
+				A441FD2A15A92A670062D061 /* JJBadMovieBaseViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -382,6 +410,9 @@
 			children = (
 				A42E1B1D155B5ED200043EA7 /* JJBadMovie.h */,
 				A42E1B1E155B5ED200043EA7 /* JJBadMovie.m */,
+				A441FD1A15A924A20062D061 /* JJEpisode.h */,
+				A441FD1B15A924A20062D061 /* JJEpisode.m */,
+				A441FD1715A922BA0062D061 /* BadMovieAppModel.xcdatamodeld */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -493,6 +524,28 @@
 				A48E352B1569D13D00957D53 /* about.html */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		A441FD1D15A925070062D061 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				A441FD1E15A925380062D061 /* JJBadMovieWebStore.h */,
+				A441FD1F15A925380062D061 /* JJBadMovieWebStore.m */,
+			);
+			name = Store;
+			sourceTree = "<group>";
+		};
+		A441FD2C15A92BBC0062D061 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				A441FD2D15A92BDE0062D061 /* NSManagedObjectModel+DataStack.h */,
+				A441FD2E15A92BDE0062D061 /* NSManagedObjectModel+DataStack.m */,
+				A441FD3015A92CA40062D061 /* NSPersistentStoreCoordinator+DataStack.h */,
+				A441FD3115A92CA40062D061 /* NSPersistentStoreCoordinator+DataStack.m */,
+				A441FD3315A92EE60062D061 /* NSManagedObjectContext+DataStack.h */,
+				A441FD3415A92EE60062D061 /* NSManagedObjectContext+DataStack.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 		A46D5277155F7FDA00BC1CE5 /* View */ = {
@@ -721,6 +774,13 @@
 				A491F78E1571910B00798A85 /* SSPullToRefreshDefaultContentView.m in Sources */,
 				A491F78F1571910B00798A85 /* SSPullToRefreshSimpleContentView.m in Sources */,
 				A491F7901571910B00798A85 /* SSPullToRefreshView.m in Sources */,
+				A441FD1915A922BA0062D061 /* BadMovieAppModel.xcdatamodeld in Sources */,
+				A441FD1C15A924A20062D061 /* JJEpisode.m in Sources */,
+				A441FD2015A925380062D061 /* JJBadMovieWebStore.m in Sources */,
+				A441FD2B15A92A670062D061 /* JJBadMovieBaseViewController.m in Sources */,
+				A441FD2F15A92BDE0062D061 /* NSManagedObjectModel+DataStack.m in Sources */,
+				A441FD3215A92CA40062D061 /* NSPersistentStoreCoordinator+DataStack.m in Sources */,
+				A441FD3515A92EE60062D061 /* NSManagedObjectContext+DataStack.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -837,6 +897,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		A441FD1715A922BA0062D061 /* BadMovieAppModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				A441FD1815A922BA0062D061 /* BadMovieAppModel.xcdatamodel */,
+			);
+			currentVersion = A441FD1815A922BA0062D061 /* BadMovieAppModel.xcdatamodel */;
+			path = BadMovieAppModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = A42E1AED155B5C7000043EA7 /* Project object */;
 }

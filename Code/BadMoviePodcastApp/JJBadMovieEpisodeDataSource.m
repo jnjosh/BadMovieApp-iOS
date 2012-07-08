@@ -63,4 +63,17 @@
     [jsonRequest start];
 }
 
+- (NSArray *)syncLoadEpisodes {
+    NSURL *episodeURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/episodes", kJJBadMovieAPIURLRoot]];
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:episodeURL];
+    
+    NSURLResponse *response = nil;
+    [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:nil];
+    
+    NSData *episodeResponse = [NSData dataWithContentsOfURL:episodeURL];    
+    id jsonResponse = [NSJSONSerialization JSONObjectWithData:episodeResponse options:0 error:nil];
+    
+    return jsonResponse;
+}
+
 @end

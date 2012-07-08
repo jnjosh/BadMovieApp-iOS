@@ -15,6 +15,7 @@
 #import "JJBadMovieEpisodeDataSource.h"
 #import "JJBadMovieRootViewController.h"
 #import "JJBadMovie.h"
+#import "NSManagedObjectContext+DataStack.h"
 #import "SDURLCache.h"
 
 static inline CGFloat degreesToRadian(CGFloat degree)
@@ -29,6 +30,8 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 @property (nonatomic, strong) UIView *downView;
 @property (nonatomic, strong) UIImageView *vignetteView;
 
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
+
 - (CGImageRef)imageFromLayer:(CALayer *)layer size:(CGSize)size;
 
 - (void)showPlayerControl:(NSNotification *)note;
@@ -36,12 +39,12 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 
 @end
 
-
 @implementation JJBadMovieWindowController
 
 #pragma mark - synth
 
 @synthesize rootViewController = _rootViewController;
+@synthesize managedObjectContext = _managedObjectContext;
 @synthesize downView = _downView, vignetteView = _vignetteView, nowPlayingButton = _nowPlayingButton;
 @synthesize navigationController = _navigationController, playerController = _playerController, window = _window;
 
@@ -52,13 +55,15 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         [[self class] configureAppearance];
         [[self class] configureCache];
         
+        _managedObjectContext = [NSManagedObjectContext parentManagedObjectContext];
+        
         JJBadMovieEpisodeDataSource *dataSource = [[JJBadMovieEpisodeDataSource alloc] init];
         JJBadMovieEpisodesViewController *episodeViewController = [[JJBadMovieEpisodesViewController alloc] initWithEpisodeDataSource:dataSource];
-        _playerController = [[JJBadMoviePlayerViewController alloc] initWithNibName:nil bundle:nil];
-        
+        [episodeViewController setManagedObjectContext:_managedObjectContext];
         _navigationController = [[UINavigationController alloc] initWithRootViewController:episodeViewController];
         [_navigationController setDelegate:self];
         [_navigationController.view setBackgroundColor:[UIColor clearColor]];
+        _playerController = [[JJBadMoviePlayerViewController alloc] initWithNibName:nil bundle:nil];
         
         _rootViewController = [[JJBadMovieRootViewController alloc] initWithNibName:nil bundle:nil];
         [_rootViewController addChildViewController:_playerController];

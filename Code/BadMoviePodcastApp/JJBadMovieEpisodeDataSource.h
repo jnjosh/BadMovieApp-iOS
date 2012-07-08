@@ -21,5 +21,6 @@ typedef void(^JJBadMovieEpisodeCompletionBlock)(void);
 
 - (void)checkServerForUpdatesWithCompletionHandler:(JJBadMovieEpisodeCompletionBlock)completionHandler;
 - (void)loadEpisodesWithCompletionHandler:(JJBadMovieEpisodeCompletionBlock)completionHandler;
+- (NSArray *)syncLoadEpisodes;
 
 @end

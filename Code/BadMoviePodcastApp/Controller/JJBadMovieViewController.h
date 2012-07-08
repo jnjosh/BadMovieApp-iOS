@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "JJBadMovieBaseViewController.h"
 #import "JJBadMovieAudioPlayerDelegate.h"
 #import "JJBadMoviePlayerViewController.h"
 
 @class JJBadMovie;
 
-@interface JJBadMovieViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate, JJBadMovieAudioPlayerDelegate>
+@interface JJBadMovieViewController : JJBadMovieBaseViewController <UITableViewDelegate, UITableViewDataSource, UIActionSheetDelegate, JJBadMovieAudioPlayerDelegate>
 
 @property (nonatomic, strong) JJBadMovie *movie;
 @property (nonatomic, weak) JJBadMoviePlayerViewController *playerController;
