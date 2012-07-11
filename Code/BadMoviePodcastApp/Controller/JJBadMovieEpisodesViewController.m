@@ -8,6 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import <CoreData/CoreData.h>
+#import "NSManagedObjectContext+DataStack.h"
 #import "JJEpisode.h"
 #import "JJBadMovieEpisodesViewController.h"
 #import "JJBadMovieSettingsViewController.h"
@@ -82,16 +83,15 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
     [super viewWillAppear:animated];
     
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Episode" inManagedObjectContext:self.managedObjectContext];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"number == 80"];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Episode"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"number == 80"];
     [fetchRequest setEntity:entity];
     [fetchRequest setPredicate:predicate];
-        
-    NSArray *testArray = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
     
-    JJEpisode *episode = [testArray lastObject];
+    NSArray *testArray2 = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    JJEpisode *episode80 = [testArray2 lastObject];
     
-    NSLog(@"Test: %@", [episode descriptionText]);
+    NSLog(@"Test: %@", [episode80 descriptionText]);
     
     if (self.dataSource) {
         [self.dataSource loadEpisodesWithCompletionHandler:^{

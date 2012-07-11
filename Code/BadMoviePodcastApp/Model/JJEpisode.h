@@ -21,4 +21,6 @@
 @property (nonatomic, retain) NSString *videoURL;
 @property (nonatomic, retain) NSString *directURL;
 
++ (NSDictionary *)objectMappingWithDictionary:(NSDictionary *)dictionary;
+
 @end

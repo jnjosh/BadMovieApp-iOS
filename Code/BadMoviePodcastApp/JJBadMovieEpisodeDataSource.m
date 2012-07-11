@@ -13,7 +13,9 @@
 #import "SDWebImageManager.h"
 #import "JJBadMovie.h"
 
-@implementation JJBadMovieEpisodeDataSource
+@implementation JJBadMovieEpisodeDataSource {
+    NSOperationQueue *_queue;
+}
 
 @synthesize episodes = _episodes;
 
@@ -63,16 +65,28 @@
     [jsonRequest start];
 }
 
-- (NSArray *)syncLoadEpisodes {
+- (void)asyncLoadEpisodesCompletion:(void (^)(id objects))handler {
+    if (! _queue) {
+        _queue = [[NSOperationQueue alloc] init];
+        [_queue setSuspended:NO];
+    }
+    
     NSURL *episodeURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/episodes", kJJBadMovieAPIURLRoot]];
     NSURLRequest *urlRequest = [NSURLRequest requestWithURL:episodeURL];
     
-    NSURLResponse *response = nil;
-    [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:nil];
-    
+    [NSURLConnection sendAsynchronousRequest:urlRequest queue:_queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        id jsonResponse = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        if (handler) {
+            handler(jsonResponse);
+        }
+    }];
+}
+
+- (NSArray *)syncLoadEpisodes {
+    NSLog(@"syncload episodes");
+    NSURL *episodeURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/episodes", kJJBadMovieAPIURLRoot]];
     NSData *episodeResponse = [NSData dataWithContentsOfURL:episodeURL];    
     id jsonResponse = [NSJSONSerialization JSONObjectWithData:episodeResponse options:0 error:nil];
-    
     return jsonResponse;
 }
 

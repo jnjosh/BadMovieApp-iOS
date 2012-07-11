@@ -12,8 +12,11 @@
 @interface JJBadMovieWebStore ()
 
 @property (nonatomic, strong) NSMutableDictionary *storeCache;
+@property (nonatomic, strong) NSArray *episodes;
+@property (nonatomic, strong) JJBadMovieEpisodeDataSource *dataSource;
 
 - (id)fetchObjects:(NSFetchRequest *)request withContext:(NSManagedObjectContext *)context;
+- (id)fetchObjectIDs:(NSFetchRequest *)request withContext:(NSManagedObjectContext *)context;
 - (NSManagedObjectID *)objectIdForNewObjectOfEntity:(NSEntityDescription*)entityDescription cacheValues:(NSDictionary*)values;
 
 @end
@@ -24,6 +27,8 @@
 #pragma mark - synth
 
 @synthesize storeCache = _storeCache;
+@synthesize episodes = _episodes;
+@synthesize dataSource = _dataSource;
 
 #pragma mark - lifecycle
 
@@ -31,6 +36,7 @@
 {
     if (self = [super initWithPersistentStoreCoordinator:root configurationName:name URL:url options:options]) {
         _storeCache = [NSMutableDictionary dictionary];
+        _dataSource = [[JJBadMovieEpisodeDataSource alloc] init];
     }
     return self;
 }
@@ -57,6 +63,8 @@
         NSFetchRequest *fetchRequest = (NSFetchRequest*)request;
         if (fetchRequest.resultType == NSManagedObjectResultType) {
             return [self fetchObjects:fetchRequest withContext:context];
+        } else if (fetchRequest.resultType == NSManagedObjectIDResultType) {
+            return [self fetchObjectIDs:fetchRequest withContext:context];
         }
     }
     
@@ -70,17 +78,11 @@
 
     NSDictionary *values = [self.storeCache objectForKey:objectID];
     
-    // map objects to array
-    NSMutableDictionary *mappedValues = [NSMutableDictionary dictionary];
-    [mappedValues setObject:[values objectForKey:@"name"] forKey:@"name"];
-    [mappedValues setObject:[values objectForKey:@"description"] forKey:@"descriptionText"];
-    [mappedValues setObject:[values objectForKey:@"imdb"] forKey:@"imdbURL"];
-    [mappedValues setObject:[values objectForKey:@"number"] forKey:@"number"];
-    [mappedValues setObject:[values objectForKey:@"photo"] forKey:@"photoURL"];
-    [mappedValues setObject:[values objectForKey:@"published"] forKey:@"published"];
-    [mappedValues setObject:[values objectForKey:@"url"] forKey:@"url"];
-    [mappedValues setObject:[values objectForKey:@"video"] forKey:@"videoURL"];
-    [mappedValues setObject:[values objectForKey:@"location"] forKey:@"directURL"];
+    NSDictionary *mappedValues = nil;
+    Class objectClass = NSClassFromString([[objectID entity] managedObjectClassName]);
+    if ([objectClass respondsToSelector:@selector(objectMappingWithDictionary:)]) {
+        mappedValues = [objectClass performSelector:@selector(objectMappingWithDictionary:) withObject:values];
+    }
 
     NSIncrementalStoreNode *node =  [[NSIncrementalStoreNode alloc] initWithObjectID:objectID
                                                                           withValues:mappedValues 
@@ -88,11 +90,11 @@
     return node;
 }
 
-- (NSArray*)obtainPermanentIDsForObjects:(NSArray*)array error:(NSError**)error {
+- (NSArray *)obtainPermanentIDsForObjects:(NSArray *)array error:(NSError **)error {
     return nil;
 }
 
-- (id)newValueForRelationship:(NSRelationshipDescription*)relationship forObjectWithID:(NSManagedObjectID*)objectID withContext:(NSManagedObjectContext*)context error:(NSError**)error {
+- (id)newValueForRelationship:(NSRelationshipDescription *)relationship forObjectWithID:(NSManagedObjectID *)objectID withContext:(NSManagedObjectContext *)context error:(NSError **)error {
     NSLog(@"unknown relatioship: %@", relationship);
     return nil;
 }
@@ -101,12 +103,15 @@
 
 - (id)fetchObjects:(NSFetchRequest *)request withContext:(NSManagedObjectContext *)context {
     
-    JJBadMovieEpisodeDataSource *dataSource = [[JJBadMovieEpisodeDataSource alloc] init];
-    NSArray *episodeObjects = [dataSource syncLoadEpisodes];
+    if (! self.episodes) {
+        [self.dataSource asyncLoadEpisodesCompletion:^(id objects) {
+            self.episodes = objects; 
+        }];
+    }
     
-    NSArray *filteredArray = episodeObjects;
+    NSArray *filteredArray = self.episodes;
     if (request.predicate) {
-       filteredArray = [episodeObjects filteredArrayUsingPredicate:request.predicate];
+       filteredArray = [self.episodes filteredArrayUsingPredicate:request.predicate];
     }
     
     NSMutableArray *episodeObjectIDs = [NSMutableArray array];
@@ -117,6 +122,28 @@
     
     return episodeObjectIDs;
 }
+
+- (id)fetchObjectIDs:(NSFetchRequest *)request withContext:(NSManagedObjectContext *)context {
+    
+    if (! self.episodes) {
+        JJBadMovieEpisodeDataSource *dataSource = [[JJBadMovieEpisodeDataSource alloc] init];
+        self.episodes = [dataSource syncLoadEpisodes];
+    }
+    
+    NSArray *filteredArray = self.episodes;
+    if (request.predicate) {
+        filteredArray = [self.episodes filteredArrayUsingPredicate:request.predicate];
+    }
+    
+    NSMutableArray *episodeObjectIDs = [NSMutableArray array];
+    for (id object in filteredArray) {
+        NSManagedObjectID *oid = [self objectIdForNewObjectOfEntity:request.entity cacheValues:object];
+        [episodeObjectIDs addObject:oid];
+    }
+    
+    return episodeObjectIDs;
+}
+
 
 - (NSManagedObjectID *)objectIdForNewObjectOfEntity:(NSEntityDescription *)entityDescription cacheValues:(NSDictionary *)values {
     NSString *nativeKey = @"number";

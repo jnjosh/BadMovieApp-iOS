@@ -24,7 +24,7 @@ static NSManagedObjectContext *jj_parent_managed_object_context = nil;
     if (!coordinator) {
         return nil;
     }
-    jj_parent_managed_object_context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    jj_parent_managed_object_context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
     [jj_parent_managed_object_context setPersistentStoreCoordinator:coordinator];
     
     return jj_parent_managed_object_context;
