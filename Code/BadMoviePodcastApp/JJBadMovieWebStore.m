@@ -9,11 +9,16 @@
 #import "JJBadMovieWebStore.h"
 #import "JJBadMovieEpisodeDataSource.h"
 
-@interface JJBadMovieWebStore ()
+@interface JJBadMovieWebStore () {
+    NSMutableDictionary *_otherStoreCache;
+}
 
 @property (nonatomic, strong) NSMutableDictionary *storeCache;
 @property (nonatomic, strong) NSArray *episodes;
 @property (nonatomic, strong) JJBadMovieEpisodeDataSource *dataSource;
+
+@property (nonatomic, strong) NSManagedObjectContext *cachingContext;
+@property (nonatomic, strong) NSPersistentStoreCoordinator *cachingStore;
 
 - (id)fetchObjects:(NSFetchRequest *)request withContext:(NSManagedObjectContext *)context;
 - (id)fetchObjectIDs:(NSFetchRequest *)request withContext:(NSManagedObjectContext *)context;
@@ -22,13 +27,14 @@
 @end
 
 
-@implementation JJBadMovieWebStore
+@implementation JJBadMovieWebStore 
 
 #pragma mark - synth
 
 @synthesize storeCache = _storeCache;
 @synthesize episodes = _episodes;
 @synthesize dataSource = _dataSource;
+@synthesize cachingStore = _cachingStore, cachingContext = _cachingContext;
 
 #pragma mark - lifecycle
 
@@ -36,7 +42,24 @@
 {
     if (self = [super initWithPersistentStoreCoordinator:root configurationName:name URL:url options:options]) {
         _storeCache = [NSMutableDictionary dictionary];
+        _otherStoreCache = [NSMutableDictionary dictionary];
         _dataSource = [[JJBadMovieEpisodeDataSource alloc] init];
+        
+        // setup stack
+        NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"BadMovieAppModel" withExtension:@"momd"];
+        NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+        _cachingStore = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+        
+        NSURL *appDirectory = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+        NSURL *storeURL = [appDirectory URLByAppendingPathComponent:@"BadMovieStore.sqlite"];
+
+        if (![_cachingStore addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:nil]) {
+            NSLog(@"FAILED");
+        }
+        
+        _cachingContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        [_cachingContext setPersistentStoreCoordinator:_cachingStore];
+        
     }
     return self;
 }
@@ -61,11 +84,21 @@
 {
     if (request.requestType == NSFetchRequestType) {
         NSFetchRequest *fetchRequest = (NSFetchRequest*)request;
+
+        // talk to local store
+        NSFetchRequest *copiedFetch = [fetchRequest copy];
+        [copiedFetch setEntity:[NSEntityDescription entityForName:fetchRequest.entityName inManagedObjectContext:self.cachingContext]];
+        [copiedFetch setPredicate:[fetchRequest predicate]];
+        NSArray *cachedArray = [self.cachingContext executeFetchRequest:copiedFetch error:nil];
+        
         if (fetchRequest.resultType == NSManagedObjectResultType) {
-            return [self fetchObjects:fetchRequest withContext:context];
+            [self fetchObjects:fetchRequest withContext:context];
         } else if (fetchRequest.resultType == NSManagedObjectIDResultType) {
-            return [self fetchObjectIDs:fetchRequest withContext:context];
+            [self fetchObjectIDs:fetchRequest withContext:context];
         }
+        
+        return cachedArray;
+        
     }
     
     NSLog(@"Unimplemented Request: %@", request);
@@ -113,13 +146,23 @@
     if (request.predicate) {
        filteredArray = [self.episodes filteredArrayUsingPredicate:request.predicate];
     }
+
+    NSFetchRequest *cacheRequest = [request copy];
+    [cacheRequest setEntity:[NSEntityDescription entityForName:request.entityName inManagedObjectContext:self.cachingContext]];
     
     NSMutableArray *episodeObjectIDs = [NSMutableArray array];
     for (id object in filteredArray) {
         NSManagedObjectID *oid = [self objectIdForNewObjectOfEntity:request.entity cacheValues:object];
-        [episodeObjectIDs addObject:[context objectWithID:oid]];
+        NSManagedObject *object = [context objectWithID:oid];
+        [episodeObjectIDs addObject:object];
+        
+        // add to caching context
+
+        NSManagedObject *cacheObject = [NSEntityDescription insertNewObjectForEntityForName:cacheRequest.entityName inManagedObjectContext:self.cachingContext];
+        [cacheObject setValuesForKeysWithDictionary:[object dictionaryWithValuesForKeys:[[cacheRequest.entity attributesByName] allKeys]]];
     }
-    
+
+    [self.cachingContext save:nil];
     return episodeObjectIDs;
 }
 
@@ -153,5 +196,15 @@
     [self.storeCache setObject:values forKey:objectId];
     return objectId;
 }
+
+- (NSManagedObjectID *)otherobjectIdForNewObjectOfEntity:(NSEntityDescription *)entityDescription cacheValues:(NSDictionary *)values {
+    NSString *nativeKey = @"number";
+    id referenceId = [values objectForKey:nativeKey];
+    NSManagedObjectID *objectId = [self newObjectIDForEntity:entityDescription 
+                                             referenceObject:referenceId];
+    [_otherStoreCache setObject:values forKey:objectId];
+    return objectId;
+}
+
 
 @end

@@ -84,14 +84,14 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
     
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Episode" inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Episode"];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"number == 80"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"number == 42"];
     [fetchRequest setEntity:entity];
     [fetchRequest setPredicate:predicate];
     
     NSArray *testArray2 = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
     JJEpisode *episode80 = [testArray2 lastObject];
     
-    NSLog(@"Test: %@", [episode80 descriptionText]);
+    NSLog(@"Test: %@ - %@", [episode80 name], [episode80 descriptionText]);
     
     if (self.dataSource) {
         [self.dataSource loadEpisodesWithCompletionHandler:^{
