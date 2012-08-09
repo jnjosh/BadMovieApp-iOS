@@ -150,7 +150,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         group.removedOnCompletion = NO;
         [group setAnimations:[NSArray arrayWithObjects:fadeOutAnimation, pathAnimation, resizeAnimation, nil]];
         [group setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
-        group.duration = 4.33f;
+        group.duration = 0.33f;
         group.delegate = self;
         [group setValue:imageViewForAnimation forKey:@"imageViewBeingAnimated"];
         [group setValue:viewController forKey:@"imageViewWillReplaceViewController"];

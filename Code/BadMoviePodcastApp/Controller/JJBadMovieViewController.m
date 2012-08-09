@@ -110,15 +110,17 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     
     UIImage *episodeButtonImage = [UIImage imageNamed:@"ui.buttons.episode.png"];
     UIImage *episodeButtonImageHighlighted = [UIImage imageNamed:@"ui.buttons.episode.highlighted.png"];
-    UIImage *episodeButtonListenImage = [UIImage imageNamed:@"ui.buttons.image.listen.png"];
-    UIImage *episodeButtonListenImageHighlighted = [UIImage imageNamed:@"ui.buttons.image.listen.highlighted.png"];    
     self.episodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.episodeButton setFrame:(CGRect){ 173, 28, 137, 39 }];
     [self.episodeButton setShowsTouchWhenHighlighted:NO];
     [self.episodeButton setBackgroundImage:episodeButtonImage forState:UIControlStateNormal];
     [self.episodeButton setBackgroundImage:episodeButtonImageHighlighted forState:UIControlStateHighlighted];
-    [self.episodeButton setImage:episodeButtonListenImage forState:UIControlStateNormal];
-    [self.episodeButton setImage:episodeButtonListenImageHighlighted forState:UIControlStateHighlighted];
+	
+	[self.episodeButton setTitle:@"Listen" forState:UIControlStateNormal];
+	[self.episodeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+	[self.episodeButton setTitleShadowColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+	[self.episodeButton.titleLabel setShadowOffset:(CGSize){ 0, 1 }];
+	[self.episodeButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:18.0f]];
     [self.episodeButton addTarget:self action:@selector(togglePlayerState) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview:self.episodeButton];
 
@@ -331,16 +333,16 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 - (void)configureForPlayState:(JJBadMoviePlayerState)playerState {
     if (playerState == JJBadMoviePlayerStatePlaying) {
-        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.pause.png"] forState:UIControlStateNormal];
-        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.pause.highlighted.png"] forState:UIControlStateHighlighted];
+		[self.episodeButton setTitle:@"Pause" forState:UIControlStateNormal];
+		[self.episodeButton setTitle:@"Pause" forState:UIControlStateHighlighted];
         [self setPlaying:YES];
     } else if (playerState == JJBadMoviePlayerStatePaused) {
-        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.continue.png"] forState:UIControlStateNormal];
-        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.continue.highlighted.png"] forState:UIControlStateHighlighted];
+		[self.episodeButton setTitle:@"Continue" forState:UIControlStateNormal];
+		[self.episodeButton setTitle:@"Continue" forState:UIControlStateHighlighted];
         [self setPlaying:NO];
     } else {
-        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.listen.png"] forState:UIControlStateNormal];
-        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.listen.highlighted.png"] forState:UIControlStateHighlighted];
+		[self.episodeButton setTitle:@"Listen" forState:UIControlStateNormal];
+		[self.episodeButton setTitle:@"Listen" forState:UIControlStateHighlighted];
         [self setPlaying:NO];
     }
 }

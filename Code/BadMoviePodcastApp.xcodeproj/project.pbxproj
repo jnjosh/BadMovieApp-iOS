@@ -62,12 +62,6 @@
 		A4704D2C1561D3CD0079C534 /* SDWebImagePrefetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = A4704D241561D3CD0079C534 /* SDWebImagePrefetcher.m */; };
 		A4704D2D1561D3CD0079C534 /* UIButton+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A4704D261561D3CD0079C534 /* UIButton+WebCache.m */; };
 		A4704D2F1561D40C0079C534 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4704D2E1561D40C0079C534 /* ImageIO.framework */; };
-		A4728F881573D60D006AA176 /* ui.buttons.image.continue.highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4728F801573D60D006AA176 /* ui.buttons.image.continue.highlighted@2x.png */; };
-		A4728F891573D60D006AA176 /* ui.buttons.image.continue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4728F811573D60D006AA176 /* ui.buttons.image.continue@2x.png */; };
-		A4728F8A1573D60D006AA176 /* ui.buttons.image.listen.highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4728F821573D60D006AA176 /* ui.buttons.image.listen.highlighted@2x.png */; };
-		A4728F8B1573D60D006AA176 /* ui.buttons.image.listen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4728F831573D60D006AA176 /* ui.buttons.image.listen@2x.png */; };
-		A4728F8C1573D60D006AA176 /* ui.buttons.image.pause.highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4728F841573D60D006AA176 /* ui.buttons.image.pause.highlighted@2x.png */; };
-		A4728F8D1573D60D006AA176 /* ui.buttons.image.pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4728F851573D60D006AA176 /* ui.buttons.image.pause@2x.png */; };
 		A4728F901573D868006AA176 /* ui.background.moviedetail@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4728F8F1573D868006AA176 /* ui.background.moviedetail@2x.png */; };
 		A4728F931573DFCA006AA176 /* ui.buttons.episode.highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4728F911573DFCA006AA176 /* ui.buttons.episode.highlighted@2x.png */; };
 		A4728F941573DFCA006AA176 /* ui.buttons.episode@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4728F921573DFCA006AA176 /* ui.buttons.episode@2x.png */; };
@@ -205,12 +199,6 @@
 		A4704D261561D3CD0079C534 /* UIButton+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIButton+WebCache.m"; path = "SDWebImage/SDWebImage/UIButton+WebCache.m"; sourceTree = "<group>"; };
 		A4704D271561D3CD0079C534 /* UIImageView+WebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImageView+WebCache.h"; path = "SDWebImage/SDWebImage/UIImageView+WebCache.h"; sourceTree = "<group>"; };
 		A4704D2E1561D40C0079C534 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
-		A4728F801573D60D006AA176 /* ui.buttons.image.continue.highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.image.continue.highlighted@2x.png"; sourceTree = "<group>"; };
-		A4728F811573D60D006AA176 /* ui.buttons.image.continue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.image.continue@2x.png"; sourceTree = "<group>"; };
-		A4728F821573D60D006AA176 /* ui.buttons.image.listen.highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.image.listen.highlighted@2x.png"; sourceTree = "<group>"; };
-		A4728F831573D60D006AA176 /* ui.buttons.image.listen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.image.listen@2x.png"; sourceTree = "<group>"; };
-		A4728F841573D60D006AA176 /* ui.buttons.image.pause.highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.image.pause.highlighted@2x.png"; sourceTree = "<group>"; };
-		A4728F851573D60D006AA176 /* ui.buttons.image.pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.image.pause@2x.png"; sourceTree = "<group>"; };
 		A4728F8F1573D868006AA176 /* ui.background.moviedetail@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.background.moviedetail@2x.png"; sourceTree = "<group>"; };
 		A4728F911573DFCA006AA176 /* ui.buttons.episode.highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.episode.highlighted@2x.png"; sourceTree = "<group>"; };
 		A4728F921573DFCA006AA176 /* ui.buttons.episode@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.episode@2x.png"; sourceTree = "<group>"; };
@@ -442,12 +430,6 @@
 				A4728F911573DFCA006AA176 /* ui.buttons.episode.highlighted@2x.png */,
 				A4728F921573DFCA006AA176 /* ui.buttons.episode@2x.png */,
 				A4728F8F1573D868006AA176 /* ui.background.moviedetail@2x.png */,
-				A4728F801573D60D006AA176 /* ui.buttons.image.continue.highlighted@2x.png */,
-				A4728F811573D60D006AA176 /* ui.buttons.image.continue@2x.png */,
-				A4728F821573D60D006AA176 /* ui.buttons.image.listen.highlighted@2x.png */,
-				A4728F831573D60D006AA176 /* ui.buttons.image.listen@2x.png */,
-				A4728F841573D60D006AA176 /* ui.buttons.image.pause.highlighted@2x.png */,
-				A4728F851573D60D006AA176 /* ui.buttons.image.pause@2x.png */,
 				A4554C55156DF65700DF1834 /* ui.tableview.fade@2x.png */,
 				A4554C53156DF48B00DF1834 /* ui.buttons.roundplay@2x.png */,
 				A4554C51156DEFA700DF1834 /* ui.movieview.background@2x.png */,
@@ -650,12 +632,6 @@
 				A4554C52156DEFA800DF1834 /* ui.movieview.background@2x.png in Resources */,
 				A4554C54156DF48B00DF1834 /* ui.buttons.roundplay@2x.png in Resources */,
 				A4554C56156DF65700DF1834 /* ui.tableview.fade@2x.png in Resources */,
-				A4728F881573D60D006AA176 /* ui.buttons.image.continue.highlighted@2x.png in Resources */,
-				A4728F891573D60D006AA176 /* ui.buttons.image.continue@2x.png in Resources */,
-				A4728F8A1573D60D006AA176 /* ui.buttons.image.listen.highlighted@2x.png in Resources */,
-				A4728F8B1573D60D006AA176 /* ui.buttons.image.listen@2x.png in Resources */,
-				A4728F8C1573D60D006AA176 /* ui.buttons.image.pause.highlighted@2x.png in Resources */,
-				A4728F8D1573D60D006AA176 /* ui.buttons.image.pause@2x.png in Resources */,
 				A4728F901573D868006AA176 /* ui.background.moviedetail@2x.png in Resources */,
 				A4728F931573DFCA006AA176 /* ui.buttons.episode.highlighted@2x.png in Resources */,
 				A4728F941573DFCA006AA176 /* ui.buttons.episode@2x.png in Resources */,
