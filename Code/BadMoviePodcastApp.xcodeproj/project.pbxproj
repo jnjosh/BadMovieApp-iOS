@@ -31,7 +31,6 @@
 		A42E1B40155B5FA800043EA7 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B36155B5FA800043EA7 /* UIImageView+AFNetworking.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A42E1B43155B603400043EA7 /* JJBadMovieEpisodesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B42155B603400043EA7 /* JJBadMovieEpisodesViewController.m */; };
 		A42E1B46155B607C00043EA7 /* JJBadMovieEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B45155B607C00043EA7 /* JJBadMovieEnvironment.m */; };
-		A42E1B4A155B621500043EA7 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B49155B621500043EA7 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A42E1B4D155B647600043EA7 /* JJBadMovieViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A42E1B4C155B647600043EA7 /* JJBadMovieViewController.m */; };
 		A42E1B52155B680000043EA7 /* placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A42E1B51155B680000043EA7 /* placeholder@2x.png */; };
 		A42E1B54155B6AFA00043EA7 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A42E1B53155B6AFA00043EA7 /* MediaPlayer.framework */; };
@@ -156,8 +155,6 @@
 		A42E1B42155B603400043EA7 /* JJBadMovieEpisodesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieEpisodesViewController.m; sourceTree = "<group>"; };
 		A42E1B44155B607C00043EA7 /* JJBadMovieEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieEnvironment.h; sourceTree = "<group>"; };
 		A42E1B45155B607C00043EA7 /* JJBadMovieEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieEnvironment.m; sourceTree = "<group>"; };
-		A42E1B48155B621500043EA7 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = JSONKit.h; path = JSONKit/JSONKit.h; sourceTree = "<group>"; };
-		A42E1B49155B621500043EA7 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JSONKit.m; path = JSONKit/JSONKit.m; sourceTree = "<group>"; };
 		A42E1B4B155B647600043EA7 /* JJBadMovieViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieViewController.h; sourceTree = "<group>"; };
 		A42E1B4C155B647600043EA7 /* JJBadMovieViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieViewController.m; sourceTree = "<group>"; };
 		A42E1B51155B680000043EA7 /* placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "placeholder@2x.png"; sourceTree = "<group>"; };
@@ -398,7 +395,6 @@
 				A4B41EBE156977A50059F9F7 /* MBProgressHUD */,
 				A4704D161561D3A60079C534 /* SDWebImage */,
 				A4704D0E1561D08D0079C534 /* SDURLCache */,
-				A42E1B47155B620700043EA7 /* JSONKit */,
 				A42E1B21155B5F9400043EA7 /* AFNetworking */,
 			);
 			path = Libraries;
@@ -430,15 +426,6 @@
 				A42E1B36155B5FA800043EA7 /* UIImageView+AFNetworking.m */,
 			);
 			name = AFNetworking;
-			sourceTree = "<group>";
-		};
-		A42E1B47155B620700043EA7 /* JSONKit */ = {
-			isa = PBXGroup;
-			children = (
-				A42E1B48155B621500043EA7 /* JSONKit.h */,
-				A42E1B49155B621500043EA7 /* JSONKit.m */,
-			);
-			name = JSONKit;
 			sourceTree = "<group>";
 		};
 		A42E1B4E155B67D000043EA7 /* Resources */ = {
@@ -705,7 +692,6 @@
 				A42E1B40155B5FA800043EA7 /* UIImageView+AFNetworking.m in Sources */,
 				A42E1B43155B603400043EA7 /* JJBadMovieEpisodesViewController.m in Sources */,
 				A42E1B46155B607C00043EA7 /* JJBadMovieEnvironment.m in Sources */,
-				A42E1B4A155B621500043EA7 /* JSONKit.m in Sources */,
 				A42E1B4D155B647600043EA7 /* JJBadMovieViewController.m in Sources */,
 				A42E1B57155B71D300043EA7 /* JJBadMovieWebViewController.m in Sources */,
 				A4095A17155F358D006DAA33 /* JJBadMovieWindowController.m in Sources */,
