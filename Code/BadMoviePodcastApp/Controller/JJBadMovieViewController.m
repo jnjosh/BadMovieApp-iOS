@@ -156,6 +156,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 	UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[cancelButton setTitle:@"X" forState:UIControlStateNormal];
 	[cancelButton addTarget:self action:@selector(cancelDownload) forControlEvents:UIControlEventTouchUpInside];
+	[cancelButton setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
 	[cancelButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
 	[cancelButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
 	[[cancelButton titleLabel] setShadowOffset:(CGSize){ 0, 1 }];
