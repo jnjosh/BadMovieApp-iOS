@@ -127,7 +127,7 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
     [self downloadImageInView];
 }
 
-#pragma mark - Table view data source
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -155,7 +155,7 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
     return cell;
 }
 
-#pragma mark - Table view delegate
+#pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 86.0f;
@@ -168,7 +168,7 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
 
-#pragma mark - sspull to refresh view delegate
+#pragma mark - SSPullToRefreshDelegate
 
 - (void)pullToRefreshViewDidStartLoading:(SSPullToRefreshView *)view {
     [self.pullToRefreshView startLoading];
