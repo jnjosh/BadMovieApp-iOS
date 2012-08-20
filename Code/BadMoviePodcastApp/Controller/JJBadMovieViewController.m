@@ -148,6 +148,8 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 	self.downloadProgressLabel = [[UILabel alloc] initWithFrame:(CGRect) { 240.0f, 13.0f, 40.0f, 20.0f }];
 	[self.downloadProgressLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:12.0f]];
 	[self.downloadProgressLabel setTextColor:[UIColor grayColor]];
+	[self.downloadProgressLabel setShadowColor:[UIColor whiteColor]];
+	[self.downloadProgressLabel setShadowOffset:(CGSize){ 0, 1 }];
 	[self.downloadProgressLabel setBackgroundColor:[UIColor clearColor]];
 	[self.downloadingView addSubview:self.downloadProgressLabel];
 	[self.downloadProgressLabel setText:@"0%"];
