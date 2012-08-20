@@ -25,4 +25,7 @@
 + (JJBadMovie *)instanceFromDictionary:(NSDictionary *)aDictionary;
 - (void)setAttributesFromDictionary:(NSDictionary *)aDictionary;
 
+- (NSString *)localFilePath;
+
+
 @end

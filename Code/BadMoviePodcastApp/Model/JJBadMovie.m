@@ -19,7 +19,9 @@ NSString * const kJJBadMovieEpisodeKeyURL = @"com.jnjosh.episode.url";
 NSString * const kJJBadMovieEpisodeKeyVideo = @"com.jnjosh.episode.video";
 NSString * const kJJBadMovieEpisodeKeyLocation = @"com.jnjosh.episode.location";
 
-@implementation JJBadMovie
+@implementation JJBadMovie {
+	NSString *_localFilePath;
+}
 
 @synthesize descriptionText = _descriptionText;
 @synthesize imdb = _imdb;
@@ -77,6 +79,19 @@ NSString * const kJJBadMovieEpisodeKeyLocation = @"com.jnjosh.episode.location";
 }
 
 #pragma mark - methods
+
+- (NSString *)localFilePath {
+	if (! _localFilePath) {
+		NSString *filePrefix = [self.name lowercaseString];
+		filePrefix = [[filePrefix stringByReplacingOccurrencesOfString:@" " withString:@""] stringByAppendingString:[self.number stringValue]];
+		NSString *fileName = [filePrefix stringByAppendingPathExtension:@"mp3"];
+		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+		NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+		_localFilePath = [basePath stringByAppendingPathComponent:fileName];
+	}
+	return _localFilePath;
+
+}
 
 - (UIImage *)cachedImage {
     UIImage *imageFromCache = [[SDImageCache sharedImageCache] imageFromKey:self.photo fromDisk:YES];

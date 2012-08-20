@@ -355,7 +355,15 @@ static dispatch_queue_t jj_player_queue = nil;
 
     self.loaderComplete = loaderComplete;
     self.playerState = JJBadMoviePlayerStateNotStarted;
-    self.playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:self.currentEpisode.url]];
+	
+    self.playerItem = nil;
+	if ([[NSFileManager defaultManager] fileExistsAtPath:[self.currentEpisode localFilePath]]) {
+		NSURL *localFile = [NSURL fileURLWithPath:[self.currentEpisode localFilePath]];
+		AVAsset *localAsset = [AVAsset assetWithURL:localFile];
+		self.playerItem = [AVPlayerItem playerItemWithAsset:localAsset];
+	} else {
+		self.playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:self.currentEpisode.url]];
+	}
 
     if (_timeObserver) {
         [self.streamingAudioPlayer removeTimeObserver:_timeObserver];
