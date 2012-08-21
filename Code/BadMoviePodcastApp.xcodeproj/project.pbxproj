@@ -38,6 +38,9 @@
 		A4394EE31565D23400E44CE0 /* ui.placeholder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4394EE21565D23400E44CE0 /* ui.placeholder@2x.png */; };
 		A43B74A215689DBE00BDC1CE /* ui.buttons.share@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A43B74A115689DBE00BDC1CE /* ui.buttons.share@2x.png */; };
 		A43B74A61568C60C00BDC1CE /* ui.buttons.download@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A43B74A51568C60C00BDC1CE /* ui.buttons.download@2x.png */; };
+		A450622915E33CC900BED34D /* JJBadMovieRateLimit.m in Sources */ = {isa = PBXBuildFile; fileRef = A450622815E33CC900BED34D /* JJBadMovieRateLimit.m */; };
+		A450623215E3468400BED34D /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A450623115E3468400BED34D /* Reachability.m */; };
+		A450623615E3471200BED34D /* JJBadMovieNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = A450623515E3471200BED34D /* JJBadMovieNetwork.m */; };
 		A4554C48156DC8DB00DF1834 /* JJBadMovieRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4554C47156DC8DB00DF1834 /* JJBadMovieRootViewController.m */; };
 		A4554C4A156DD41200DF1834 /* ui.navigationbar.landscape.background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4554C49156DD41200DF1834 /* ui.navigationbar.landscape.background@2x.png */; };
 		A4554C52156DEFA800DF1834 /* ui.movieview.background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4554C51156DEFA700DF1834 /* ui.movieview.background@2x.png */; };
@@ -160,6 +163,12 @@
 		A4394EE21565D23400E44CE0 /* ui.placeholder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.placeholder@2x.png"; sourceTree = "<group>"; };
 		A43B74A115689DBE00BDC1CE /* ui.buttons.share@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.share@2x.png"; sourceTree = "<group>"; };
 		A43B74A51568C60C00BDC1CE /* ui.buttons.download@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.buttons.download@2x.png"; sourceTree = "<group>"; };
+		A450622715E33CC800BED34D /* JJBadMovieRateLimit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieRateLimit.h; sourceTree = "<group>"; };
+		A450622815E33CC900BED34D /* JJBadMovieRateLimit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieRateLimit.m; sourceTree = "<group>"; };
+		A450623015E3468400BED34D /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reachability.h; path = Reachability/Reachability.h; sourceTree = "<group>"; };
+		A450623115E3468400BED34D /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Reachability.m; path = Reachability/Reachability.m; sourceTree = "<group>"; };
+		A450623415E3471100BED34D /* JJBadMovieNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieNetwork.h; sourceTree = "<group>"; };
+		A450623515E3471200BED34D /* JJBadMovieNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieNetwork.m; sourceTree = "<group>"; };
 		A4554C46156DC8DB00DF1834 /* JJBadMovieRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieRootViewController.h; sourceTree = "<group>"; };
 		A4554C47156DC8DB00DF1834 /* JJBadMovieRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieRootViewController.m; sourceTree = "<group>"; };
 		A4554C49156DD41200DF1834 /* ui.navigationbar.landscape.background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui.navigationbar.landscape.background@2x.png"; sourceTree = "<group>"; };
@@ -350,6 +359,10 @@
 				A49E27E715E1B1650071D589 /* JJBadMovieDownloadManager.m */,
 				A49E27EB15E1BCFB0071D589 /* JJBadMovieDownloadOperation.h */,
 				A49E27EC15E1BCFB0071D589 /* JJBadMovieDownloadOperation.m */,
+				A450622715E33CC800BED34D /* JJBadMovieRateLimit.h */,
+				A450622815E33CC900BED34D /* JJBadMovieRateLimit.m */,
+				A450623415E3471100BED34D /* JJBadMovieNetwork.h */,
+				A450623515E3471200BED34D /* JJBadMovieNetwork.m */,
 				A42E1B01155B5C7000043EA7 /* Supporting Files */,
 			);
 			name = Application;
@@ -390,6 +403,7 @@
 		A42E1B20155B5F6600043EA7 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				A450623315E346E600BED34D /* Reachability.h */,
 				A491F785157190E900798A85 /* SSPullToRefresh */,
 				A4B41EBE156977A50059F9F7 /* MBProgressHUD */,
 				A4704D161561D3A60079C534 /* SDWebImage */,
@@ -478,6 +492,15 @@
 				A48E352B1569D13D00957D53 /* about.html */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		A450623315E346E600BED34D /* Reachability.h */ = {
+			isa = PBXGroup;
+			children = (
+				A450623015E3468400BED34D /* Reachability.h */,
+				A450623115E3468400BED34D /* Reachability.m */,
+			);
+			name = Reachability.h;
 			sourceTree = "<group>";
 		};
 		A46D5277155F7FDA00BC1CE5 /* View */ = {
@@ -703,6 +726,9 @@
 				A4D410891599646E00678B6F /* JJBadMovieDownloadRequest.m in Sources */,
 				A49E27E815E1B1650071D589 /* JJBadMovieDownloadManager.m in Sources */,
 				A49E27ED15E1BCFB0071D589 /* JJBadMovieDownloadOperation.m in Sources */,
+				A450622915E33CC900BED34D /* JJBadMovieRateLimit.m in Sources */,
+				A450623215E3468400BED34D /* Reachability.m in Sources */,
+				A450623615E3471200BED34D /* JJBadMovieNetwork.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

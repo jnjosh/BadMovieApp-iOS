@@ -16,6 +16,7 @@
 #import "JJBadMovieRootViewController.h"
 #import "JJBadMovie.h"
 #import "SDURLCache.h"
+#import "MBProgressHUD.h"
 
 static inline CGFloat degreesToRadian(CGFloat degree)
 {
@@ -33,17 +34,11 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 
 - (void)showPlayerControl:(NSNotification *)note;
 - (void)presentNowPlayingEpisodeView:(UIImageView *)episodeView forViewController:(UIViewController *)viewController;
+- (void)displayNotification:(NSNotification *)notification;
 
 @end
 
-
 @implementation JJBadMovieWindowController
-
-#pragma mark - synth
-
-@synthesize rootViewController = _rootViewController;
-@synthesize downView = _downView, vignetteView = _vignetteView, nowPlayingButton = _nowPlayingButton;
-@synthesize navigationController = _navigationController, playerController = _playerController, window = _window;
 
 #pragma mark - lifecycle
 
@@ -69,12 +64,26 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showPlayerControl:) name:kJJBadMovieNotificationShowPlayerControl object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presentAudioPlayer) name:kJJBadMovieNotificationShowPlayer object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayNotification:) name:kJJBadMovieNotificationGlobalNotification object:nil];
     }
     return self;
 }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - Notification
+
+- (void)displayNotification:(NSNotification *)notification
+{
+	NSString *message = [notification object];
+	if (message) {
+		MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.window animated:YES];
+		[hud setMode:MBProgressHUDModeText];
+		[hud setLabelText:message];
+		[hud hide:YES afterDelay:2.0];
+	}
 }
 
 #pragma mark - navigation controller delegate

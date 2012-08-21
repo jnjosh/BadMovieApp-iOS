@@ -12,7 +12,10 @@ NSString * const kJJBadMovieAPIURLRoot = @"http://api.badmovieapp.com";
 
 NSString * const kJJBadMovieNotificationShowPlayerControl = @"com.jnjosh.notification.showPlayerControl";
 NSString * const kJJBadMovieNotificationShowPlayer = @"com.jnjosh.notification.showPlayer";
+NSString * const kJJBadMovieNotificationGlobalNotification = @"com.jnjosh.notification.globalNotification";
 
 NSString * const kJJBadMovieArtistName = @"Jim and Josh";
 NSString * const kJJBadMovieAlbumTitle = @"Bad Movie Podcast";
 NSString * const kJJBadMovieGenre = @"Podcast";
+
+NSString * const kJJBadMovieNetworkErrorMessage = @"No Internet connection";

@@ -17,6 +17,7 @@
 #import "JJBadMovieDownloadObserver.h"
 #import "SDImageCache.h"
 #import "MBProgressHUD.h"
+#import "JJBadMovieNetwork.h"
 
 const NSUInteger kJJBadMovieCellRowHeader = 0;
 const NSUInteger kJJBadMovieCellRowDescription = 1;
@@ -49,7 +50,10 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 @property (nonatomic, readonly, assign) BOOL hasDownloaded;
 
 - (void)swipeBack;
+
 - (void)startPlayingEpisode;
+- (void)launchPlayerWithEpisode;
+
 - (void)togglePlayerState;
 - (void)playTrailer;
 - (void)showMovieInfo;
@@ -352,15 +356,16 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 #pragma mark - share methods
 
 - (void)tweetEpisode {
-    TWTweetComposeViewController *twitterController = [[TWTweetComposeViewController alloc] init];
-    [twitterController setInitialText:[NSString stringWithFormat:@"Listened to Episode #%@ - %@ on @BadMoviePodcast", self.movie.number, self.movie.name]];
-    [twitterController addURL:[NSURL URLWithString:self.movie.location]];
-    [self presentModalViewController:twitterController animated:YES];
+	[[JJBadMovieNetwork sharedNetwork] executeNetworkActivity:^{
+		TWTweetComposeViewController *twitterController = [[TWTweetComposeViewController alloc] init];
+		[twitterController setInitialText:[NSString stringWithFormat:@"Listened to Episode #%@ - %@ on @BadMoviePodcast", self.movie.number, self.movie.name]];
+		[twitterController addURL:[NSURL URLWithString:self.movie.location]];
+		[self presentModalViewController:twitterController animated:YES];
+	} failed:nil];
 }
 
 - (void)copyEpisodeURL {
     [[UIPasteboard generalPasteboard] setURL:[NSURL URLWithString:self.movie.location]];
-    
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.mode = MBProgressHUDModeText;
     hud.labelText = @"Link Copied";
@@ -368,7 +373,9 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 }
 
 - (void)openInSafari {
-    [[UIApplication sharedApplication] openURL:[[NSURL alloc] initWithString:self.movie.location]];
+	[[JJBadMovieNetwork sharedNetwork] executeNetworkActivity:^{
+		[[UIApplication sharedApplication] openURL:[[NSURL alloc] initWithString:self.movie.location]];
+	} failed:nil];
 }
 
 - (void)setupOfflineButton
@@ -393,13 +400,9 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 - (void)configureForPlayState:(JJBadMoviePlayerState)playerState {
     if (playerState == JJBadMoviePlayerStatePlaying) {
-		[self.episodeButton setTitle:@"Pause" forState:UIControlStateNormal];
-		[self.episodeButton setTitle:@"Pause" forState:UIControlStateHighlighted];
+		[self.episodeButton setTitle:@"Listening..." forState:UIControlStateNormal];
+		[self.episodeButton setTitle:@"Listening..." forState:UIControlStateHighlighted];
         [self setPlaying:YES];
-    } else if (playerState == JJBadMoviePlayerStatePaused) {
-		[self.episodeButton setTitle:@"Continue" forState:UIControlStateNormal];
-		[self.episodeButton setTitle:@"Continue" forState:UIControlStateHighlighted];
-        [self setPlaying:NO];
     } else {
 		[self.episodeButton setTitle:@"Listen" forState:UIControlStateNormal];
 		[self.episodeButton setTitle:@"Listen" forState:UIControlStateHighlighted];
@@ -425,8 +428,9 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)startPlayingEpisode {
-    [self setCurrentMovie:YES];
+- (void)launchPlayerWithEpisode
+{
+	[self setCurrentMovie:YES];
     [self.playerController setDelegate:self];
     [self.playerController setCurrentEpisode:self.movie];
     
@@ -437,7 +441,19 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
         [self.playerController loadEpisodeWithCompletionHandler:^{
             [self.playerController play];
         }];
-    });    
+    });
+}
+
+- (void)startPlayingEpisode {
+	[[JJBadMovieNetwork sharedNetwork] executeNetworkActivity:^{
+		[self launchPlayerWithEpisode];
+	} failed:^{
+		if ([self hasDownloaded]) {
+			[self launchPlayerWithEpisode];
+		} else {
+			[[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationGlobalNotification object:kJJBadMovieNetworkErrorMessage];
+		}
+	}];
 }
 
 - (void)togglePlayerState {
@@ -446,27 +462,33 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
             [self startPlayingEpisode];
         } else if (self.playerController.playerState == JJBadMoviePlayerStatePaused) {
             [self.playerController play];
-        } else if (self.playerController.playerState == JJBadMoviePlayerStatePlaying) {
-            [self.playerController pause];
-        } 
+        } else {
+			[[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayer object:nil];
+		}
     } else {
         [self startPlayingEpisode];
     }
 }
 
 - (void)playTrailer {
-    JJBadMovieWebViewController *trailerWebView = [[JJBadMovieWebViewController alloc] initWithURL:self.movie.video];
-    [self.navigationController pushViewController:trailerWebView animated:YES];
+	[[JJBadMovieNetwork sharedNetwork] executeNetworkActivity:^{
+		JJBadMovieWebViewController *trailerWebView = [[JJBadMovieWebViewController alloc] initWithURL:self.movie.video];
+		[self.navigationController pushViewController:trailerWebView animated:YES];
+	} failed:nil];
 }
 
 - (void)showMovieInfo {
-    JJBadMovieWebViewController *movieInfoView = [[JJBadMovieWebViewController alloc] initWithURL:self.movie.imdb];
-    [self.navigationController pushViewController:movieInfoView animated:YES];
+	[[JJBadMovieNetwork sharedNetwork] executeNetworkActivity:^{
+		JJBadMovieWebViewController *movieInfoView = [[JJBadMovieWebViewController alloc] initWithURL:self.movie.imdb];
+		[self.navigationController pushViewController:movieInfoView animated:YES];
+	} failed:nil];
 }
 
 - (void)downloadPodcast {
 	if (! [self hasDownloaded]) {
-		[[JJBadMovieDownloadManager sharedManager] downloadEpisodeForMovie:self.movie];
+		[[JJBadMovieNetwork sharedNetwork] executeNetworkActivity:^{
+			[[JJBadMovieDownloadManager sharedManager] downloadEpisodeForMovie:self.movie];
+		} failed:nil];
 	} else {
 		[self displayDeleteSheet];
 	}

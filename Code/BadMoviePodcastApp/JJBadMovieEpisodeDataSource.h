@@ -19,7 +19,6 @@ typedef void(^JJBadMovieEpisodeCompletionBlock)(void);
 - (JJBadMovie *)episodeForIndexPath:(NSIndexPath *)indexPath;
 - (void)downloadImageForIndexPath:(NSIndexPath *)indexPath completionHandler:(JJBadMovieEpisodeCompletionBlock)completionHandler;
 
-- (void)checkServerForUpdatesWithCompletionHandler:(JJBadMovieEpisodeCompletionBlock)completionHandler;
 - (void)loadEpisodesWithCompletionHandler:(JJBadMovieEpisodeCompletionBlock)completionHandler;
 
 @end

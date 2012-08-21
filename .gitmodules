@@ -13,3 +13,6 @@
 [submodule "Code/Libraries/SSPullToRefresh"]
 	path = Code/Libraries/SSPullToRefresh
 	url = git://github.com/samsoffes/sspulltorefresh.git
+[submodule "Code/Libraries/Reachability"]
+	path = Code/Libraries/Reachability
+	url = git://gist.github.com/1182373.git

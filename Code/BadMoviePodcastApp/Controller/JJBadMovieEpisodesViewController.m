@@ -14,6 +14,7 @@
 #import "JJBadMovieViewController.h"
 #import "JJBadMovieEpisodeCell.h"
 #import "JJBadMovieEpisodeDataSource.h"
+#import "JJBadMovieRateLimit.h"
 
 static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 
@@ -79,11 +80,13 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    if (self.dataSource) {
-        [self.dataSource loadEpisodesWithCompletionHandler:^{
-            [self.tableView reloadData]; 
-        }];
-    }
+	[[JJBadMovieRateLimit sharedLimiter] executeBlock:^{
+		if (self.dataSource) {
+			[self.dataSource loadEpisodesWithCompletionHandler:^{
+				[self.tableView reloadData];
+			}];
+		}
+	} key:@"fetch-episodes" limit:3600.0];
 }
 
 - (void)viewDidUnload {

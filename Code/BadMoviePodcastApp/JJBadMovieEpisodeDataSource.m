@@ -12,10 +12,35 @@
 #import "SDImageCache.h"
 #import "SDWebImageManager.h"
 #import "JJBadMovie.h"
+#import "JJBadMovieNetwork.h"
+
+NSString * const kJJBadMovieCachedEpisodes = @"com.jnjosh.badmovie.cachedEpisodes";
+
+@interface JJBadMovieEpisodeDataSource ()
+
+@property (nonatomic, strong) NSString *cachedPath;
+
+- (void)updateEpisodesFromJSON:(id)json withCompletionHandler:(JJBadMovieEpisodeCompletionBlock)completion;
+
+@end
 
 @implementation JJBadMovieEpisodeDataSource
 
 @synthesize episodes = _episodes;
+
+#pragma mark - Properties
+
+- (NSString *)cachedPath
+{
+	if (! _cachedPath) {
+		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+		NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+		_cachedPath = [basePath stringByAppendingPathComponent:kJJBadMovieCachedEpisodes];
+	}
+	return _cachedPath;
+}
+
+#pragma mark - Methods
 
 - (JJBadMovie *)episodeForIndexPath:(NSIndexPath *)indexPath {
     JJBadMovie *movie = nil;
@@ -36,31 +61,57 @@
     }
 }
 
-- (void)checkServerForUpdatesWithCompletionHandler:(JJBadMovieEpisodeCompletionBlock)completionHandler {
-    // todo
+- (void)loadEpisodesWithCompletionHandler:(JJBadMovieEpisodeCompletionBlock)completionHandler {
+	
+	// load any cached objects
+	if ([[NSFileManager defaultManager] fileExistsAtPath:[self cachedPath]]) {
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+			NSArray *cachedEpisodes = [NSKeyedUnarchiver unarchiveObjectWithFile:[self cachedPath]];
+			dispatch_async(dispatch_get_main_queue(), ^{
+				self.episodes = cachedEpisodes;
+				if (completionHandler) {
+					completionHandler();
+				}
+			});
+		});
+	}
+
+	[[JJBadMovieNetwork sharedNetwork] executeNetworkActivity:^{
+		NSURL *episodeURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/episodes", kJJBadMovieAPIURLRoot]];
+		NSURLRequest *urlRequest = [NSURLRequest requestWithURL:episodeURL];
+		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+		
+		JJBadMovieEpisodeCompletionBlock completionCopy = [completionHandler copy];
+		AFJSONRequestOperation *jsonRequest = [AFJSONRequestOperation JSONRequestOperationWithRequest:urlRequest success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+			[self updateEpisodesFromJSON:JSON withCompletionHandler:completionCopy];
+			[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+		} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+			[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+		}];
+		[jsonRequest start];
+	} failed:^{
+		[[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationGlobalNotification object:kJJBadMovieNetworkErrorMessage];
+	}];
 }
 
-- (void)loadEpisodesWithCompletionHandler:(JJBadMovieEpisodeCompletionBlock)completionHandler {
-    NSURL *episodeURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/episodes", kJJBadMovieAPIURLRoot]];
-    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:episodeURL];
-    AFJSONRequestOperation *jsonRequest = [AFJSONRequestOperation JSONRequestOperationWithRequest:urlRequest success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        
-        NSMutableArray *episodeList = [NSMutableArray array];
-        for (id episode in JSON) {
-            JJBadMovie *badMovie = [JJBadMovie instanceFromDictionary:episode];
-            if (badMovie) {
-                [episodeList addObject:badMovie];
-            }
-        }
-        self.episodes = [NSArray arrayWithArray:episodeList];
-        
-        if (completionHandler) {
-            completionHandler();
-        }
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        NSLog(@"ERROR: %@", error);
-    }];
-    [jsonRequest start];
+- (void)updateEpisodesFromJSON:(id)json withCompletionHandler:(JJBadMovieEpisodeCompletionBlock)completion
+{
+	NSMutableArray *episodeList = [NSMutableArray array];
+	for (id episode in json) {
+		JJBadMovie *badMovie = [JJBadMovie instanceFromDictionary:episode];
+		if (badMovie) {
+			[episodeList addObject:badMovie];
+		}
+	}
+	
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		[NSKeyedArchiver archiveRootObject:episodeList toFile:[self cachedPath]];
+	});
+
+	self.episodes = episodeList;
+	if (completion) {
+		completion();
+	}
 }
 
 @end
