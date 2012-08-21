@@ -102,10 +102,10 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 
 #pragma mark - methods
 
-- (void)showSettings {
-    JJBadMovieSettingsViewController *settingsView = [[JJBadMovieSettingsViewController alloc] initWithStyle:UITableViewStyleGrouped];
-    UINavigationController *settingsNavigation = [[UINavigationController alloc] initWithRootViewController:settingsView];
-    [self presentModalViewController:settingsNavigation animated:YES];
+- (void)showSettings
+{
+	JJBadMovieSettingsViewController *settingsView = [[JJBadMovieSettingsViewController alloc] initWithStyle:UITableViewStyleGrouped];
+	[self.navigationController pushViewController:settingsView animated:YES];
 }
 
 - (void)downloadImageInView {

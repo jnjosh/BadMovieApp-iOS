@@ -110,6 +110,10 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     [self.view addSubview:self.headerView];
     
     UIImage *image = [[SDImageCache sharedImageCache] imageFromKey:self.movie.photo fromDisk:YES];
+	if (! image) {
+		image = [UIImage imageNamed:@"ui.placeholder.png"];
+	}
+	
     self.episodeImageView = [[UIImageView alloc] initWithFrame:(CGRect){5, 5, 65, 65}];
     [self.episodeImageView setContentMode:UIViewContentModeScaleToFill];
     [self.episodeImageView setBackgroundColor:[UIColor whiteColor]];
@@ -542,7 +546,6 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     hud.mode = MBProgressHUDModeText;
     hud.labelText = @"Download Failed";
 	[hud hide:YES afterDelay:2.0];
-
 	[self hideDownloadView];
 }
 
