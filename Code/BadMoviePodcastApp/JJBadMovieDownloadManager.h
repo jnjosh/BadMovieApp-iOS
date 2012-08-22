@@ -15,12 +15,18 @@
 
 + (id)sharedManager;
 
+- (BOOL)downloadingActiveForMovie:(JJBadMovie *)badmovie;
+
 // downloading
 - (void)downloadEpisodeForMovie:(JJBadMovie *)badMovie;
 - (void)cancelDownloadingEpisodeForMovie:(JJBadMovie *)badMovie;
+- (void)cancelAllDownloadOperations;
+- (BOOL)completedDownloadRequests;
 
 // observers
+- (void)addDownloadObserver:(id<JJBadMovieDownloadObserver>)observer;
 - (void)addDownloadObserver:(id<JJBadMovieDownloadObserver>)observer forMovie:(JJBadMovie *)movie;
 - (void)removeDownloadObserver:(id<JJBadMovieDownloadObserver>)observer;
+
 
 @end

@@ -24,7 +24,7 @@
 
 - (void)executeNetworkActivity:(void (^)(void))activity failed:(void (^)(void))failed
 {
-	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] != NotReachable) {
+	if ([[Reachability reachabilityWithHostName:@"http://www.badmoviepodcast.com"] currentReachabilityStatus] != NotReachable) {
 		if (activity) {
 			activity();
 		}

@@ -23,16 +23,6 @@ NSString * const kJJBadMovieEpisodeKeyLocation = @"com.jnjosh.episode.location";
 	NSString *_localFilePath;
 }
 
-@synthesize descriptionText = _descriptionText;
-@synthesize imdb = _imdb;
-@synthesize name = _name;
-@synthesize number = _number;
-@synthesize photo = _photo;
-@synthesize published = _published;
-@synthesize url = _url;
-@synthesize video = _video;
-@synthesize location = _location;
-
 #pragma mark - lifecycle
 
 - (id)initWithCoder:(NSCoder *)aDecoder {

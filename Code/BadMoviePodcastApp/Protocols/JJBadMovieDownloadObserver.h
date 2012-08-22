@@ -8,16 +8,24 @@
 
 #import <Foundation/Foundation.h>
 
+@class JJBadMovie;
+
 @protocol JJBadMovieDownloadObserver <NSObject>
+
+@optional
 
 - (void)movieDidBeginDownloading;
 
 - (void)movieDidFinishDownloading;
+
+- (void)movieDidFinishDownloadingEpisode:(JJBadMovie *)badmovie;
 
 - (void)movieDidCancelDownloading;
 
 - (void)movieDidFailDownloadingWithError:(NSError *)error;
 
 - (void)movieDownloadDidProgress:(NSNumber *)progress total:(NSNumber *)total;
+
+- (void)didCompleteDownloading;
 
 @end

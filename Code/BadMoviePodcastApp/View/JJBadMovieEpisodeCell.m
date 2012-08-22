@@ -55,7 +55,7 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
-        [self setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+		[self setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
         [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
     return self;
@@ -95,7 +95,7 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
         [layerShow setKeyPath:@"opacity"];
         [layerShow setFromValue:[NSNumber numberWithFloat:0.0]];
         [layerShow setToValue:[NSNumber numberWithFloat:1.0]];
-        [layerShow setDuration:0.75];
+        [layerShow setDuration:0.33];
         [layerShow setRemovedOnCompletion:NO];
         [layerShow setAutoreverses:NO];
         [layerShow setFillMode:kCAFillModeForwards];

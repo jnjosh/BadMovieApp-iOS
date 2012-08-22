@@ -13,6 +13,7 @@
 #import "SDWebImageManager.h"
 #import "JJBadMovie.h"
 #import "JJBadMovieNetwork.h"
+#import "JJBadMovieDownloadManager.h"
 
 NSString * const kJJBadMovieCachedEpisodes = @"com.jnjosh.badmovie.cachedEpisodes";
 
@@ -50,6 +51,19 @@ NSString * const kJJBadMovieCachedEpisodes = @"com.jnjosh.badmovie.cachedEpisode
     return movie;
 }
 
+- (NSIndexPath *)indexPathForEpisode:(JJBadMovie *)episode
+{
+	NSIndexPath *indexPath = nil;
+	for (NSInteger i = 0; i < [self.episodes count]; i++) {
+		JJBadMovie *movie = [self.episodes objectAtIndex:i];
+		if ([movie isEqual:episode]) {
+			indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+			break;
+		}
+	}
+	return indexPath;
+}
+
 - (void)downloadImageForIndexPath:(NSIndexPath *)indexPath completionHandler:(JJBadMovieEpisodeCompletionBlock)completionHandler {
     JJBadMovie *movie = [self episodeForIndexPath:indexPath];
     if (! movie.cachedImage) {
@@ -84,9 +98,14 @@ NSString * const kJJBadMovieCachedEpisodes = @"com.jnjosh.badmovie.cachedEpisode
 		JJBadMovieEpisodeCompletionBlock completionCopy = [completionHandler copy];
 		AFJSONRequestOperation *jsonRequest = [AFJSONRequestOperation JSONRequestOperationWithRequest:urlRequest success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
 			[self updateEpisodesFromJSON:JSON withCompletionHandler:completionCopy];
-			[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+
+			if ([[JJBadMovieDownloadManager sharedManager] completedDownloadRequests]) {
+				[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+			}
 		} failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-			[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+			if ([[JJBadMovieDownloadManager sharedManager] completedDownloadRequests]) {
+				[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+			}
 		}];
 		[jsonRequest start];
 	} failed:^{

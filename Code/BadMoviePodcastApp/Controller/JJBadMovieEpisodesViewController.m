@@ -15,17 +15,21 @@
 #import "JJBadMovieEpisodeCell.h"
 #import "JJBadMovieEpisodeDataSource.h"
 #import "JJBadMovieRateLimit.h"
+#import "JJBadMovieDownloadManager.h"
+#import "JJBadMovieDownloadsViewController.h"
 
 static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 
-@interface JJBadMovieEpisodesViewController ()
+@interface JJBadMovieEpisodesViewController () <JJBadMovieDownloadObserver>
 
 @property (nonatomic, strong) JJBadMovieEpisodeDataSource *dataSource;
 @property (nonatomic, strong) UITableView *tableView;
 
+@property (nonatomic, strong) UIBarButtonItem *downloadsBarButtonItem;
 @property (nonatomic, strong) SSPullToRefreshView *pullToRefreshView;
 
 - (void)showSettings;
+- (void)showDownloads;
 - (void)downloadImageInView;
 
 @end
@@ -71,10 +75,13 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
     [self.pullToRefreshView setContentView:contentView];
     
     UIImageView *titleImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.navigationbar.title.png"]];
+	UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showSettings)];
+	[tapGesture setNumberOfTapsRequired:2];
+	[titleImage setUserInteractionEnabled:YES];
+	[titleImage addGestureRecognizer:tapGesture];
     [self.navigationItem setTitleView:titleImage];
     
-    UIBarButtonItem *settingsGear = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ui.button.settings.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(showSettings)];
-    [self.navigationItem setLeftBarButtonItem:settingsGear];
+	self.downloadsBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ui.button.downloads.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(showDownloads)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -87,6 +94,20 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 			}];
 		}
 	} key:@"fetch-episodes" limit:3600.0];
+	
+	if (! [[JJBadMovieDownloadManager sharedManager] completedDownloadRequests]) {
+		[self.navigationItem setLeftBarButtonItem:self.downloadsBarButtonItem];
+	} else {
+		[self.navigationItem setLeftBarButtonItem:nil animated:NO];
+	}
+
+	[[JJBadMovieDownloadManager sharedManager] addDownloadObserver:self];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear:animated];
+	[[JJBadMovieDownloadManager sharedManager] removeDownloadObserver:self];
 }
 
 - (void)viewDidUnload {
@@ -106,6 +127,12 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 {
 	JJBadMovieSettingsViewController *settingsView = [[JJBadMovieSettingsViewController alloc] initWithStyle:UITableViewStyleGrouped];
 	[self.navigationController pushViewController:settingsView animated:YES];
+}
+
+- (void)showDownloads
+{
+	JJBadMovieDownloadsViewController *downloadsView = [[JJBadMovieDownloadsViewController alloc] initWithNibName:nil bundle:nil];
+	[self.navigationController pushViewController:downloadsView animated:YES];
 }
 
 - (void)downloadImageInView {
@@ -179,6 +206,13 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
         [self.tableView reloadData];
         [self.pullToRefreshView finishLoading];
     }];
+}
+
+#pragma mark - JJBadMovieDownloadObserver
+
+- (void)didCompleteDownloading
+{
+	[self.navigationItem setLeftBarButtonItem:nil animated:YES];
 }
 
 @end

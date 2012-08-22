@@ -68,6 +68,8 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 - (void)setupOfflineButton;
 - (void)removeDownloadedFile;
 
+- (void)showDownloadView:(BOOL)animated;
+
 @end
 
 @implementation JJBadMovieViewController
@@ -256,6 +258,14 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 	self.progressView = nil;
     
     self.playerController = nil;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+	if ([[JJBadMovieDownloadManager sharedManager] downloadingActiveForMovie:self.movie]) {
+		[self showDownloadView:NO];
+	}
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -506,11 +516,13 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 #pragma mark - Download view
 
-- (void)showDownloadView {
+- (void)showDownloadView:(BOOL)animated
+{
 	[self.progressView setProgress:0];
 	[self.saveButton setEnabled:NO];
 	[self.view insertSubview:self.downloadingView belowSubview:self.toolbarView];
-	[UIView animateWithDuration:0.25 animations:^{
+	CGFloat duration = animated ? 0.25 : 0;
+	[UIView animateWithDuration:duration animations:^{
 		[self.downloadingView setFrame:(CGRect) { self.downloadingView.frame.origin.x, self.downloadingView.frame.origin.y - self.downloadingView.frame.size.height, self.downloadingView.frame.size }];
 	}];
 }
@@ -532,7 +544,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 - (void)movieDidBeginDownloading
 {
-	[self showDownloadView];
+	[self showDownloadView:YES];
 }
 
 - (void)movieDidFinishDownloading
@@ -557,7 +569,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 - (void)movieDownloadDidProgress:(NSNumber *)progress total:(NSNumber *)total
 {
 	if (! [self.downloadingView isDescendantOfView:self.view]) {
-		[self showDownloadView];
+		[self showDownloadView:YES];
 	}
 	float progressPosition = ([progress floatValue] / [total floatValue]);
 	[self.progressView setProgress:progressPosition];
