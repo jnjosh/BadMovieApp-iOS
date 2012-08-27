@@ -75,6 +75,13 @@
 	}
 	
 	_episode = episode;
+	if ([_episode latestDownloadProgress] > 0) {
+		[self.progressView setProgress:[_episode latestDownloadProgress]];
+		[self.downloadProgressLabel setText:[NSString stringWithFormat:@"%i%%", (int)floorl([_episode latestDownloadProgress] * 100.0f)]];
+	} else {
+		[self.progressView setProgress:0];
+		[self.downloadProgressLabel setText:@"0%"];
+	}
 	[self.downloadingLabel setText:[NSString stringWithFormat:@"#%@ - %@", [_episode.number stringValue], _episode.name]];
 	[[JJBadMovieDownloadManager sharedManager] addDownloadObserver:self forMovie:_episode];
 }
@@ -84,6 +91,7 @@
 - (void)cancelDownload
 {
 	[[JJBadMovieDownloadManager sharedManager] cancelDownloadingEpisodeForMovie:self.episode];
+	[self.episode setLatestDownloadProgress:0];
 }
 
 #pragma mark - Observer
@@ -91,8 +99,14 @@
 - (void)movieDownloadDidProgress:(NSNumber *)progress total:(NSNumber *)total
 {
 	float progressPosition = ([progress floatValue] / [total floatValue]);
+	[self.episode setLatestDownloadProgress:progressPosition];
 	[self.progressView setProgress:progressPosition];
 	[self.downloadProgressLabel setText:[NSString stringWithFormat:@"%i%%", (int)floorl(progressPosition * 100.0f)]];
+}
+
+- (void)movieDidFinishDownloadingEpisode:(JJBadMovie *)badmovie
+{
+	[badmovie setLatestDownloadProgress:0];
 }
 
 @end

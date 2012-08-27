@@ -20,12 +20,12 @@
 @property (nonatomic, copy) NSString *video;
 @property (nonatomic, copy) NSString *location;
 
+@property (nonatomic, assign) CGFloat latestDownloadProgress;
 @property (nonatomic, strong, readonly) UIImage *cachedImage;
 
 + (JJBadMovie *)instanceFromDictionary:(NSDictionary *)aDictionary;
 - (void)setAttributesFromDictionary:(NSDictionary *)aDictionary;
 
 - (NSString *)localFilePath;
-
 
 @end
