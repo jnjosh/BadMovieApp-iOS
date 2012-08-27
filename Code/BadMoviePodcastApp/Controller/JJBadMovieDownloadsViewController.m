@@ -7,11 +7,19 @@
 //
 
 #import "JJBadMovieDownloadsViewController.h"
+#import "JJBadMovie.h"
 #import "JJBadMovieDownloadManager.h"
+#import "JJBadMovieDownloadOperation.h"
+#import "JJBadMovieDownloadObserver.h"
+#import "JJBadMovieEpisodeDownloadCell.h"
 
-@interface JJBadMovieDownloadsViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface JJBadMovieDownloadsViewController () <UITableViewDelegate, UITableViewDataSource, JJBadMovieDownloadObserver>
 
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) NSArray *downloadingEpisodes;
+
+- (void)fetchDownloadingEpisodes;
+- (void)cancelAllDownloads;
 
 @end
 
@@ -44,6 +52,12 @@
     [self.tableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.tableview.background.png"]]];
 	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	[self.view addSubview:self.tableView];
+	
+	UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel All" style:UIBarButtonItemStyleBordered target:self action:@selector(cancelAllDownloads)];
+	[self.navigationItem setRightBarButtonItem:cancelItem];
+	
+	[self fetchDownloadingEpisodes];
+	[[JJBadMovieDownloadManager sharedManager] addDownloadObserver:self];
 }
 
 - (void)viewDidUnload
@@ -51,11 +65,30 @@
     [super viewDidUnload];
 
     self.tableView = nil;
+	
+	[[JJBadMovieDownloadManager sharedManager] removeDownloadObserver:self];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+#pragma mark - Episode Observations
+
+- (void)fetchDownloadingEpisodes
+{
+	NSMutableArray *downloads = [NSMutableArray array];
+	NSArray *operations = [[JJBadMovieDownloadManager sharedManager] episodesDownloading];
+	for (JJBadMovieDownloadOperation *operation in operations) {
+		[downloads addObject:[operation badMovie]];
+	}
+	self.downloadingEpisodes = downloads;
+}
+
+- (void)cancelAllDownloads
+{
+	[[JJBadMovieDownloadManager sharedManager] cancelAllDownloadOperations];
 }
 
 #pragma mark - UITableViewDataSource
@@ -66,7 +99,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return 0;
+	return [self.downloadingEpisodes count];
 }
 
 #pragma mark - UITableViewDelegate
@@ -74,12 +107,39 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	static NSString *cellIdentifier = @"com.jnjosh.downloadcell";
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+	JJBadMovieEpisodeDownloadCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
 	if (! cell) {
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+		cell = [[JJBadMovieEpisodeDownloadCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
 	}
 	
+	JJBadMovie *episode = [self.downloadingEpisodes objectAtIndex:indexPath.row];
+	[cell setEpisode:episode];
 	return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return 64.0f;
+}
+
+#pragma mark - JJBadMovieDownloadObserver
+
+- (void)movieDidFinishDownloading
+{
+	[self fetchDownloadingEpisodes];
+	[self.tableView reloadData];
+}
+
+- (void)movieDidCancelDownloading
+{
+	[self fetchDownloadingEpisodes];
+	[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+}
+
+- (void)didCompleteDownloading
+{
+	self.downloadingEpisodes = nil;
+	[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationTop];
 }
 
 @end

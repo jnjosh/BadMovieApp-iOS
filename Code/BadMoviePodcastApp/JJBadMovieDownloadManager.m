@@ -17,6 +17,8 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 @property (nonatomic, strong) NSMutableDictionary *observers;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 
+- (NSArray *)currentObserversWithKey:(NSString *)key;
+
 @end
 
 @implementation JJBadMovieDownloadManager
@@ -44,6 +46,16 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 }
 
 #pragma mark - Downloading
+
+- (NSArray *)episodesDownloading
+{
+	return [[self operationQueue] operations];
+}
+
+- (NSUInteger)episodesCurrentlyDownloading
+{
+	return [[self operationQueue] operationCount];
+}
 
 - (void)downloadEpisodeForMovie:(JJBadMovie *)badMovie
 {
@@ -73,10 +85,14 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 			if ([observer respondsToSelector:@selector(movieDidFinishDownloading)]) {
 				[observer movieDidFinishDownloading];
 			}
+
+			id<JJBadMovieDownloadObserver> episodeObserver = [self.observers objectForKey:kJJBadMovieStandaloneObserver];
+			if ([episodeObserver respondsToSelector:@selector(movieDidFinishDownloading)]) {
+				[episodeObserver movieDidFinishDownloading];
+			}
 			
 			if ([self.operationQueue operationCount] == 0) {
 				[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-				id<JJBadMovieDownloadObserver> episodeObserver = [self.observers objectForKey:kJJBadMovieStandaloneObserver];
 				if ([episodeObserver respondsToSelector:@selector(didCompleteDownloading)]) {
 					[episodeObserver didCompleteDownloading];
 				}
@@ -91,10 +107,14 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 		} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 			id<JJBadMovieDownloadObserver> observer = [self.observers objectForKey:[[badMovie number] stringValue]];
 			[observer movieDidFailDownloadingWithError:error];
+
+			id<JJBadMovieDownloadObserver> episodeObserver = [self.observers objectForKey:kJJBadMovieStandaloneObserver];
+			if ([episodeObserver respondsToSelector:@selector(movieDidFinishDownloading)]) {
+				[episodeObserver movieDidFinishDownloading];
+			}
 			
 			if ([self.operationQueue operationCount] == 0) {
 				[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-				id<JJBadMovieDownloadObserver> episodeObserver = [self.observers objectForKey:kJJBadMovieStandaloneObserver];
 				if ([episodeObserver respondsToSelector:@selector(didCompleteDownloading)]) {
 					[episodeObserver didCompleteDownloading];
 				}
@@ -131,13 +151,19 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 	}
 	
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+		id<JJBadMovieDownloadObserver> episodeObserver = [self.observers objectForKey:kJJBadMovieStandaloneObserver];
+
 		if ([self.operationQueue operationCount] == 0) {
 			[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-			id<JJBadMovieDownloadObserver> episodeObserver = [self.observers objectForKey:kJJBadMovieStandaloneObserver];
 			if ([episodeObserver respondsToSelector:@selector(didCompleteDownloading)]) {
 				[episodeObserver didCompleteDownloading];
 			}
 		}
+
+		if ([episodeObserver respondsToSelector:@selector(movieDidCancelDownloading)]) {
+			[episodeObserver movieDidCancelDownloading];
+		}
+	
 	});
 }
 
@@ -155,6 +181,7 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 {
 	[self.operationQueue cancelAllOperations];
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+	
 	id<JJBadMovieDownloadObserver> episodeObserver = [self.observers objectForKey:kJJBadMovieStandaloneObserver];
 	if ([episodeObserver respondsToSelector:@selector(didCompleteDownloading)]) {
 		[episodeObserver didCompleteDownloading];
@@ -162,6 +189,25 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 }
 
 #pragma mark - Observers
+
+- (NSArray *)currentObserversWithKey:(NSString *)key
+{
+	NSMutableArray *observers = [NSMutableArray array];
+
+	id standaloneObserver = [self.observers objectForKey:kJJBadMovieStandaloneObserver];
+	if (standaloneObserver) {
+		[observers addObject:standaloneObserver];
+	}
+
+	if (key) {
+		id movieObserver = [self.observers objectForKey:key];
+		if (movieObserver) {
+			[observers addObject:movieObserver];
+		}
+	}
+	
+	return observers;
+}
 
 - (void)addDownloadObserver:(id<JJBadMovieDownloadObserver>)observer
 {

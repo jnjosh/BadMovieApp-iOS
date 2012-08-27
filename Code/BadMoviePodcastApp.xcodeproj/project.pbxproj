@@ -10,6 +10,7 @@
 		A4095A00155F31D3006DAA33 /* ui.vignette@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A40959FF155F31D3006DAA33 /* ui.vignette@2x.png */; };
 		A4095A17155F358D006DAA33 /* JJBadMovieWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4095A16155F358D006DAA33 /* JJBadMovieWindowController.m */; };
 		A4095A1A155F35E7006DAA33 /* JJBadMoviePlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4095A19155F35E6006DAA33 /* JJBadMoviePlayerViewController.m */; };
+		A4105C9C15EB17ED00DF5AA9 /* JJBadMovieEpisodeDownloadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A4105C9B15EB17ED00DF5AA9 /* JJBadMovieEpisodeDownloadCell.m */; };
 		A42E1AFB155B5C7000043EA7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A42E1AFA155B5C7000043EA7 /* UIKit.framework */; };
 		A42E1AFD155B5C7000043EA7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A42E1AFC155B5C7000043EA7 /* Foundation.framework */; };
 		A42E1AFF155B5C7000043EA7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A42E1AFE155B5C7000043EA7 /* CoreGraphics.framework */; };
@@ -116,6 +117,8 @@
 		A4095A16155F358D006DAA33 /* JJBadMovieWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieWindowController.m; sourceTree = "<group>"; };
 		A4095A18155F35E6006DAA33 /* JJBadMoviePlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMoviePlayerViewController.h; sourceTree = "<group>"; };
 		A4095A19155F35E6006DAA33 /* JJBadMoviePlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMoviePlayerViewController.m; sourceTree = "<group>"; };
+		A4105C9A15EB17ED00DF5AA9 /* JJBadMovieEpisodeDownloadCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JJBadMovieEpisodeDownloadCell.h; sourceTree = "<group>"; };
+		A4105C9B15EB17ED00DF5AA9 /* JJBadMovieEpisodeDownloadCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JJBadMovieEpisodeDownloadCell.m; sourceTree = "<group>"; };
 		A42E1AF6155B5C7000043EA7 /* badmovieapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = badmovieapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A42E1AFA155B5C7000043EA7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A42E1AFC155B5C7000043EA7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -511,6 +514,8 @@
 			children = (
 				A46D5278155F800A00BC1CE5 /* JJBadMovieEpisodeCell.h */,
 				A46D5279155F800A00BC1CE5 /* JJBadMovieEpisodeCell.m */,
+				A4105C9A15EB17ED00DF5AA9 /* JJBadMovieEpisodeDownloadCell.h */,
+				A4105C9B15EB17ED00DF5AA9 /* JJBadMovieEpisodeDownloadCell.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -733,6 +738,7 @@
 				A450623215E3468400BED34D /* Reachability.m in Sources */,
 				A450623615E3471200BED34D /* JJBadMovieNetwork.m in Sources */,
 				A4DEC81A15E49B6A009C85DA /* JJBadMovieDownloadsViewController.m in Sources */,
+				A4105C9C15EB17ED00DF5AA9 /* JJBadMovieEpisodeDownloadCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

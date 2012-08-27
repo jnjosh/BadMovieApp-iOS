@@ -15,7 +15,10 @@
 
 + (id)sharedManager;
 
+// info
 - (BOOL)downloadingActiveForMovie:(JJBadMovie *)badmovie;
+- (NSArray *)episodesDownloading;
+- (NSUInteger)episodesCurrentlyDownloading;
 
 // downloading
 - (void)downloadEpisodeForMovie:(JJBadMovie *)badMovie;
