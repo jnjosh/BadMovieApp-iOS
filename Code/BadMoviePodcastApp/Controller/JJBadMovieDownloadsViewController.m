@@ -127,7 +127,7 @@
 - (void)movieDidFinishDownloading
 {
 	[self fetchDownloadingEpisodes];
-	[self.tableView reloadData];
+	[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
 }
 
 - (void)movieDidCancelDownloading

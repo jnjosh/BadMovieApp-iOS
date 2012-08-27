@@ -75,7 +75,7 @@
 	}
 	
 	_episode = episode;
-	[self.downloadingLabel setText:_episode.name];
+	[self.downloadingLabel setText:[NSString stringWithFormat:@"#%@ - %@", [_episode.number stringValue], _episode.name]];
 	[[JJBadMovieDownloadManager sharedManager] addDownloadObserver:self forMovie:_episode];
 }
 
