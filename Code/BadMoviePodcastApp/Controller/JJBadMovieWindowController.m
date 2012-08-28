@@ -14,6 +14,7 @@
 #import "JJBadMovieEpisodesViewController.h"
 #import "JJBadMovieEpisodeDataSource.h"
 #import "JJBadMovieRootViewController.h"
+#import "JJBadMovieViewController.h"
 #import "JJBadMovie.h"
 #import "SDURLCache.h"
 #import "MBProgressHUD.h"
@@ -26,6 +27,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 @interface JJBadMovieWindowController ()
 
 @property (nonatomic, strong) JJBadMovieRootViewController *rootViewController;
+@property (nonatomic, strong) JJBadMovieEpisodeDataSource *dataSource;
 @property (nonatomic, strong) UIBarButtonItem *nowPlayingButton;
 @property (nonatomic, strong) UIView *downView;
 @property (nonatomic, strong) UIImageView *vignetteView;
@@ -47,8 +49,8 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         [[self class] configureAppearance];
         [[self class] configureCache];
         
-        JJBadMovieEpisodeDataSource *dataSource = [[JJBadMovieEpisodeDataSource alloc] init];
-        JJBadMovieEpisodesViewController *episodeViewController = [[JJBadMovieEpisodesViewController alloc] initWithEpisodeDataSource:dataSource];
+		self.dataSource = [[JJBadMovieEpisodeDataSource alloc] init];
+        JJBadMovieEpisodesViewController *episodeViewController = [[JJBadMovieEpisodesViewController alloc] initWithEpisodeDataSource:self.dataSource];
         _playerController = [[JJBadMoviePlayerViewController alloc] initWithNibName:nil bundle:nil];
         
         _navigationController = [[UINavigationController alloc] initWithRootViewController:episodeViewController];
@@ -83,6 +85,17 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 		[hud setMode:MBProgressHUDModeText];
 		[hud setLabelText:message];
 		[hud hide:YES afterDelay:2.0];
+	}
+}
+
+- (void)presentControllerForEpisodeNumber:(NSNumber *)episodeNumber
+{
+	[self.navigationController popToRootViewControllerAnimated:NO];
+	NSPredicate *matcherPredicate = [NSPredicate predicateWithFormat:@"number == %@", episodeNumber];
+	NSArray *episodes = [[self.dataSource episodes] filteredArrayUsingPredicate:matcherPredicate];
+	if ([episodes count] > 0) {
+		JJBadMovieViewController *detailViewController = [[JJBadMovieViewController alloc] initWithBadMovie:[episodes lastObject]];
+		[self.navigationController pushViewController:detailViewController animated:YES];
 	}
 }
 

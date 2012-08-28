@@ -8,6 +8,7 @@
 
 #import "JJBadMovieDownloadManager.h"
 #import "JJBadMovie.h"
+#import "JJBadMovieEnvironment.h"
 #import "JJBadMovieDownloadOperation.h"
 
 NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalone";
@@ -103,6 +104,7 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 			[notification setAlertAction:@"Listen Now!"];
 			[notification setSoundName:UILocalNotificationDefaultSoundName];
 			[notification setFireDate:[NSDate date]];
+			[notification setUserInfo:@{ kJJBadMovieNotificationKey : badMovie.number }];
 			[[UIApplication sharedApplication] scheduleLocalNotification:notification];
 		} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 			id<JJBadMovieDownloadObserver> observer = [self.observers objectForKey:[[badMovie number] stringValue]];

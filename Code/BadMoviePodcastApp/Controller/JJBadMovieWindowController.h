@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class JJBadMoviePlayerViewController;
+@class JJBadMoviePlayerViewController, JJBadMovie;
 
 @interface JJBadMovieWindowController : NSObject <UINavigationControllerDelegate>
 
@@ -20,5 +20,6 @@
 + (void)configureCache;
 - (void)presentAudioPlayer;
 - (void)hideAudioPlayer;
+- (void)presentControllerForEpisodeNumber:(NSNumber *)episodeNumber;
 
 @end

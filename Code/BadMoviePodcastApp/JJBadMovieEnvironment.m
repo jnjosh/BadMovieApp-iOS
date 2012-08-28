@@ -19,3 +19,4 @@ NSString * const kJJBadMovieAlbumTitle = @"Bad Movie Podcast";
 NSString * const kJJBadMovieGenre = @"Podcast";
 
 NSString * const kJJBadMovieNetworkErrorMessage = @"No Internet connection";
+NSString * const kJJBadMovieNotificationKey = @"com.jnjosh.localNotification.key";

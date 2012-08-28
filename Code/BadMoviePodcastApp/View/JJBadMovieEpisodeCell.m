@@ -113,7 +113,7 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
         CGContextSetShadowWithColor(context, jj_shadowOffsetSize, 0.0, jj_shadowColorRef);
     }
 
-    [jj_textColor set];
+	[jj_textColor set];
     [[self.episode name] drawInRect:jj_titleTextRect withFont:jj_titleFont lineBreakMode:UILineBreakModeTailTruncation];
 
     [jj_detailTextColor set];

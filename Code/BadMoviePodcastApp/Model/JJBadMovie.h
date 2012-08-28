@@ -21,6 +21,7 @@
 @property (nonatomic, copy) NSString *location;
 
 @property (nonatomic, assign) CGFloat latestDownloadProgress;
+@property (nonatomic, assign) BOOL hasDownloaded;
 @property (nonatomic, strong, readonly) UIImage *cachedImage;
 
 + (JJBadMovie *)instanceFromDictionary:(NSDictionary *)aDictionary;

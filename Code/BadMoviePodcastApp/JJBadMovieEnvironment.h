@@ -19,3 +19,4 @@ extern NSString * const kJJBadMovieAlbumTitle;
 extern NSString * const kJJBadMovieGenre;
 
 extern NSString * const kJJBadMovieNetworkErrorMessage;
+extern NSString * const kJJBadMovieNotificationKey;

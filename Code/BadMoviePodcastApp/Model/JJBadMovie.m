@@ -83,6 +83,11 @@ NSString * const kJJBadMovieEpisodeKeyLocation = @"com.jnjosh.episode.location";
 
 }
 
+- (BOOL)hasDownloaded
+{
+	return [[NSFileManager defaultManager] fileExistsAtPath:[self localFilePath]];
+}
+
 - (UIImage *)cachedImage {
     UIImage *imageFromCache = [[SDImageCache sharedImageCache] imageFromKey:self.photo fromDisk:YES];
     return imageFromCache ? : nil;
