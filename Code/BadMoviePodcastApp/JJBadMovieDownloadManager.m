@@ -73,42 +73,52 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 		// set progress handler
 		[operation setDownloadProgressBlock:^(NSInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
 			id<JJBadMovieDownloadObserver> observer = [self.observers objectForKey:[[badMovie number] stringValue]];
-			[observer movieDownloadDidProgress:@(totalBytesRead) total:@(totalBytesExpectedToRead)];
+			if ([observer respondsToSelector:@selector(movieDownloadDidProgress:total:)]) {
+				[observer movieDownloadDidProgress:@(totalBytesRead) total:@(totalBytesExpectedToRead)];
+			}
 		}];
 		
 		// set completion handlers
 		[operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
 			NSData *downloadedData = (NSData *)responseObject;
 			NSString *filePath = [badMovie localFilePath];
-			[downloadedData writeToFile:filePath atomically:NO];
-			
-			id<JJBadMovieDownloadObserver> observer = [self.observers objectForKey:[[badMovie number] stringValue]];
-			if ([observer respondsToSelector:@selector(movieDidFinishDownloading)]) {
-				[observer movieDidFinishDownloading];
-			}
 
-			id<JJBadMovieDownloadObserver> episodeObserver = [self.observers objectForKey:kJJBadMovieStandaloneObserver];
-			if ([episodeObserver respondsToSelector:@selector(movieDidFinishDownloading)]) {
-				[episodeObserver movieDidFinishDownloading];
-			}
-			
-			if ([self.operationQueue operationCount] == 0) {
-				[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-				if ([episodeObserver respondsToSelector:@selector(didCompleteDownloading)]) {
-					[episodeObserver didCompleteDownloading];
-				}
-			}
-			
-			UILocalNotification *notification = [[UILocalNotification alloc] init];
-			[notification setAlertBody:[NSString stringWithFormat:@"Finished downloading episode %@ - %@", badMovie.number, badMovie.name]];
-			[notification setAlertAction:@"Listen Now!"];
-			[notification setSoundName:UILocalNotificationDefaultSoundName];
-			[notification setFireDate:[NSDate date]];
-			[notification setUserInfo:@{ kJJBadMovieNotificationKey : badMovie.number }];
-			[[UIApplication sharedApplication] scheduleLocalNotification:notification];
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+				// write to disk
+				[downloadedData writeToFile:filePath atomically:NO];
+
+				dispatch_async(dispatch_get_main_queue(), ^{
+					id<JJBadMovieDownloadObserver> observer = [self.observers objectForKey:[[badMovie number] stringValue]];
+					if ([observer respondsToSelector:@selector(movieDidFinishDownloading)]) {
+						[observer movieDidFinishDownloading];
+					}
+					
+					id<JJBadMovieDownloadObserver> episodeObserver = [self.observers objectForKey:kJJBadMovieStandaloneObserver];
+					if ([episodeObserver respondsToSelector:@selector(movieDidFinishDownloading)]) {
+						[episodeObserver movieDidFinishDownloading];
+					}
+					
+					if ([self.operationQueue operationCount] == 0) {
+						[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+						if ([episodeObserver respondsToSelector:@selector(didCompleteDownloading)]) {
+							[episodeObserver didCompleteDownloading];
+						}
+					}
+					
+					UILocalNotification *notification = [[UILocalNotification alloc] init];
+					[notification setAlertBody:[NSString stringWithFormat:@"Finished downloading episode %@ - %@", badMovie.number, badMovie.name]];
+					[notification setAlertAction:@"Listen Now!"];
+					[notification setSoundName:UILocalNotificationDefaultSoundName];
+					[notification setFireDate:[NSDate date]];
+					[notification setUserInfo:@{ kJJBadMovieNotificationKey : badMovie.number }];
+					[[UIApplication sharedApplication] scheduleLocalNotification:notification];
+				});
+			});
 		} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 			id<JJBadMovieDownloadObserver> observer = [self.observers objectForKey:[[badMovie number] stringValue]];
-			[observer movieDidFailDownloadingWithError:error];
+			if ([observer respondsToSelector:@selector(movieDidFailDownloadingWithError:)]) {
+				[observer movieDidFailDownloadingWithError:error];
+			}
 
 			id<JJBadMovieDownloadObserver> episodeObserver = [self.observers objectForKey:kJJBadMovieStandaloneObserver];
 			if ([episodeObserver respondsToSelector:@selector(movieDidFinishDownloading)]) {
