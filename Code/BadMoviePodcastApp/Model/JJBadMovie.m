@@ -36,6 +36,7 @@ NSString * const kJJBadMovieEpisodeKeyLocation = @"com.jnjosh.episode.location";
         self.url = [aDecoder decodeObjectForKey:kJJBadMovieEpisodeKeyURL];
         self.video = [aDecoder decodeObjectForKey:kJJBadMovieEpisodeKeyVideo];
         self.location = [aDecoder decodeObjectForKey:kJJBadMovieEpisodeKeyLocation];
+		self.hasDownloaded = [[NSFileManager defaultManager] fileExistsAtPath:[self localFilePath]];
     }
     return self;
 }
@@ -80,12 +81,6 @@ NSString * const kJJBadMovieEpisodeKeyLocation = @"com.jnjosh.episode.location";
 		_localFilePath = [basePath stringByAppendingPathComponent:fileName];
 	}
 	return _localFilePath;
-
-}
-
-- (BOOL)hasDownloaded
-{
-	return [[NSFileManager defaultManager] fileExistsAtPath:[self localFilePath]];
 }
 
 - (UIImage *)cachedImage {
@@ -106,6 +101,7 @@ NSString * const kJJBadMovieEpisodeKeyLocation = @"com.jnjosh.episode.location";
     self.url = [aDictionary objectForKey:@"url"];
     self.video = [aDictionary objectForKey:@"video"];
     self.location = [aDictionary objectForKey:@"location"];
+	self.hasDownloaded = [[NSFileManager defaultManager] fileExistsAtPath:[self localFilePath]];
 }
 
 @end

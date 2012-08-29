@@ -19,6 +19,7 @@
 #import "JJBadMovieDownloadsViewController.h"
 
 static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
+static const CGFloat kJJBadMovieCellHeight = 86.0f;
 
 @interface JJBadMovieEpisodesViewController () <JJBadMovieDownloadObserver>
 
@@ -36,14 +37,10 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 
 @implementation JJBadMovieEpisodesViewController
 
-#pragma mark - synth
-
-@synthesize dataSource = _dataSource, tableView = _tableView;
-@synthesize pullToRefreshView = _pullToRefreshView;
-
 #pragma mark - lifecycle
 
-- (id)initWithEpisodeDataSource:(JJBadMovieEpisodeDataSource *)dataSource {
+- (id)initWithEpisodeDataSource:(JJBadMovieEpisodeDataSource *)dataSource
+{
     if (self = [self initWithNibName:nil bundle:nil]) {
         self.dataSource = dataSource;
     }
@@ -52,7 +49,8 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 
 #pragma mark - view loading
 
-- (void)loadView {
+- (void)loadView
+{
     self.view = [[UIView alloc] initWithFrame:CGRectZero];
     [self.view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
 }
@@ -84,9 +82,10 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 	self.downloadsBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ui.button.downloads.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(showDownloads)];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated
+{
     [super viewWillAppear:animated];
-    
+	
 	[[JJBadMovieRateLimit sharedLimiter] executeBlock:^{
 		if (self.dataSource) {
 			[self.dataSource loadEpisodesWithCompletionHandler:^{
@@ -110,10 +109,13 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 	[[JJBadMovieDownloadManager sharedManager] removeDownloadObserver:self];
 }
 
-- (void)viewDidUnload {
+- (void)viewDidUnload
+{
     [super viewDidUnload];
     
     self.tableView = nil;
+	self.downloadsBarButtonItem = nil;
+	self.pullToRefreshView = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -135,7 +137,8 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 	[self.navigationController pushViewController:downloadsView animated:YES];
 }
 
-- (void)downloadImageInView {
+- (void)downloadImageInView
+{
     for (NSIndexPath *path in [self.tableView indexPathsForVisibleRows]) {
         [self.dataSource downloadImageForIndexPath:path completionHandler:^{
             if ([[self.tableView indexPathsForVisibleRows] containsObject:path]) {
@@ -147,7 +150,8 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 
 #pragma mark - scroll delegates
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
     if (! decelerate) {
         [self downloadImageInView];
     }
@@ -187,8 +191,9 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 
 #pragma mark - UITableViewDelegate
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 86.0f;
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return kJJBadMovieCellHeight;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -200,7 +205,8 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 
 #pragma mark - SSPullToRefreshDelegate
 
-- (void)pullToRefreshViewDidStartLoading:(SSPullToRefreshView *)view {
+- (void)pullToRefreshViewDidStartLoading:(SSPullToRefreshView *)view
+{
     [self.pullToRefreshView startLoading];
     [self.dataSource loadEpisodesWithCompletionHandler:^{
         [self.tableView reloadData];
@@ -213,6 +219,16 @@ static NSString *jj_episodeCellIdentifier = @"com.jnjosh.BadMovieCell";
 - (void)didCompleteDownloading
 {
 	[self.navigationItem setLeftBarButtonItem:nil animated:YES];
+}
+
+#pragma mark - JJBadMovieUpdateDelegate
+
+- (void)reloadCellForMovie:(JJBadMovie *)movie
+{
+	NSIndexPath *moviePath = [self.dataSource indexPathForEpisode:movie];
+	if (moviePath) {
+		[self.tableView reloadRowsAtIndexPaths:@[moviePath] withRowAnimation:UITableViewRowAnimationNone];
+	}
 }
 
 @end

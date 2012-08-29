@@ -17,25 +17,23 @@ static UIFont *jj_titleFont = nil;
 static UIFont *jj_detailFont = nil;
 static UIImage *jj_moviePlaceholderImage = nil;
 static CGColorRef jj_shadowColorRef;
+static UIColor * jj_downloadedColor;
 
-const CGSize jj_shadowOffsetSize = (CGSize){0, 1};
-const CGRect jj_imageRect = (CGRect){15,15,55,55};
-const CGRect jj_imageBorderRect = (CGRect){10,10,65,65};
-const CGRect jj_titleTextRect = (CGRect){85,10,205,20};
-const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
+static const CGSize jj_shadowOffsetSize = (CGSize){0, 1};
+static const CGRect jj_imageRect = (CGRect){15,15,55,55};
+static const CGRect jj_imageBorderRect = (CGRect){10,10,65,65};
+static const CGRect jj_titleTextRect = (CGRect){85,10,205,20};
+static const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
 
 @interface JJBadMovieEpisodeCell ()
+
+@property (nonatomic, strong) CALayer *downloadedLayer;
 
 - (void)cleanImageLayer;
 
 @end
 
-
 @implementation JJBadMovieEpisodeCell
-
-#pragma mark - synth
-
-@synthesize episode = _episode, imageLayer = _imageLayer;
 
 #pragma mark - class
 
@@ -48,6 +46,7 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
         jj_detailFont = [UIFont systemFontOfSize:11.0f];
         jj_moviePlaceholderImage = [UIImage imageNamed:@"ui.placeholder.png"];
         jj_shadowColorRef = [jj_selectedTextColor CGColor];
+		jj_downloadedColor = [UIColor colorWithRed:133/255.0f green:0 blue:0 alpha:1.0];
     }
 }
 
@@ -83,7 +82,7 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
         animateImage = NO;
         [self cleanImageLayer];
     }
-    
+
     self.imageLayer = [CALayer layer];
     self.imageLayer.contents = (__bridge id)[[self.episode cachedImage] CGImage];
     self.imageLayer.frame = jj_imageRect;
@@ -103,6 +102,8 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
     }
     
     [self.layer addSublayer:self.imageLayer];
+	
+
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -113,10 +114,14 @@ const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
         CGContextSetShadowWithColor(context, jj_shadowOffsetSize, 0.0, jj_shadowColorRef);
     }
 
-	[jj_textColor set];
-    [[self.episode name] drawInRect:jj_titleTextRect withFont:jj_titleFont lineBreakMode:UILineBreakModeTailTruncation];
-
-    [jj_detailTextColor set];
+	if ([self.episode hasDownloaded]) {
+		[jj_downloadedColor set];
+	} else {
+		[jj_textColor set];
+	}
+	[[self.episode name] drawInRect:jj_titleTextRect withFont:jj_titleFont lineBreakMode:UILineBreakModeTailTruncation];
+    
+	[jj_detailTextColor set];
     [[self.episode descriptionText] drawInRect:jj_detailTextRect withFont:jj_detailFont lineBreakMode:UILineBreakModeWordWrap];
 }
 

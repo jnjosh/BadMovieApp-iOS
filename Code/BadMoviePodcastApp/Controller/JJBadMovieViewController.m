@@ -47,8 +47,6 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 @property (nonatomic, strong) UIImageView *toolbarView;
 @property (nonatomic, strong) UILabel *downloadProgressLabel;
 
-@property (nonatomic, readonly, assign) BOOL hasDownloaded;
-
 - (void)swipeBack;
 
 - (void)startPlayingEpisode;
@@ -394,20 +392,13 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 - (void)setupOfflineButton
 {
-	if (! [self hasDownloaded]) {
+	if (! [self.movie hasDownloaded]) {
 		[self.saveButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.offline.png"] forState:UIControlStateNormal];
 		[self.saveButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.offline.pressed.png"] forState:UIControlStateHighlighted];
 	} else {
 		[self.saveButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.delete.png"] forState:UIControlStateNormal];
 		[self.saveButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.delete.pressed.png"] forState:UIControlStateHighlighted];
 	}
-}
-
-#pragma mark - Properties
-
-- (BOOL)hasDownloaded
-{
-	return [[NSFileManager defaultManager] fileExistsAtPath:[self.movie localFilePath] isDirectory:NO];
 }
 
 #pragma mark - episode methods
@@ -462,7 +453,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 	[[JJBadMovieNetwork sharedNetwork] executeNetworkActivity:^{
 		[self launchPlayerWithEpisode];
 	} failed:^{
-		if ([self hasDownloaded]) {
+		if ([self.movie hasDownloaded]) {
 			[self launchPlayerWithEpisode];
 		} else {
 			[[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationGlobalNotification object:kJJBadMovieNetworkErrorMessage];
@@ -499,7 +490,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 }
 
 - (void)downloadPodcast {
-	if (! [self hasDownloaded]) {
+	if (! [self.movie hasDownloaded]) {
 		[[JJBadMovieNetwork sharedNetwork] executeNetworkActivity:^{
 			[[JJBadMovieDownloadManager sharedManager] downloadEpisodeForMovie:self.movie];
 		} failed:nil];
@@ -511,6 +502,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 - (void)removeDownloadedFile {
 	NSString *filePath = [self.movie localFilePath];
 	[[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+	self.movie.hasDownloaded = NO;
 	[self setupOfflineButton];
 }
 

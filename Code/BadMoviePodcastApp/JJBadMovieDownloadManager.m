@@ -105,9 +105,11 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 						}
 					}
 					
+					badMovie.hasDownloaded = YES;
+					
 					UILocalNotification *notification = [[UILocalNotification alloc] init];
 					[notification setAlertBody:[NSString stringWithFormat:@"Finished downloading episode %@ - %@", badMovie.number, badMovie.name]];
-					[notification setAlertAction:@"Listen Now!"];
+					[notification setAlertAction:@"Listen"];
 					[notification setSoundName:UILocalNotificationDefaultSoundName];
 					[notification setFireDate:[NSDate date]];
 					[notification setUserInfo:@{ kJJBadMovieNotificationKey : badMovie.number }];
