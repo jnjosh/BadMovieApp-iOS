@@ -500,9 +500,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 }
 
 - (void)removeDownloadedFile {
-	NSString *filePath = [self.movie localFilePath];
-	[[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-	self.movie.hasDownloaded = NO;
+	[[JJBadMovieDownloadManager sharedManager] removeEpisode:self.movie];
 	[self setupOfflineButton];
 }
 

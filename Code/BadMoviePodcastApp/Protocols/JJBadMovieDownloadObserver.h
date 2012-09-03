@@ -28,4 +28,6 @@
 
 - (void)didCompleteDownloading;
 
+- (void)didDeleteEpisode:(JJBadMovie *)episode;
+
 @end

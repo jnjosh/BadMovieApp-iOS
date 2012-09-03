@@ -102,8 +102,6 @@ static const CGRect jj_detailTextRect = (CGRect){85,32,205,50};
     }
     
     [self.layer addSublayer:self.imageLayer];
-	
-
 }
 
 - (void)drawRect:(CGRect)rect {

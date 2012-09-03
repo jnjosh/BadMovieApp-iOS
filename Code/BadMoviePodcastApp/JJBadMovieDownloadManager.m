@@ -16,9 +16,10 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 @interface JJBadMovieDownloadManager ()
 
 @property (nonatomic, strong) NSMutableDictionary *observers;
+@property (nonatomic, strong) NSMutableSet *standaloneObservers;
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 
-- (NSArray *)currentObserversWithKey:(NSString *)key;
+- (NSArray *)observersWithKey:(NSString *)key;
 
 @end
 
@@ -40,6 +41,7 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 {
 	if (self = [super init]) {
 		_observers = [NSMutableDictionary dictionary];
+		_standaloneObservers = [NSMutableSet new];
 		_operationQueue = [[NSOperationQueue alloc] init];
 		[_operationQueue setMaxConcurrentOperationCount:4];
 	}
@@ -47,6 +49,20 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 }
 
 #pragma mark - Downloading
+
+- (void)removeEpisode:(JJBadMovie *)badMovieEpisode
+{
+	NSString *filePath = [badMovieEpisode localFilePath];
+	[[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+	badMovieEpisode.hasDownloaded = NO;
+
+	NSArray *observers = [self observersWithKey:nil];
+	for (id<JJBadMovieDownloadObserver> observer in observers) {
+		if ([observer respondsToSelector:@selector(didDeleteEpisode:)]) {
+			[observer didDeleteEpisode:badMovieEpisode];
+		}
+	}
+}
 
 - (NSArray *)episodesDownloading
 {
@@ -72,9 +88,11 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 		
 		// set progress handler
 		[operation setDownloadProgressBlock:^(NSInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-			id<JJBadMovieDownloadObserver> observer = [self.observers objectForKey:[[badMovie number] stringValue]];
-			if ([observer respondsToSelector:@selector(movieDownloadDidProgress:total:)]) {
-				[observer movieDownloadDidProgress:@(totalBytesRead) total:@(totalBytesExpectedToRead)];
+			NSArray *observers = [self observersWithKey:[[badMovie number] stringValue]];
+			for (id<JJBadMovieDownloadObserver> observer in observers) {
+				if ([observer respondsToSelector:@selector(movieDownloadDidProgress:total:)]) {
+					[observer movieDownloadDidProgress:@(totalBytesRead) total:@(totalBytesExpectedToRead)];
+				}
 			}
 		}];
 		
@@ -88,20 +106,19 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 				[downloadedData writeToFile:filePath atomically:NO];
 
 				dispatch_async(dispatch_get_main_queue(), ^{
-					id<JJBadMovieDownloadObserver> observer = [self.observers objectForKey:[[badMovie number] stringValue]];
-					if ([observer respondsToSelector:@selector(movieDidFinishDownloading)]) {
-						[observer movieDidFinishDownloading];
-					}
-					
-					id<JJBadMovieDownloadObserver> episodeObserver = [self.observers objectForKey:kJJBadMovieStandaloneObserver];
-					if ([episodeObserver respondsToSelector:@selector(movieDidFinishDownloading)]) {
-						[episodeObserver movieDidFinishDownloading];
-					}
-					
-					if ([self.operationQueue operationCount] == 0) {
-						[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-						if ([episodeObserver respondsToSelector:@selector(didCompleteDownloading)]) {
-							[episodeObserver didCompleteDownloading];
+					NSArray *observers = [self observersWithKey:[[badMovie number] stringValue]];
+					for (id<JJBadMovieDownloadObserver> observer in observers) {
+						if ([observer respondsToSelector:@selector(movieDidFinishDownloading)]) {
+							[observer movieDidFinishDownloading];
+						}
+						if ([observer respondsToSelector:@selector(movieDidFinishDownloadingEpisode:)]) {
+							[observer movieDidFinishDownloadingEpisode:badMovie];
+						}
+						if ([self.operationQueue operationCount] == 0) {
+							[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+							if ([observer respondsToSelector:@selector(didCompleteDownloading)]) {
+								[observer didCompleteDownloading];
+							}
 						}
 					}
 					
@@ -159,25 +176,23 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 			break;
 		}
 	}
-	id<JJBadMovieDownloadObserver> observer = [self.observers objectForKey:[[badMovie number] stringValue]];
-	if ([observer respondsToSelector:@selector(movieDidCancelDownloading)]) {
-		[observer movieDidCancelDownloading];
+	
+	NSArray *observers = [self observersWithKey:[[badMovie number] stringValue]];
+	for (id<JJBadMovieDownloadObserver> observer in observers) {
+		if ([observer respondsToSelector:@selector(movieDidCancelDownloading)]) {
+			[observer movieDidCancelDownloading];
+		}
 	}
 	
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
-		id<JJBadMovieDownloadObserver> episodeObserver = [self.observers objectForKey:kJJBadMovieStandaloneObserver];
-
 		if ([self.operationQueue operationCount] == 0) {
 			[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-			if ([episodeObserver respondsToSelector:@selector(didCompleteDownloading)]) {
-				[episodeObserver didCompleteDownloading];
+			for (id<JJBadMovieDownloadObserver> observer in observers) {
+				if ([observer respondsToSelector:@selector(didCompleteDownloading)]) {
+					[observer didCompleteDownloading];
+				}
 			}
 		}
-
-		if ([episodeObserver respondsToSelector:@selector(movieDidCancelDownloading)]) {
-			[episodeObserver movieDidCancelDownloading];
-		}
-	
 	});
 }
 
@@ -196,22 +211,20 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 	[self.operationQueue cancelAllOperations];
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 	
-	id<JJBadMovieDownloadObserver> episodeObserver = [self.observers objectForKey:kJJBadMovieStandaloneObserver];
-	if ([episodeObserver respondsToSelector:@selector(didCompleteDownloading)]) {
-		[episodeObserver didCompleteDownloading];
+	NSArray *observers = [self observersWithKey:nil];
+	for (id<JJBadMovieDownloadObserver> observer in observers) {
+		if ([observer respondsToSelector:@selector(didCompleteDownloading)]) {
+			[observer didCompleteDownloading];
+		}
 	}
 }
 
 #pragma mark - Observers
 
-- (NSArray *)currentObserversWithKey:(NSString *)key
+- (NSArray *)observersWithKey:(NSString *)key
 {
 	NSMutableArray *observers = [NSMutableArray array];
-
-	id standaloneObserver = [self.observers objectForKey:kJJBadMovieStandaloneObserver];
-	if (standaloneObserver) {
-		[observers addObject:standaloneObserver];
-	}
+	[observers addObjectsFromArray:[self.standaloneObservers allObjects]];
 
 	if (key) {
 		id movieObserver = [self.observers objectForKey:key];
@@ -225,7 +238,7 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 
 - (void)addDownloadObserver:(id<JJBadMovieDownloadObserver>)observer
 {
-	[self.observers setObject:observer forKey:kJJBadMovieStandaloneObserver];
+	[self.standaloneObservers addObject:observer];
 }
 
 - (void)addDownloadObserver:(id<JJBadMovieDownloadObserver>)observer forMovie:(JJBadMovie *)movie
@@ -236,7 +249,13 @@ NSString * const kJJBadMovieStandaloneObserver = @"com.jnjosh.observers.standalo
 - (void)removeDownloadObserver:(id<JJBadMovieDownloadObserver>)observer
 {
 	NSArray *keysForObject = [self.observers allKeysForObject:observer];
-	[self.observers removeObjectsForKeys:keysForObject];
+	if ([keysForObject count] > 0) {
+		[self.observers removeObjectsForKeys:keysForObject];
+	}
+
+	if ([self.standaloneObservers containsObject:observer]) {
+		[self.standaloneObservers removeObject:observer];
+	}
 }
 
 @end

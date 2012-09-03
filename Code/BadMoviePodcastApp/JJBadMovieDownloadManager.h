@@ -26,6 +26,9 @@
 - (void)cancelAllDownloadOperations;
 - (BOOL)completedDownloadRequests;
 
+// episodes
+- (void)removeEpisode:(JJBadMovie *)badMovieEpisode;
+
 // observers
 - (void)addDownloadObserver:(id<JJBadMovieDownloadObserver>)observer;
 - (void)addDownloadObserver:(id<JJBadMovieDownloadObserver>)observer forMovie:(JJBadMovie *)movie;

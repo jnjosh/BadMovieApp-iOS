@@ -28,10 +28,12 @@ static const CGFloat kJJBadMovieCellHeight = 86.0f;
 
 @property (nonatomic, strong) UIBarButtonItem *downloadsBarButtonItem;
 @property (nonatomic, strong) SSPullToRefreshView *pullToRefreshView;
+@property (nonatomic, strong) NSMutableSet *updatedMovies;
 
 - (void)showSettings;
 - (void)showDownloads;
 - (void)downloadImageInView;
+- (void)refreshCurrentCells;
 
 @end
 
@@ -42,9 +44,15 @@ static const CGFloat kJJBadMovieCellHeight = 86.0f;
 - (id)initWithEpisodeDataSource:(JJBadMovieEpisodeDataSource *)dataSource
 {
     if (self = [self initWithNibName:nil bundle:nil]) {
-        self.dataSource = dataSource;
+        _dataSource = dataSource;
+		_updatedMovies = [NSMutableSet new];
     }
     return self;
+}
+
+- (void)dealloc
+{
+	[[JJBadMovieDownloadManager sharedManager] removeDownloadObserver:self];
 }
 
 #pragma mark - view loading
@@ -80,6 +88,8 @@ static const CGFloat kJJBadMovieCellHeight = 86.0f;
     [self.navigationItem setTitleView:titleImage];
     
 	self.downloadsBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ui.button.downloads.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(showDownloads)];
+	
+	[[JJBadMovieDownloadManager sharedManager] addDownloadObserver:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -99,14 +109,12 @@ static const CGFloat kJJBadMovieCellHeight = 86.0f;
 	} else {
 		[self.navigationItem setLeftBarButtonItem:nil animated:NO];
 	}
-
-	[[JJBadMovieDownloadManager sharedManager] addDownloadObserver:self];
 }
 
-- (void)viewWillDisappear:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
-	[super viewWillDisappear:animated];
-	[[JJBadMovieDownloadManager sharedManager] removeDownloadObserver:self];
+	[super viewDidAppear:animated];
+	[self refreshCurrentCells];
 }
 
 - (void)viewDidUnload
@@ -124,6 +132,18 @@ static const CGFloat kJJBadMovieCellHeight = 86.0f;
 }
 
 #pragma mark - methods
+
+- (void)refreshCurrentCells
+{
+	for (JJBadMovie *movie in self.updatedMovies) {
+		NSIndexPath *path = [self.dataSource indexPathForEpisode:movie];
+		
+		if ([[self.tableView indexPathsForVisibleRows] containsObject:path]) {
+			[self.tableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationNone];
+		}
+	}
+	[self.updatedMovies removeAllObjects];
+}
 
 - (void)showSettings
 {
@@ -221,13 +241,19 @@ static const CGFloat kJJBadMovieCellHeight = 86.0f;
 	[self.navigationItem setLeftBarButtonItem:nil animated:YES];
 }
 
-#pragma mark - JJBadMovieUpdateDelegate
-
-- (void)reloadCellForMovie:(JJBadMovie *)movie
+- (void)movieDidFinishDownloadingEpisode:(JJBadMovie *)badmovie
 {
-	NSIndexPath *moviePath = [self.dataSource indexPathForEpisode:movie];
-	if (moviePath) {
-		[self.tableView reloadRowsAtIndexPaths:@[moviePath] withRowAnimation:UITableViewRowAnimationNone];
+	[self.updatedMovies addObject:badmovie];
+	if ([self.navigationController topViewController] == self) {
+		[self refreshCurrentCells];
+	}
+}
+
+- (void)didDeleteEpisode:(JJBadMovie *)episode
+{
+	[self.updatedMovies addObject:episode];
+	if ([self.navigationController topViewController] == self) {
+		[self refreshCurrentCells];
 	}
 }
 
