@@ -31,6 +31,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, assign, getter = isPlaying) BOOL playing;
+@property (nonatomic, assign, getter = isPlayerStarting) BOOL playerStarting;
 
 @property (nonatomic, strong) UIButton *episodeButton;
 @property (nonatomic, strong) UIButton *shareEpisodeButton;
@@ -354,6 +355,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 #pragma mark - JJBadMovieAudioPlayerDelegate methods 
 
 - (void)playerViewControllerDidBeginPlaying:(JJBadMoviePlayerViewController *)playerViewController {
+	self.playerStarting = NO;
     [self configureForPlayState:JJBadMoviePlayerStatePlaying];
 }
 
@@ -435,18 +437,21 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 - (void)launchPlayerWithEpisode
 {
-	[self setCurrentMovie:YES];
-    [self.playerController setDelegate:self];
-    [self.playerController setCurrentEpisode:self.movie];
-    
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGRect:self.episodeImageView.frame], @"episodeImageFrame", self.episodeImageView.image, @"episodeImage", nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self userInfo:userInfo];
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0ul), ^{
-        [self.playerController loadEpisodeWithCompletionHandler:^{
-            [self.playerController play];
-        }];
-    });
+	if (! [self isPlayerStarting]) {
+		self.playerStarting = YES;
+		[self setCurrentMovie:YES];
+		[self.playerController setDelegate:self];
+		[self.playerController setCurrentEpisode:self.movie];
+		
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGRect:self.episodeImageView.frame], @"episodeImageFrame", self.episodeImageView.image, @"episodeImage", nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self userInfo:userInfo];
+		
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0ul), ^{
+			[self.playerController loadEpisodeWithCompletionHandler:^{
+				[self.playerController play];
+			}];
+		});
+	}
 }
 
 - (void)startPlayingEpisode {
