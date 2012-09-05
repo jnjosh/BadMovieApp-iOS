@@ -137,7 +137,6 @@ static const CGFloat kJJBadMovieCellHeight = 86.0f;
 {
 	for (JJBadMovie *movie in self.updatedMovies) {
 		NSIndexPath *path = [self.dataSource indexPathForEpisode:movie];
-		
 		if ([[self.tableView indexPathsForVisibleRows] containsObject:path]) {
 			[self.tableView reloadRowsAtIndexPaths:@[path] withRowAnimation:UITableViewRowAnimationNone];
 		}
@@ -193,6 +192,13 @@ static const CGFloat kJJBadMovieCellHeight = 86.0f;
     return [self.dataSource.episodes count];
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	[self.dataSource downloadImageForIndexPath:indexPath completionHandler:^{
+        [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    }];
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     JJBadMovieEpisodeCell *cell = [tableView dequeueReusableCellWithIdentifier:jj_episodeCellIdentifier];
@@ -201,11 +207,6 @@ static const CGFloat kJJBadMovieCellHeight = 86.0f;
     }
     JJBadMovie *movie = [self.dataSource episodeForIndexPath:indexPath];
     [cell setEpisode:movie];
-    
-    [self.dataSource downloadImageForIndexPath:indexPath completionHandler:^{
-        [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone]; 
-    }];
-    
     return cell;
 }
 
