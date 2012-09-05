@@ -17,6 +17,8 @@ typedef enum {
     JJBadMoviePlayerStateUnknown
 } JJBadMoviePlayerState;
 
+typedef void(^JJBadMovieLoaderCompletionHandler)(void);
+
 @class JJBadMovie;
 
 @interface JJBadMoviePlayerViewController : UIViewController
@@ -25,7 +27,8 @@ typedef enum {
 @property (nonatomic, assign) NSObject<JJBadMovieAudioPlayerDelegate> *delegate;
 @property (nonatomic, assign) JJBadMoviePlayerState playerState;
 
-- (void)loadEpisode:(JJBadMovie *)episode;
+- (void)loadEpisodeWithCompletionHandler:(JJBadMovieLoaderCompletionHandler)loaderComplete;
+
 - (void)play;
 - (void)pause;
 

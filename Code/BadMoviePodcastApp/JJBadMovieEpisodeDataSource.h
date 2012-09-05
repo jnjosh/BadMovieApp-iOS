@@ -17,9 +17,10 @@ typedef void(^JJBadMovieEpisodeCompletionBlock)(void);
 @property (nonatomic, strong) NSArray *episodes;
 
 - (JJBadMovie *)episodeForIndexPath:(NSIndexPath *)indexPath;
+- (NSIndexPath *)indexPathForEpisode:(JJBadMovie *)episode;
+
 - (void)downloadImageForIndexPath:(NSIndexPath *)indexPath completionHandler:(JJBadMovieEpisodeCompletionBlock)completionHandler;
 
-- (void)checkServerForUpdatesWithCompletionHandler:(JJBadMovieEpisodeCompletionBlock)completionHandler;
 - (void)loadEpisodesWithCompletionHandler:(JJBadMovieEpisodeCompletionBlock)completionHandler;
 
 @end

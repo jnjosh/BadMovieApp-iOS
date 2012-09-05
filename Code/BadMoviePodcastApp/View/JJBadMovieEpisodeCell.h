@@ -12,7 +12,7 @@
 
 @interface JJBadMovieEpisodeCell : UITableViewCell
 
-@property (nonatomic, strong) JJBadMovie *episode;
+@property (nonatomic, weak) JJBadMovie *episode;
 @property (nonatomic, strong) CALayer *imageLayer;
 
 @end

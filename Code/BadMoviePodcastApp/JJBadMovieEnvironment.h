@@ -12,7 +12,11 @@ extern NSString * const kJJBadMovieAPIURLRoot;
 
 extern NSString * const kJJBadMovieNotificationShowPlayerControl;
 extern NSString * const kJJBadMovieNotificationShowPlayer;
+extern NSString * const kJJBadMovieNotificationGlobalNotification;
 
 extern NSString * const kJJBadMovieArtistName;
 extern NSString * const kJJBadMovieAlbumTitle;
 extern NSString * const kJJBadMovieGenre;
+
+extern NSString * const kJJBadMovieNetworkErrorMessage;
+extern NSString * const kJJBadMovieNotificationKey;

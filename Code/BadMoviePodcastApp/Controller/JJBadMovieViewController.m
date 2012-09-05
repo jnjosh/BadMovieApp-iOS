@@ -13,51 +13,65 @@
 #import "JJBadMoviePlayerViewController.h"
 #import "JJBadMovie.h"
 #import "JJBadMovieEnvironment.h"
+#import "JJBadmovieDownloadManager.h"
+#import "JJBadMovieDownloadObserver.h"
 #import "SDImageCache.h"
 #import "MBProgressHUD.h"
+#import "JJBadMovieNetwork.h"
 
 const NSUInteger kJJBadMovieCellRowHeader = 0;
 const NSUInteger kJJBadMovieCellRowDescription = 1;
 
+const NSUInteger kJJBadMovieShareSheet = 2;
+const NSUInteger kJJBadMovieDeleteSheet = 3;
+
 const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
-@interface JJBadMovieViewController ()
+@interface JJBadMovieViewController () <JJBadMovieDownloadObserver>
 
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, assign, getter = isPlaying) BOOL playing;
+@property (nonatomic, assign, getter = isPlayerStarting) BOOL playerStarting;
 
 @property (nonatomic, strong) UIButton *episodeButton;
 @property (nonatomic, strong) UIButton *shareEpisodeButton;
 @property (nonatomic, strong) UIButton *downloadButton;
+@property (nonatomic, strong) UIButton *saveButton;
+
 @property (nonatomic, strong) UIImageView *episodeImageView;
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) UITableViewCell *sectionHeaderView;
 
+@property (nonatomic, strong) UIView *downloadingView;
+@property (nonatomic, strong) UIProgressView *progressView;
+@property (nonatomic, strong) UIImageView *toolbarView;
+@property (nonatomic, strong) UILabel *downloadProgressLabel;
+
 - (void)swipeBack;
+
 - (void)startPlayingEpisode;
+- (void)launchPlayerWithEpisode;
+
 - (void)togglePlayerState;
 - (void)playTrailer;
 - (void)showMovieInfo;
 - (void)downloadPodcast;
 - (void)displayShareSheet;
+- (void)displayDeleteSheet;
 
 - (UITableViewCell *)cellForDescriptionRow;
 - (void)copyEpisodeURL;
 - (void)tweetEpisode;
 - (void)openInSafari;
+- (void)setupOfflineButton;
+- (void)removeDownloadedFile;
+
+- (void)showDownloadView:(BOOL)animated;
 
 @end
 
 @implementation JJBadMovieViewController
-
-#pragma mark - synth
-
-@synthesize movie = _movie, currentMovie = _currentMovie;
-@synthesize headerView = _headerView, tableView = _tableView, sectionHeaderView = _sectionHeaderView;
-@synthesize episodeButton = _episodeButton, episodeImageView = _episodeImageView;
-@synthesize shareEpisodeButton = _shareEpisodeButton, downloadButton = _downloadButton;
-@synthesize playing = _playing, playerController = _playerController;
 
 #pragma mark - lifecycle
 
@@ -97,6 +111,10 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     [self.view addSubview:self.headerView];
     
     UIImage *image = [[SDImageCache sharedImageCache] imageFromKey:self.movie.photo fromDisk:YES];
+	if (! image) {
+		image = [UIImage imageNamed:@"ui.placeholder.png"];
+	}
+	
     self.episodeImageView = [[UIImageView alloc] initWithFrame:(CGRect){5, 5, 65, 65}];
     [self.episodeImageView setContentMode:UIViewContentModeScaleToFill];
     [self.episodeImageView setBackgroundColor:[UIColor whiteColor]];
@@ -109,15 +127,16 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     
     UIImage *episodeButtonImage = [UIImage imageNamed:@"ui.buttons.episode.png"];
     UIImage *episodeButtonImageHighlighted = [UIImage imageNamed:@"ui.buttons.episode.highlighted.png"];
-    UIImage *episodeButtonListenImage = [UIImage imageNamed:@"ui.buttons.image.listen.png"];
-    UIImage *episodeButtonListenImageHighlighted = [UIImage imageNamed:@"ui.buttons.image.listen.highlighted.png"];    
     self.episodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.episodeButton setFrame:(CGRect){ 173, 28, 137, 39 }];
     [self.episodeButton setShowsTouchWhenHighlighted:NO];
     [self.episodeButton setBackgroundImage:episodeButtonImage forState:UIControlStateNormal];
     [self.episodeButton setBackgroundImage:episodeButtonImageHighlighted forState:UIControlStateHighlighted];
-    [self.episodeButton setImage:episodeButtonListenImage forState:UIControlStateNormal];
-    [self.episodeButton setImage:episodeButtonListenImageHighlighted forState:UIControlStateHighlighted];
+	[self.episodeButton setTitle:@"Listen" forState:UIControlStateNormal];
+	[self.episodeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+	[self.episodeButton setTitleShadowColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+	[self.episodeButton.titleLabel setShadowOffset:(CGSize){ 0, 1 }];
+	[self.episodeButton.titleLabel setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:18.0f]];
     [self.episodeButton addTarget:self action:@selector(togglePlayerState) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview:self.episodeButton];
 
@@ -125,17 +144,43 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     [fadeView setFrame:(CGRect){{0, self.headerView.frame.size.height},fadeView.frame.size}];
     [self.view insertSubview:fadeView aboveSubview:self.tableView];
     
-    UIImageView *toolbarView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.toolbar.png"]];
-    [toolbarView setFrame:(CGRect){{0, self.tableView.frame.origin.y + self.tableView.frame.size.height}, toolbarView.frame.size}];
-    [self.view insertSubview:toolbarView aboveSubview:self.tableView];
-
-    UIButton *saveButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [saveButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.offline.png"] forState:UIControlStateNormal];
-    [saveButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.offline.pressed.png"] forState:UIControlStateHighlighted];
-    [saveButton setFrame:(CGRect){ 29, kJJBadMovieToolbarItemVerticalOffset, 44, 44 }];
-    [saveButton addTarget:self action:@selector(downloadPodcast) forControlEvents:UIControlEventTouchUpInside];
-    [saveButton setShowsTouchWhenHighlighted:NO];
-    [self.view addSubview:saveButton];
+	self.toolbarView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.toolbar.png"]];
+    [self.toolbarView setFrame:(CGRect){{0, self.tableView.frame.origin.y + self.tableView.frame.size.height}, self.toolbarView.frame.size}];
+    [self.view insertSubview:self.toolbarView aboveSubview:self.tableView];
+	
+	self.downloadingView = [[UIView alloc] initWithFrame:self.toolbarView.frame];
+	UIImageView *downloadingImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.toolbar.png"]];
+	[self.downloadingView addSubview:downloadingImageView];
+	self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+	[self.progressView setFrame:(CGRect){10.0f, 18.0f, 220.0f, self.progressView.frame.size.height }];
+	[self.progressView setTrackTintColor:[UIColor darkGrayColor]];
+	self.downloadProgressLabel = [[UILabel alloc] initWithFrame:(CGRect) { 240.0f, 13.0f, 40.0f, 20.0f }];
+	[self.downloadProgressLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:12.0f]];
+	[self.downloadProgressLabel setTextColor:[UIColor grayColor]];
+	[self.downloadProgressLabel setShadowColor:[UIColor whiteColor]];
+	[self.downloadProgressLabel setShadowOffset:(CGSize){ 0, 1 }];
+	[self.downloadProgressLabel setBackgroundColor:[UIColor clearColor]];
+	[self.downloadingView addSubview:self.downloadProgressLabel];
+	[self.downloadProgressLabel setText:@"0%"];
+	[self.downloadingView addSubview:self.progressView];
+	[self.downloadingView addSubview:self.downloadProgressLabel];
+	UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	[cancelButton setTitle:@"X" forState:UIControlStateNormal];
+	[cancelButton addTarget:self action:@selector(cancelDownload) forControlEvents:UIControlEventTouchUpInside];
+	[cancelButton setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
+	[cancelButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+	[cancelButton setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+	[[cancelButton titleLabel] setShadowOffset:(CGSize){ 0, 1 }];
+	[[cancelButton titleLabel] setFont:[UIFont fontWithName:@"GillSans-Bold" size:14.0f]];
+	[cancelButton setFrame:(CGRect){ 275.0f, 8.0f, 40.0f, 30.0f }];
+	[self.downloadingView addSubview:cancelButton];
+	
+    self.saveButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.saveButton setFrame:(CGRect){ 29, kJJBadMovieToolbarItemVerticalOffset, 44, 44 }];
+    [self.saveButton addTarget:self action:@selector(downloadPodcast) forControlEvents:UIControlEventTouchUpInside];
+    [self.saveButton setShowsTouchWhenHighlighted:NO];
+	[self setupOfflineButton];
+    [self.view addSubview:self.saveButton];
 
     UIButton *imdbButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [imdbButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.imdb.png"] forState:UIControlStateNormal];
@@ -208,13 +253,29 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     self.sectionHeaderView = nil;
     self.headerView = nil;
     self.tableView = nil;
+	self.downloadingView = nil;
+	self.progressView = nil;
     
     self.playerController = nil;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+	[super viewWillAppear:animated];
+	if ([[JJBadMovieDownloadManager sharedManager] downloadingActiveForMovie:self.movie]) {
+		[self showDownloadView:NO];
+	}
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-   
+	[[JJBadMovieDownloadManager sharedManager] addDownloadObserver:self forMovie:self.movie];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+	[super viewWillDisappear:animated];
+	[[JJBadMovieDownloadManager sharedManager] removeDownloadObserver:self];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -278,16 +339,23 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 #pragma mark - action sheet delegate
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    switch (buttonIndex) {
-        case 0: [self tweetEpisode]; break;
-        case 1: [self copyEpisodeURL]; break;
-        case 2: [self openInSafari]; break;
-    }
+	if ([actionSheet tag] == kJJBadMovieShareSheet) {
+		switch (buttonIndex) {
+			case 0: [self tweetEpisode]; break;
+			case 1: [self copyEpisodeURL]; break;
+			case 2: [self openInSafari]; break;
+		}
+	} else {
+		switch (buttonIndex) {
+			case 0: [self removeDownloadedFile]; break;
+		}
+	}
 }
 
 #pragma mark - JJBadMovieAudioPlayerDelegate methods 
 
 - (void)playerViewControllerDidBeginPlaying:(JJBadMoviePlayerViewController *)playerViewController {
+	self.playerStarting = NO;
     [self configureForPlayState:JJBadMoviePlayerStatePlaying];
 }
 
@@ -302,50 +370,63 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 #pragma mark - share methods
 
 - (void)tweetEpisode {
-    TWTweetComposeViewController *twitterController = [[TWTweetComposeViewController alloc] init];
-    [twitterController setInitialText:[NSString stringWithFormat:@"Listened to Episode #%@ - %@ on @BadMoviePodcast", self.movie.number, self.movie.name]];
-    [twitterController addURL:[NSURL URLWithString:self.movie.location]];
-    [self presentModalViewController:twitterController animated:YES];
+	[[JJBadMovieNetwork sharedNetwork] executeNetworkActivity:^{
+		TWTweetComposeViewController *twitterController = [[TWTweetComposeViewController alloc] init];
+		[twitterController setInitialText:[NSString stringWithFormat:@"Listened to Episode #%@ - %@ on @BadMoviePodcast", self.movie.number, self.movie.name]];
+		[twitterController addURL:[NSURL URLWithString:self.movie.location]];
+		[self presentModalViewController:twitterController animated:YES];
+	} failed:nil];
 }
 
 - (void)copyEpisodeURL {
     [[UIPasteboard generalPasteboard] setURL:[NSURL URLWithString:self.movie.location]];
-    
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.mode = MBProgressHUDModeText;
     hud.labelText = @"Link Copied";
-
-    double delayInSeconds = 2.0;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-    });
+	[hud hide:YES afterDelay:2.0];
 }
 
 - (void)openInSafari {
-    [[UIApplication sharedApplication] openURL:[[NSURL alloc] initWithString:self.movie.location]];
+	[[JJBadMovieNetwork sharedNetwork] executeNetworkActivity:^{
+		[[UIApplication sharedApplication] openURL:[[NSURL alloc] initWithString:self.movie.location]];
+	} failed:nil];
+}
+
+- (void)setupOfflineButton
+{
+	if (! [self.movie hasDownloaded]) {
+		[self.saveButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.offline.png"] forState:UIControlStateNormal];
+		[self.saveButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.offline.pressed.png"] forState:UIControlStateHighlighted];
+	} else {
+		[self.saveButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.delete.png"] forState:UIControlStateNormal];
+		[self.saveButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.delete.pressed.png"] forState:UIControlStateHighlighted];
+	}
 }
 
 #pragma mark - episode methods
 
 - (void)configureForPlayState:(JJBadMoviePlayerState)playerState {
     if (playerState == JJBadMoviePlayerStatePlaying) {
-        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.pause.png"] forState:UIControlStateNormal];
-        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.pause.highlighted.png"] forState:UIControlStateHighlighted];
+		[self.episodeButton setTitle:@"Listening..." forState:UIControlStateNormal];
+		[self.episodeButton setTitle:@"Listening..." forState:UIControlStateHighlighted];
         [self setPlaying:YES];
-    } else if (playerState == JJBadMoviePlayerStatePaused) {
-        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.continue.png"] forState:UIControlStateNormal];
-        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.continue.highlighted.png"] forState:UIControlStateHighlighted];
-        [self setPlaying:NO];
     } else {
-        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.listen.png"] forState:UIControlStateNormal];
-        [self.episodeButton setImage:[UIImage imageNamed:@"ui.buttons.image.listen.highlighted.png"] forState:UIControlStateHighlighted];
+		[self.episodeButton setTitle:@"Listen" forState:UIControlStateNormal];
+		[self.episodeButton setTitle:@"Listen" forState:UIControlStateHighlighted];
         [self setPlaying:NO];
     }
 }
 
 - (void)displayShareSheet {
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Tweet", @"Copy URL", @"View in Safari", nil];
+	[actionSheet setTag:kJJBadMovieShareSheet];
+    [actionSheet setActionSheetStyle:UIActionSheetStyleBlackTranslucent];
+    [actionSheet showInView:self.view];
+}
+
+- (void)displayDeleteSheet {
+	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Are you sure you want to delete the downloaded episode?" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Remove file" otherButtonTitles:nil];
+	[actionSheet setTag:kJJBadMovieDeleteSheet];
     [actionSheet setActionSheetStyle:UIActionSheetStyleBlackTranslucent];
     [actionSheet showInView:self.view];
 }
@@ -354,18 +435,35 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)launchPlayerWithEpisode
+{
+	if (! [self isPlayerStarting]) {
+		self.playerStarting = YES;
+		[self setCurrentMovie:YES];
+		[self.playerController setDelegate:self];
+		[self.playerController setCurrentEpisode:self.movie];
+		
+		NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGRect:self.episodeImageView.frame], @"episodeImageFrame", self.episodeImageView.image, @"episodeImage", nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self userInfo:userInfo];
+		
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0ul), ^{
+			[self.playerController loadEpisodeWithCompletionHandler:^{
+				[self.playerController play];
+			}];
+		});
+	}
+}
+
 - (void)startPlayingEpisode {
-    [self.playerController setDelegate:self];
-    [self setCurrentMovie:YES];
-
-    [self.playerController loadEpisode:self.movie];
-    
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSValue valueWithCGRect:self.episodeImageView.frame], @"episodeImageFrame", self.episodeImageView.image, @"episodeImage", nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayerControl object:self userInfo:userInfo];
-
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
-        [self.playerController play];
-    });
+	[[JJBadMovieNetwork sharedNetwork] executeNetworkActivity:^{
+		[self launchPlayerWithEpisode];
+	} failed:^{
+		if ([self.movie hasDownloaded]) {
+			[self launchPlayerWithEpisode];
+		} else {
+			[[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationGlobalNotification object:kJJBadMovieNetworkErrorMessage];
+		}
+	}];
 }
 
 - (void)togglePlayerState {
@@ -374,29 +472,103 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
             [self startPlayingEpisode];
         } else if (self.playerController.playerState == JJBadMoviePlayerStatePaused) {
             [self.playerController play];
-        } else if (self.playerController.playerState == JJBadMoviePlayerStatePlaying) {
-            [self.playerController pause];
-        } 
+        } else {
+			[[NSNotificationCenter defaultCenter] postNotificationName:kJJBadMovieNotificationShowPlayer object:nil];
+		}
     } else {
         [self startPlayingEpisode];
     }
 }
 
 - (void)playTrailer {
-    JJBadMovieWebViewController *trailerWebView = [[JJBadMovieWebViewController alloc] initWithURL:self.movie.video];
-    [self.navigationController pushViewController:trailerWebView animated:YES];
+	[[JJBadMovieNetwork sharedNetwork] executeNetworkActivity:^{
+		JJBadMovieWebViewController *trailerWebView = [[JJBadMovieWebViewController alloc] initWithURL:self.movie.video];
+		[self.navigationController pushViewController:trailerWebView animated:YES];
+	} failed:nil];
 }
 
 - (void)showMovieInfo {
-    JJBadMovieWebViewController *movieInfoView = [[JJBadMovieWebViewController alloc] initWithURL:self.movie.imdb];
-    [self.navigationController pushViewController:movieInfoView animated:YES];
+	[[JJBadMovieNetwork sharedNetwork] executeNetworkActivity:^{
+		JJBadMovieWebViewController *movieInfoView = [[JJBadMovieWebViewController alloc] initWithURL:self.movie.imdb];
+		[self.navigationController pushViewController:movieInfoView animated:YES];
+	} failed:nil];
 }
 
 - (void)downloadPodcast {
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+	if (! [self.movie hasDownloaded]) {
+		[[JJBadMovieNetwork sharedNetwork] executeNetworkActivity:^{
+			[[JJBadMovieDownloadManager sharedManager] downloadEpisodeForMovie:self.movie];
+		} failed:nil];
+	} else {
+		[self displayDeleteSheet];
+	}
+}
+
+- (void)removeDownloadedFile {
+	[[JJBadMovieDownloadManager sharedManager] removeEpisode:self.movie];
+	[self setupOfflineButton];
+}
+
+#pragma mark - Download view
+
+- (void)showDownloadView:(BOOL)animated
+{
+	[self.progressView setProgress:0];
+	[self.saveButton setEnabled:NO];
+	[self.view insertSubview:self.downloadingView belowSubview:self.toolbarView];
+	CGFloat duration = animated ? 0.25 : 0;
+	[UIView animateWithDuration:duration animations:^{
+		[self.downloadingView setFrame:(CGRect) { self.downloadingView.frame.origin.x, self.downloadingView.frame.origin.y - self.downloadingView.frame.size.height, self.downloadingView.frame.size }];
+	}];
+}
+
+- (void)hideDownloadView {
+	[UIView animateWithDuration:0.25 animations:^{
+		[self.downloadingView setFrame:(CGRect) { self.downloadingView.frame.origin.x, self.downloadingView.frame.origin.y + self.downloadingView.frame.size.height, self.downloadingView.frame.size }];
+	} completion:^(BOOL finished) {
+		[self setupOfflineButton];
+		[self.saveButton setEnabled:YES];
+	}];
+}
+
+- (void)cancelDownload {
+	[[JJBadMovieDownloadManager sharedManager] cancelDownloadingEpisodeForMovie:self.movie];
+}
+
+#pragma mark - JJBadMovieDownloadObserver
+
+- (void)movieDidBeginDownloading
+{
+	[self showDownloadView:YES];
+}
+
+- (void)movieDidFinishDownloading
+{
+	[self hideDownloadView];
+}
+
+- (void)movieDidFailDownloadingWithError:(NSError *)error
+{
+	MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.mode = MBProgressHUDModeText;
-    hud.labelText = @"Not Implemented Yet...";
-    [hud hide:YES afterDelay:2.0];
+    hud.labelText = @"Download Failed";
+	[hud hide:YES afterDelay:2.0];
+	[self hideDownloadView];
+}
+
+- (void)movieDidCancelDownloading
+{
+	[self hideDownloadView];
+}
+
+- (void)movieDownloadDidProgress:(NSNumber *)progress total:(NSNumber *)total
+{
+	if (! [self.downloadingView isDescendantOfView:self.view]) {
+		[self showDownloadView:YES];
+	}
+	float progressPosition = ([progress floatValue] / [total floatValue]);
+	[self.progressView setProgress:progressPosition];
+	[self.downloadProgressLabel setText:[NSString stringWithFormat:@"%i%%", (int)floorl(progressPosition * 100.0f)]];
 }
 
 @end

@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 jnjosh.com. All rights reserved.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "JJBadMovieSettingsViewController.h"
 #import "JJBadMovieWebViewController.h"
 
@@ -33,7 +34,7 @@
 }
 
 - (void)closeSettings {
-    [self dismissModalViewControllerAnimated:YES];
+	[self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (void)viewDidLoad
@@ -43,7 +44,7 @@
     [self.tableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.tableview.background.png"]]];
     
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(closeSettings)];
-    [self.navigationItem setRightBarButtonItem:doneButton];
+    [self.navigationItem setLeftBarButtonItem:doneButton];
     
     self.footerView = [[UIView alloc] initWithFrame:(CGRect){0, 0, 320, 44}];
     [self.footerView setAutoresizesSubviews:YES];

@@ -14,8 +14,10 @@
 #import "JJBadMovieEpisodesViewController.h"
 #import "JJBadMovieEpisodeDataSource.h"
 #import "JJBadMovieRootViewController.h"
+#import "JJBadMovieViewController.h"
 #import "JJBadMovie.h"
 #import "SDURLCache.h"
+#import "MBProgressHUD.h"
 
 static inline CGFloat degreesToRadian(CGFloat degree)
 {
@@ -25,6 +27,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 @interface JJBadMovieWindowController ()
 
 @property (nonatomic, strong) JJBadMovieRootViewController *rootViewController;
+@property (nonatomic, strong) JJBadMovieEpisodeDataSource *dataSource;
 @property (nonatomic, strong) UIBarButtonItem *nowPlayingButton;
 @property (nonatomic, strong) UIView *downView;
 @property (nonatomic, strong) UIImageView *vignetteView;
@@ -33,17 +36,11 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 
 - (void)showPlayerControl:(NSNotification *)note;
 - (void)presentNowPlayingEpisodeView:(UIImageView *)episodeView forViewController:(UIViewController *)viewController;
+- (void)displayNotification:(NSNotification *)notification;
 
 @end
 
-
 @implementation JJBadMovieWindowController
-
-#pragma mark - synth
-
-@synthesize rootViewController = _rootViewController;
-@synthesize downView = _downView, vignetteView = _vignetteView, nowPlayingButton = _nowPlayingButton;
-@synthesize navigationController = _navigationController, playerController = _playerController, window = _window;
 
 #pragma mark - lifecycle
 
@@ -52,8 +49,8 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         [[self class] configureAppearance];
         [[self class] configureCache];
         
-        JJBadMovieEpisodeDataSource *dataSource = [[JJBadMovieEpisodeDataSource alloc] init];
-        JJBadMovieEpisodesViewController *episodeViewController = [[JJBadMovieEpisodesViewController alloc] initWithEpisodeDataSource:dataSource];
+		self.dataSource = [[JJBadMovieEpisodeDataSource alloc] init];
+        JJBadMovieEpisodesViewController *episodeViewController = [[JJBadMovieEpisodesViewController alloc] initWithEpisodeDataSource:self.dataSource];
         _playerController = [[JJBadMoviePlayerViewController alloc] initWithNibName:nil bundle:nil];
         
         _navigationController = [[UINavigationController alloc] initWithRootViewController:episodeViewController];
@@ -69,12 +66,37 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showPlayerControl:) name:kJJBadMovieNotificationShowPlayerControl object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presentAudioPlayer) name:kJJBadMovieNotificationShowPlayer object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayNotification:) name:kJJBadMovieNotificationGlobalNotification object:nil];
     }
     return self;
 }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - Notification
+
+- (void)displayNotification:(NSNotification *)notification
+{
+	NSString *message = [notification object];
+	if (message) {
+		MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.window animated:YES];
+		[hud setMode:MBProgressHUDModeText];
+		[hud setLabelText:message];
+		[hud hide:YES afterDelay:2.0];
+	}
+}
+
+- (void)presentControllerForEpisodeNumber:(NSNumber *)episodeNumber
+{
+	[self.navigationController popToRootViewControllerAnimated:NO];
+	NSPredicate *matcherPredicate = [NSPredicate predicateWithFormat:@"number == %@", episodeNumber];
+	NSArray *episodes = [[self.dataSource episodes] filteredArrayUsingPredicate:matcherPredicate];
+	if ([episodes count] > 0) {
+		JJBadMovieViewController *detailViewController = [[JJBadMovieViewController alloc] initWithBadMovie:[episodes lastObject]];
+		[self.navigationController pushViewController:detailViewController animated:YES];
+	}
 }
 
 #pragma mark - navigation controller delegate
@@ -149,7 +171,8 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         group.fillMode = kCAFillModeForwards;
         group.removedOnCompletion = NO;
         [group setAnimations:[NSArray arrayWithObjects:fadeOutAnimation, pathAnimation, resizeAnimation, nil]];
-        group.duration = 0.5f;
+        [group setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn]];
+        group.duration = 0.33f;
         group.delegate = self;
         [group setValue:imageViewForAnimation forKey:@"imageViewBeingAnimated"];
         [group setValue:viewController forKey:@"imageViewWillReplaceViewController"];
@@ -226,6 +249,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
         CATransform3D moveTranslation = CATransform3DMakeTranslation(0, 120.0f, -40.0f);
         CATransform3D imageMatrix = CATransform3DConcat(moveTranslation, rotationAndPerspectiveTransform);
         
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
         [UIView animateWithDuration:0.25 animations:^{
             self.downView.layer.transform = imageMatrix;
             [self.vignetteView setAlpha:0.8];
@@ -234,6 +258,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 }
 
 - (void)hideAudioPlayer {
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
     [UIView animateWithDuration:0.25 animations:^{
         self.downView.layer.transform = CATransform3DIdentity;
         [self.vignetteView setAlpha:0.0];

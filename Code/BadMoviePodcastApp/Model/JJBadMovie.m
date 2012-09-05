@@ -19,17 +19,9 @@ NSString * const kJJBadMovieEpisodeKeyURL = @"com.jnjosh.episode.url";
 NSString * const kJJBadMovieEpisodeKeyVideo = @"com.jnjosh.episode.video";
 NSString * const kJJBadMovieEpisodeKeyLocation = @"com.jnjosh.episode.location";
 
-@implementation JJBadMovie
-
-@synthesize descriptionText = _descriptionText;
-@synthesize imdb = _imdb;
-@synthesize name = _name;
-@synthesize number = _number;
-@synthesize photo = _photo;
-@synthesize published = _published;
-@synthesize url = _url;
-@synthesize video = _video;
-@synthesize location = _location;
+@implementation JJBadMovie {
+	NSString *_localFilePath;
+}
 
 #pragma mark - lifecycle
 
@@ -44,6 +36,7 @@ NSString * const kJJBadMovieEpisodeKeyLocation = @"com.jnjosh.episode.location";
         self.url = [aDecoder decodeObjectForKey:kJJBadMovieEpisodeKeyURL];
         self.video = [aDecoder decodeObjectForKey:kJJBadMovieEpisodeKeyVideo];
         self.location = [aDecoder decodeObjectForKey:kJJBadMovieEpisodeKeyLocation];
+		self.hasDownloaded = [[NSFileManager defaultManager] fileExistsAtPath:[self localFilePath]];
     }
     return self;
 }
@@ -78,6 +71,18 @@ NSString * const kJJBadMovieEpisodeKeyLocation = @"com.jnjosh.episode.location";
 
 #pragma mark - methods
 
+- (NSString *)localFilePath {
+	if (! _localFilePath) {
+		NSString *filePrefix = [self.name lowercaseString];
+		filePrefix = [[filePrefix stringByReplacingOccurrencesOfString:@" " withString:@""] stringByAppendingString:[self.number stringValue]];
+		NSString *fileName = [filePrefix stringByAppendingPathExtension:@"mp3"];
+		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+		NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+		_localFilePath = [basePath stringByAppendingPathComponent:fileName];
+	}
+	return _localFilePath;
+}
+
 - (UIImage *)cachedImage {
     UIImage *imageFromCache = [[SDImageCache sharedImageCache] imageFromKey:self.photo fromDisk:YES];
     return imageFromCache ? : nil;
@@ -96,6 +101,7 @@ NSString * const kJJBadMovieEpisodeKeyLocation = @"com.jnjosh.episode.location";
     self.url = [aDictionary objectForKey:@"url"];
     self.video = [aDictionary objectForKey:@"video"];
     self.location = [aDictionary objectForKey:@"location"];
+	self.hasDownloaded = [[NSFileManager defaultManager] fileExistsAtPath:[self localFilePath]];
 }
 
 @end
