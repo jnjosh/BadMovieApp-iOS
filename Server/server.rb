@@ -5,6 +5,7 @@ require 'date'
 # { :number => , :location => "", :published => Date.new(2012, 4, 26), :name => "", :url => "", :description => "", :photo => "", :video => "", :imdb => "" },
 
 episodes = [
+	{ :number => 91, :location => "http://badmoviepodcast.com/2012/08/episode-91-uninvited/", :published => Date.new(2012, 8, 31), :name => "Uninvited", :url => "https://s3.amazonaws.com/com-badmoviepodcast-assets/audio/e091_uninvited.mp3", :description => "When Walken requests, we DELIVER. \"Uninvited is the best movie about a monster inside a cat on a boat that you'll see this year.\" - Greydon Clarke", :photo => "https://s3.amazonaws.com/com-badmoviepodcast-assets/images/e091-uninvited.jpg", :video => "http://www.youtube.com/watch?v=M-0mlWT0Cqg", :imdb => "http://www.imdb.com/title/tt0096341/" },
 	{ :number => 90, :location => "http://badmoviepodcast.com/2012/08/episode-90-ninja-3-domination/", :published => Date.new(2012, 8, 17), :name => "Ninja 3 - Domination", :url => "https://s3.amazonaws.com/com-badmoviepodcast-assets/audio/e090_ninja3domaination.mp3", :description => "An evil ninja transfers his soul into a sexy dancer, then goes on a killing spree. Thoroughly 80s in every way.", :photo => "https://s3.amazonaws.com/com-badmoviepodcast-assets/images/e090_ninja3domaination.jpg", :video => "http://www.youtube.com/watch?v=Lka47oegL54", :imdb => "http://www.imdb.com/title/tt0087805/" },
 	{ :number => 89, :location => "http://badmoviepodcast.com/2012/07/episode-89-hard-ticket-to-hawaii/", :published => Date.new(2012, 7, 16), :name => "Hard Ticket to Hawaii", :url => "https://s3.amazonaws.com/com-badmoviepodcast-assets/audio/e089_hardtickethawaii.mp3", :description => "Two busty lovelies and a monster snake fight bad guys in hawaii. Clothing optional. Hot tubs and rocket launchers mandatory.", :photo => "https://s3.amazonaws.com/com-badmoviepodcast-assets/images/e089_hardtickethawaii.jpg", :video => "http://www.youtube.com/watch?v=Vzv_6dFtKDE", :imdb => "http://www.imdb.com/title/tt0093146/" },
 	{ :number => 88, :location => "http://badmoviepodcast.com/2012/07/episode-88-roller-blade/", :published => Date.new(2012, 7, 05), :name => "Roller Blade", :url => "https://s3.amazonaws.com/com-badmoviepodcast-assets/audio/e088_RollerBlade.mp3", :description => "Post-apocalyptic roller skating nuns with daggers of love vs. a luchador and his puppet. WORST MOVIE EVER SEEN AWARD (Probably because we haven't seen his other 5 rollerblade movies). It's true, we haven't seen a shittier movie in all our lives.", :photo => "https://s3.amazonaws.com/com-badmoviepodcast-assets/images/e088_RollerBlade.jpg", :video => "http://www.youtube.com/watch?v=EAz_RF5Lrjw", :imdb => "http://www.imdb.com/title/tt0089930/" },
@@ -108,7 +109,7 @@ get '/' do
 end
 
 get '/episodes' do
-	last_modified Date.new(2012, 8, 27)
+	last_modified Date.new(2012, 8, 31)
 	content_type :json
 	episodes.to_json
 end
