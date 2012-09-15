@@ -10,10 +10,11 @@
 #import "JJBadMovieSettingsViewController.h"
 #import "JJBadMovieWebViewController.h"
 
-@interface JJBadMovieSettingsViewController ()
+@interface JJBadMovieSettingsViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UIView *footerView;
 @property (nonatomic, strong) NSArray *settings;
+@property (nonatomic, strong) UITableView *tableView;
 
 - (void)closeSettings;
 - (void)followOnTwitter;
@@ -22,12 +23,9 @@
 
 @implementation JJBadMovieSettingsViewController
 
-@synthesize footerView = _footerView;
-@synthesize settings = _settings;
-
-- (id)initWithStyle:(UITableViewStyle)style
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    if (self = [super initWithStyle:style]) {
+    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
         _settings = [NSArray arrayWithObjects:@"Follow @BadMoviePodcast", @"About Bad Movie Podcast App", nil];
     }
     return self;
@@ -37,11 +35,18 @@
 	[self.navigationController popToRootViewControllerAnimated:YES];
 }
 
+- (void)loadView
+{
+	self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+    [self.view setAutoresizesSubviews:YES];
+    [self.view setBackgroundColor:[UIColor whiteColor]];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.title = @"Settings";
-    [self.tableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.tableview.background.png"]]];
     
     UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(closeSettings)];
     [self.navigationItem setLeftBarButtonItem:doneButton];
@@ -51,7 +56,7 @@
     UILabel *footerLabel = [[UILabel alloc] initWithFrame:self.footerView.bounds];
     [footerLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [footerLabel setNumberOfLines:2];
-    [footerLabel setText:@"Bad Movie Podcast App 1.0 (201)\nDesigned and Developed by Josh Johnson"];
+    [footerLabel setText:@"Bad Movie Podcast App 1.1 (223)\nDesigned and Developed by Josh Johnson"];
     [footerLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:10]];
     [footerLabel setTextColor:[UIColor grayColor]];
     [footerLabel setShadowColor:[UIColor whiteColor]];
@@ -60,14 +65,13 @@
     [footerLabel setBackgroundColor:[UIColor clearColor]];
     [self.footerView addSubview:footerLabel];
     
+	self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+	[self.tableView setDelegate:self];
+	[self.tableView setDataSource:self];
+	[self.tableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.tableview.background.png"]]];
     [self.tableView setTableFooterView:self.footerView];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    
-    self.footerView = nil;
+	
+	[self.view addSubview:self.tableView];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
