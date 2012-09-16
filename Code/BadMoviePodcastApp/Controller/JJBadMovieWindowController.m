@@ -230,7 +230,7 @@ static inline CGFloat degreesToRadian(CGFloat degree)
     
     self.vignetteView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.vignette.png"]];
     [self.vignetteView setContentMode:UIViewContentModeScaleAspectFill];
-    [self.vignetteView setFrame:(CGRect){{0, 10},imageView.frame.size}];
+    [self.vignetteView setFrame:(CGRect){ CGPointZero, imageView.frame.size}];
     [self.vignetteView setAlpha:0.0];
     [self.downView addSubview:self.vignetteView];
     
@@ -268,8 +268,10 @@ static inline CGFloat degreesToRadian(CGFloat degree)
 }
 
 - (CGImageRef)imageFromLayer:(CALayer *)layer size:(CGSize)size; {
-    UIGraphicsBeginImageContextWithOptions(size, NO, [[UIScreen mainScreen] scale]);
+	CGSize imageSize = (CGSize) { size.width + 2, size.height +2 };
+    UIGraphicsBeginImageContextWithOptions(imageSize, NO, [[UIScreen mainScreen] scale]);
     CGContextRef context = UIGraphicsGetCurrentContext();
+	CGContextTranslateCTM(context, 1.0f, 1.0f);
     [layer renderInContext:context];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();

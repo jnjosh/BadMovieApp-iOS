@@ -146,7 +146,7 @@ static const CGFloat kJJBadMovieCellHeight = 86.0f;
 
 - (void)showSettings
 {
-	JJBadMovieSettingsViewController *settingsView = [[JJBadMovieSettingsViewController alloc] initWithStyle:UITableViewStyleGrouped];
+	JJBadMovieSettingsViewController *settingsView = [[JJBadMovieSettingsViewController alloc] initWithNibName:nil bundle:nil];
 	[self.navigationController pushViewController:settingsView animated:YES];
 }
 
