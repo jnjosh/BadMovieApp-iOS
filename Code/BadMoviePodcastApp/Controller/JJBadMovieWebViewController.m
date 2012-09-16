@@ -44,8 +44,8 @@
 
 - (void)loadView 
 {
-    self.view = [[UIView alloc] initWithFrame:CGRectZero];
-    [self.view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+    self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.view setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
     [self.view setAutoresizesSubviews:YES];
     [self.view setBackgroundColor:[UIColor viewFlipsideBackgroundColor]];
 }
@@ -54,7 +54,7 @@
 {
     [super viewDidLoad];
     
-    self.webview = [[UIWebView alloc] initWithFrame:CGRectZero];
+    self.webview = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [self.webview setAutoresizingMask:self.view.autoresizingMask];
     [self.webview setBackgroundColor:[UIColor viewFlipsideBackgroundColor]];
     [self.webview setDelegate:self];
@@ -70,8 +70,8 @@
         [self.webview loadRequest:webURLRequest];
     } else if (self.webFile) {
         NSString *htmlFile = [[NSBundle mainBundle] pathForResource:self.webFile ofType:@"html" inDirectory:nil];
-        NSData *htmlData = [NSData dataWithContentsOfFile:htmlFile];
-        [self.webview loadData:htmlData MIMEType:@"text/html" textEncodingName:@"UTF-8" baseURL:[NSURL URLWithString:@""]];
+        NSData *htmlData = [NSData dataWithContentsOfFile:htmlFile];   
+        [self.webview loadData:htmlData MIMEType:@"text/html" textEncodingName:@"UTF-8" baseURL:nil];
     }
 }
 

@@ -25,7 +25,7 @@ const NSUInteger kJJBadMovieCellRowDescription = 1;
 const NSUInteger kJJBadMovieShareSheet = 2;
 const NSUInteger kJJBadMovieDeleteSheet = 3;
 
-const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
+//const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 
 @interface JJBadMovieViewController () <JJBadMovieDownloadObserver>
 
@@ -85,7 +85,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 #pragma mark - view
 
 - (void)loadView {
-    self.view = [[UIView alloc] initWithFrame:CGRectZero];
+    self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     [self.view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
     [self.view setAutoresizesSubviews:YES];
     [self.view setBackgroundColor:[UIColor whiteColor]];
@@ -95,8 +95,14 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     [super viewDidLoad];
     
     self.title = self.movie.name;
-
-    self.tableView = [[UITableView alloc] initWithFrame:(CGRect){ 0, 97, 320, 275 } style:UITableViewStylePlain];
+	
+	UIImage *toolbarImage = [UIImage imageNamed:@"ui.toolbar.png"];
+	CGFloat statusHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
+	CGFloat navHeight = self.navigationController.navigationBar.frame.size.height;
+	CGFloat tableTop = 97.0f;
+	CGFloat tableHeight = self.view.frame.size.height - toolbarImage.size.height - navHeight - statusHeight - tableTop;
+	
+    self.tableView = [[UITableView alloc] initWithFrame:(CGRect){ 0, tableTop, 320, tableHeight } style:UITableViewStylePlain];
     [self.tableView setDelegate:self];
     [self.tableView setDataSource:self];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
@@ -149,7 +155,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     [self.view insertSubview:self.toolbarView aboveSubview:self.tableView];
 	
 	self.downloadingView = [[UIView alloc] initWithFrame:self.toolbarView.frame];
-	UIImageView *downloadingImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ui.toolbar.png"]];
+	UIImageView *downloadingImageView = [[UIImageView alloc] initWithImage:toolbarImage];
 	[self.downloadingView addSubview:downloadingImageView];
 	self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
 	[self.progressView setFrame:(CGRect){10.0f, 18.0f, 220.0f, self.progressView.frame.size.height }];
@@ -176,7 +182,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
 	[self.downloadingView addSubview:cancelButton];
 	
     self.saveButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.saveButton setFrame:(CGRect){ 29, kJJBadMovieToolbarItemVerticalOffset, 44, 44 }];
+    [self.saveButton setFrame:(CGRect){ 29, self.toolbarView.frame.origin.y, 44, 44 }];
     [self.saveButton addTarget:self action:@selector(downloadPodcast) forControlEvents:UIControlEventTouchUpInside];
     [self.saveButton setShowsTouchWhenHighlighted:NO];
 	[self setupOfflineButton];
@@ -185,7 +191,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     UIButton *imdbButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [imdbButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.imdb.png"] forState:UIControlStateNormal];
     [imdbButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.imdb.pressed.png"] forState:UIControlStateHighlighted];
-    [imdbButton setFrame:(CGRect){ 101, kJJBadMovieToolbarItemVerticalOffset, 44, 44 }];
+    [imdbButton setFrame:(CGRect){ 101, self.toolbarView.frame.origin.y, 44, 44 }];
     [imdbButton setShowsTouchWhenHighlighted:NO];
     [imdbButton addTarget:self action:@selector(showMovieInfo) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:imdbButton];
@@ -193,7 +199,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     UIButton *youtubeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [youtubeButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.film.png"] forState:UIControlStateNormal];
     [youtubeButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.film.pressed.png"] forState:UIControlStateHighlighted];
-    [youtubeButton setFrame:(CGRect){ 173, kJJBadMovieToolbarItemVerticalOffset, 44, 44 }];
+    [youtubeButton setFrame:(CGRect){ 173, self.toolbarView.frame.origin.y, 44, 44 }];
     [youtubeButton setShowsTouchWhenHighlighted:NO];
     [youtubeButton addTarget:self action:@selector(playTrailer) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:youtubeButton];
@@ -201,7 +207,7 @@ const CGFloat kJJBadMovieToolbarItemVerticalOffset = 373;
     self.shareEpisodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.shareEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.download.png"] forState:UIControlStateNormal];
     [self.shareEpisodeButton setBackgroundImage:[UIImage imageNamed:@"ui.toolbar.download.pressed.png"] forState:UIControlStateHighlighted];
-    [self.shareEpisodeButton setFrame:(CGRect){ 245, kJJBadMovieToolbarItemVerticalOffset, 44, 44 }];
+    [self.shareEpisodeButton setFrame:(CGRect){ 245, self.toolbarView.frame.origin.y, 44, 44 }];
     [self.shareEpisodeButton setShowsTouchWhenHighlighted:NO];
     [self.shareEpisodeButton addTarget:self action:@selector(displayShareSheet) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.shareEpisodeButton];

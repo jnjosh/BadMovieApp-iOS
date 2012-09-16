@@ -10,25 +10,31 @@
 #import "JJBadMovieSettingsViewController.h"
 #import "JJBadMovieWebViewController.h"
 
-@interface JJBadMovieSettingsViewController ()
+@interface JJBadMovieSettingsViewController () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UIView *footerView;
 @property (nonatomic, strong) NSArray *settings;
+@property (nonatomic, strong) NSArray *messages;
+@property (nonatomic, strong) NSArray *tools;
+@property (nonatomic, strong) NSArray *toolURLs;
+@property (nonatomic, strong) UITableView *tableView;
 
 - (void)closeSettings;
 - (void)followOnTwitter;
+- (void)openURL:(NSString *)url;
 
 @end
 
 @implementation JJBadMovieSettingsViewController
 
-@synthesize footerView = _footerView;
-@synthesize settings = _settings;
-
-- (id)initWithStyle:(UITableViewStyle)style
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
-    if (self = [super initWithStyle:style]) {
-        _settings = [NSArray arrayWithObjects:@"Follow @BadMoviePodcast", @"About Bad Movie Podcast App", nil];
+    if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
+        _settings = @[@"Follow @BadMoviePodcast"];
+		_messages = @[@"Bad Movie Podcast is a weekly podcast reviewing the worst in cinema hosted by Jim and Josh. We suffer so you don't have to.", @"This app was built with the help of the following libraries:"];
+
+		_tools = @[@"Icons from Pictos", @"AFNetworking", @"MBProgressHUD", @"SDURLCache", @"SDWebImage", @"SSPullToRefresh"];
+		_toolURLs = @[@"http://pictos.cc/", @"https://github.com/AFNetworking/AFNetworking", @"https://github.com/jdg/MBProgressHUD", @"https://github.com/rs/SDURLCache", @"https://github.com/rs/SDWebImage", @"https://github.com/samsoffes/sspulltorefresh"];
     }
     return self;
 }
@@ -37,21 +43,25 @@
 	[self.navigationController popToRootViewControllerAnimated:YES];
 }
 
+- (void)loadView
+{
+	self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+    [self.view setAutoresizesSubviews:YES];
+    [self.view setBackgroundColor:[UIColor whiteColor]];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = @"Settings";
-    [self.tableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.tableview.background.png"]]];
-    
-    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(closeSettings)];
-    [self.navigationItem setLeftBarButtonItem:doneButton];
+    self.title = @"The App";
     
     self.footerView = [[UIView alloc] initWithFrame:(CGRect){0, 0, 320, 44}];
     [self.footerView setAutoresizesSubviews:YES];
     UILabel *footerLabel = [[UILabel alloc] initWithFrame:self.footerView.bounds];
     [footerLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
     [footerLabel setNumberOfLines:2];
-    [footerLabel setText:@"Bad Movie Podcast App 1.0 (201)\nDesigned and Developed by Josh Johnson"];
+    [footerLabel setText:@"Bad Movie Podcast: The App 1.1 (223)\nDesigned and Developed by Josh Johnson"];
     [footerLabel setFont:[UIFont fontWithName:@"HelveticaNeue" size:10]];
     [footerLabel setTextColor:[UIColor grayColor]];
     [footerLabel setShadowColor:[UIColor whiteColor]];
@@ -60,14 +70,15 @@
     [footerLabel setBackgroundColor:[UIColor clearColor]];
     [self.footerView addSubview:footerLabel];
     
+	self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+	[self.tableView setAutoresizingMask:self.view.autoresizingMask];
+	[self.tableView setDelegate:self];
+	[self.tableView setDataSource:self];
+	[self.tableView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"ui.tableview.background.png"]]];
+	[self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.tableView setTableFooterView:self.footerView];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    
-    self.footerView = nil;
+	
+	[self.view addSubview:self.tableView];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -79,27 +90,78 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return self.settings.count;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 1;
+	if (section == 0) {
+		return self.settings.count;
+	} else if (section == 1) {
+		return self.messages.count;
+	} else if (section == 2) {
+		return self.tools.count;
+	}
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (! cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
-        [cell setSelectionStyle:UITableViewCellSelectionStyleGray];
-    }
-
-    cell.textLabel.text = [self.settings objectAtIndex:indexPath.section];
+	NSString *cellIdentifier = nil;
+	if (indexPath.section == 0) {
+		cellIdentifier = @"com.jnjosh.settingsCell";
+	} else if (indexPath.section == 1) {
+		cellIdentifier = @"com.jnjosh.messageCell";
+	} else if (indexPath.section == 2) {
+		cellIdentifier = @"com.jnjosh.toolCell";
+	} else {
+		cellIdentifier = @"com.jnjosh.cell";
+	}
     
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    if (! cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        [cell setSelectionStyle:UITableViewCellSelectionStyleGray];
+		[cell.textLabel setShadowColor:[UIColor whiteColor]];
+		[cell.textLabel setShadowOffset:(CGSize){ 0, 1 }];
+		[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+
+		if (indexPath.section == 0) {
+			[cell.textLabel setFont:[UIFont boldSystemFontOfSize:18.0f]];
+			[cell.textLabel setTextAlignment:UITextAlignmentCenter];
+			[cell.textLabel setTextColor:[UIColor darkGrayColor]];
+		} else if (indexPath.section == 1) {
+			[cell.textLabel setFont:[UIFont boldSystemFontOfSize:14.0f]];
+			[cell.textLabel setTextColor:[UIColor grayColor]];
+			[cell.textLabel setNumberOfLines:10];
+			[cell.textLabel setTextAlignment:UITextAlignmentLeft];
+		} else if (indexPath.section == 2) {
+			[cell.textLabel setFont:[UIFont boldSystemFontOfSize:14.0f]];
+			[cell.textLabel setTextColor:[UIColor grayColor]];
+			[cell.textLabel setTextAlignment:UITextAlignmentCenter];
+		}
+	}
+
+	if (indexPath.section == 0) {
+		cell.textLabel.text = [self.settings objectAtIndex:indexPath.row ];
+    } else if (indexPath.section == 1) {
+		cell.textLabel.text = [self.messages objectAtIndex:indexPath.row];
+    } else if (indexPath.section == 2) {
+		cell.textLabel.text = [self.tools objectAtIndex:indexPath.row];
+	}
+	
     return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	if (indexPath.section == 0) {
+		return 64.0f;
+	}
+	if (indexPath.section == 1) {
+		return 72.0f;
+	}
+	return 44.0f;
 }
 
 #pragma mark - Table view delegate
@@ -107,14 +169,11 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    
     if (indexPath.section == 0) {
         [self followOnTwitter];
-    } else if (indexPath.section == 1) {
-        JJBadMovieWebViewController *webViewController = [[JJBadMovieWebViewController alloc] initWithLocalHTML:@"about"];
-        [self.navigationController pushViewController:webViewController animated:YES];
-    }
-    
+    } else if (indexPath.section == 2) {
+		[self openURL:[self.toolURLs objectAtIndex:indexPath.row]];
+	}
 }
 
 #pragma mark - settings methods
@@ -142,5 +201,13 @@
     [[UIApplication sharedApplication] openURL:twitterWebURL];
 }
 
+- (void)openURL:(NSString *)url
+{
+	NSURL *weburl = [NSURL URLWithString:url];
+    if ([[UIApplication sharedApplication] canOpenURL:weburl]) {
+        [[UIApplication sharedApplication] openURL:weburl];
+        return;
+    }
+}
 
 @end

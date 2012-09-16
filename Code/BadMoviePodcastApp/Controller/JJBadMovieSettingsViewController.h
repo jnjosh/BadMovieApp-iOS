@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface JJBadMovieSettingsViewController : UITableViewController
+@interface JJBadMovieSettingsViewController : UIViewController
 
 @end
