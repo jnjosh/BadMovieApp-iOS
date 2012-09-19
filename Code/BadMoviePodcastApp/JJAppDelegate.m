@@ -9,6 +9,7 @@
 #import "JJAppDelegate.h"
 #import "JJBadMovieEnvironment.h"
 #import "JJBadMovieWindowController.h"
+#import <Crashlytics/Crashlytics.h>
 
 @interface JJAppDelegate ()
 
@@ -22,6 +23,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+	[Crashlytics startWithAPIKey:@"9544ee56c36362b4d8f12d187612661254874e26"];
     self.windowController = [[JJBadMovieWindowController alloc] init];
     [self.windowController.window makeKeyAndVisible];
     return YES;

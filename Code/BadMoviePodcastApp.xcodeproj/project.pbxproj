@@ -126,6 +126,7 @@
 		A49E27ED15E1BCFB0071D589 /* JJBadMovieDownloadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = A49E27EC15E1BCFB0071D589 /* JJBadMovieDownloadOperation.m */; };
 		A4B41EBD156948A30059F9F7 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4B41EBC156948A30059F9F7 /* Twitter.framework */; };
 		A4B41EC1156977C20059F9F7 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = A4B41EC0156977C20059F9F7 /* MBProgressHUD.m */; };
+		A4B708821607633B008D7E8C /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4B708811607633B008D7E8C /* Crashlytics.framework */; };
 		A4C1FF3E15EDAADD0064BB5E /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A4C1FF3C15EDAADD0064BB5E /* Icon.png */; };
 		A4C1FF3F15EDAADD0064BB5E /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A4C1FF3D15EDAADD0064BB5E /* Icon@2x.png */; };
 		A4C1FF4215EDBA930064BB5E /* ui-downloaded.png in Resources */ = {isa = PBXBuildFile; fileRef = A4C1FF4015EDBA910064BB5E /* ui-downloaded.png */; };
@@ -331,6 +332,7 @@
 		A4B41EBC156948A30059F9F7 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		A4B41EBF156977C20059F9F7 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MBProgressHUD.h; path = MBProgressHUD/MBProgressHUD.h; sourceTree = "<group>"; };
 		A4B41EC0156977C20059F9F7 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MBProgressHUD.m; path = MBProgressHUD/MBProgressHUD.m; sourceTree = "<group>"; };
+		A4B708811607633B008D7E8C /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		A4C1FF3C15EDAADD0064BB5E /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		A4C1FF3D15EDAADD0064BB5E /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		A4C1FF4015EDBA910064BB5E /* ui-downloaded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ui-downloaded.png"; sourceTree = "<group>"; };
@@ -382,6 +384,7 @@
 				A42E1AFB155B5C7000043EA7 /* UIKit.framework in Frameworks */,
 				A42E1AFD155B5C7000043EA7 /* Foundation.framework in Frameworks */,
 				A42E1AFF155B5C7000043EA7 /* CoreGraphics.framework in Frameworks */,
+				A4B708821607633B008D7E8C /* Crashlytics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -506,6 +509,7 @@
 		A42E1B20155B5F6600043EA7 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				A4B708811607633B008D7E8C /* Crashlytics.framework */,
 				A450623315E346E600BED34D /* Reachability.h */,
 				A491F785157190E900798A85 /* SSPullToRefresh */,
 				A4B41EBE156977A50059F9F7 /* MBProgressHUD */,
@@ -744,6 +748,7 @@
 				A42E1AF2155B5C7000043EA7 /* Sources */,
 				A42E1AF3155B5C7000043EA7 /* Frameworks */,
 				A42E1AF4155B5C7000043EA7 /* Resources */,
+				A4B7087F1607630D008D7E8C /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -888,6 +893,22 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		A4B7087F1607630D008D7E8C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Libraries/Crashlytics.framework/run 9544ee56c36362b4d8f12d187612661254874e26";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		A42E1AF2155B5C7000043EA7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -1002,6 +1023,10 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer: Joshua Johnson (N3EYX599P5)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Joshua Johnson (N3EYX599P5)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Libraries\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BadMoviePodcastApp/BadMoviePodcastApp-Prefix.pch";
 				INFOPLIST_FILE = "BadMoviePodcastApp/BadMoviePodcastApp-Info.plist";
@@ -1018,6 +1043,10 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Joshua Johnson";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Joshua Johnson";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Libraries\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BadMoviePodcastApp/BadMoviePodcastApp-Prefix.pch";
 				INFOPLIST_FILE = "BadMoviePodcastApp/BadMoviePodcastApp-Info.plist";
