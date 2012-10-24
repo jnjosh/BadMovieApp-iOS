@@ -5,6 +5,7 @@ require 'date'
 # { :number => , :location => "", :published => Date.new(2012, 4, 26), :name => "", :url => "", :description => "", :photo => "", :video => "", :imdb => "" },
 
 episodes = [
+	{ :number => 93, :location => "http://www.badmoviepodcast.com/2012/10/episode-93-laser-mission/", :published => Date.new(2012, 10, 22), :name => "Laser Mission", :url => "https://s3.amazonaws.com/com-badmoviepodcast-assets/audio/e093_LaserMission.mp3", :description => "This movie is an unwitting prequel to Inception. Don’t believe us? You will…", :photo => "https://s3.amazonaws.com/com-badmoviepodcast-assets/images/e093_lasermission.jpg", :video => "http://www.youtube.com/watch?feature=player_detailpage&v=JdEoyNi5I9w", :imdb => "http://www.imdb.com/title/tt0099978/" },
 	{ :number => 92, :location => "http://badmoviepodcast.com/2012/09/episode-92-mcbain-the-walkening/", :published => Date.new(2012, 9, 14), :name => "MCBAIN (The Walkening)", :url => "https://s3.amazonaws.com/com-badmoviepodcast-assets/audio/e092_mcbain.mp3", :description => "Christopher Walken makes his debut on our show. McBain is Invasion USA watched backwards. Walken liberates Columbia! Viva la revolution!", :photo => "https://s3.amazonaws.com/com-badmoviepodcast-assets/images/e092_mcbain.jpg", :video => "http://www.youtube.com/watch?v=OLUGBujl2-0", :imdb => "http://www.imdb.com/title/tt0102422/" },
 	{ :number => 91, :location => "http://badmoviepodcast.com/2012/08/episode-91-uninvited/", :published => Date.new(2012, 8, 31), :name => "Uninvited", :url => "https://s3.amazonaws.com/com-badmoviepodcast-assets/audio/e091_uninvited.mp3", :description => "When Walken requests, we DELIVER. \"Uninvited is the best movie about a monster inside a cat on a boat that you'll see this year.\" - Greydon Clarke", :photo => "https://s3.amazonaws.com/com-badmoviepodcast-assets/images/e091-uninvited.jpg", :video => "http://www.youtube.com/watch?v=M-0mlWT0Cqg", :imdb => "http://www.imdb.com/title/tt0096341/" },
 	{ :number => 90, :location => "http://badmoviepodcast.com/2012/08/episode-90-ninja-3-domination/", :published => Date.new(2012, 8, 17), :name => "Ninja 3 - Domination", :url => "https://s3.amazonaws.com/com-badmoviepodcast-assets/audio/e090_ninja3domaination.mp3", :description => "An evil ninja transfers his soul into a sexy dancer, then goes on a killing spree. Thoroughly 80s in every way.", :photo => "https://s3.amazonaws.com/com-badmoviepodcast-assets/images/e090_ninja3domaination.jpg", :video => "http://www.youtube.com/watch?v=Lka47oegL54", :imdb => "http://www.imdb.com/title/tt0087805/" },
@@ -110,7 +111,7 @@ get '/' do
 end
 
 get '/episodes' do
-	last_modified Date.new(2012, 9, 14)
+	last_modified Date.new(2012, 10, 22)
 	content_type :json
 	episodes.to_json
 end
