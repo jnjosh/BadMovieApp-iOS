@@ -120,7 +120,7 @@ get '/' do
 end
 
 get '/episodes' do
-	last_modified Date.new(2013, 1, 04)
+	last_modified Date.new(2013, 1, 26)
 	content_type :json
 	episodes.to_json
 end
